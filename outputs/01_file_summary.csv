@@ -1,4 +1,4 @@
-run_id,T_set,R_set,V_set,n,n_label0,n_label1,n_label2,first_steady_k,first_steady_sec,unstable_after_steady,e_mean_steady,e_std_steady,e_min_unstable
+run_id,Film-Tension Setting Value (kg),ReWinder-Tension Setting Value (kg),Web Speed setting value (mm/sec),n,n_label0,n_label1,n_label2,first_steady_k,first_steady_sec,unstable_after_steady,e_mean_steady,e_std_steady,e_min_unstable
 T3_R2_V50,3,2,50,1281,0,1100,181,181,19.7,0,-0.0053,0.039,
 T3_R2_V75,3,2,75,1281,0,1105,176,176,19.2,0,0.0003,0.0374,
 T3_R2_V100,3,2,100,1279,105,1103,71,176,19.2,0,0.0013,0.0383,-0.165
