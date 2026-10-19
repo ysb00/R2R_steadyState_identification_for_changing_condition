@@ -1,1 +1,10 @@
 __pycache__/
+
+# 원본 xlsx (data/*.zip 을 풀어놓은 로컬 사본). 정본은 zip 이므로 추적하지 않는다.
+data/rawdata/
+
+# 에디터 / 로컬 환경
+.vscode/
+.ipynb_checkpoints/
+*.egg-info/
+.venv/
