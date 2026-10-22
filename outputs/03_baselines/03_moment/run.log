@@ -1,0 +1,40 @@
+W1022 19:51:04.994000 30296 site-packages\torch\distributed\elastic\multiprocessing\redirects.py:29] NOTE: Redirects are currently not supported in Windows or MacOs.
+[Step 1] rows = 268933, runs = 210, run 길이 1275~1300 (0.2 s)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\moment\momentfm\models\moment.py:174: UserWarning: Only reconstruction head is pre-trained. Classification and forecasting heads must be fine-tuned.
+  warnings.warn("Only reconstruction head is pre-trained. Classification and forecasting heads must be fine-tuned.")
+[Step 2] AutonLab/MOMENT-1-small 로드: 입력 길이 512, patch 길이 8, d_model 512
+[Step 2] 창 630개 (run당 3.0개), 패딩 비율 0.166
+[Step 2] 표현 (268933, 512) (2.0 s)
+[Step 3] fold 1 seed 0: 12 s, 군집별 e 평균 [ 0.015 -0.055] -> steady = 군집 0, steady 판정 비율 0.557, 오염률 0.019, 보존률 0.582
+[Step 3] fold 1 seed 1: 6 s, 군집별 e 평균 [-0.055  0.015] -> steady = 군집 1, steady 판정 비율 0.557, 오염률 0.019, 보존률 0.582
+[Step 3] fold 1 seed 2: 6 s, 군집별 e 평균 [ 0.015 -0.055] -> steady = 군집 0, steady 판정 비율 0.557, 오염률 0.019, 보존률 0.582
+[Step 3] fold 1 seed 3: 6 s, 군집별 e 평균 [ 0.015 -0.055] -> steady = 군집 0, steady 판정 비율 0.557, 오염률 0.019, 보존률 0.582
+[Step 3] fold 1 seed 4: 7 s, 군집별 e 평균 [ 0.015 -0.055] -> steady = 군집 0, steady 판정 비율 0.557, 오염률 0.019, 보존률 0.582
+[Step 3] fold 2 seed 0: 6 s, 군집별 e 평균 [ 0.016 -0.051] -> steady = 군집 0, steady 판정 비율 0.588, 오염률 0.033, 보존률 0.610
+[Step 3] fold 2 seed 1: 6 s, 군집별 e 평균 [-0.051  0.016] -> steady = 군집 1, steady 판정 비율 0.588, 오염률 0.033, 보존률 0.610
+[Step 3] fold 2 seed 2: 6 s, 군집별 e 평균 [-0.051  0.016] -> steady = 군집 1, steady 판정 비율 0.588, 오염률 0.033, 보존률 0.610
+[Step 3] fold 2 seed 3: 7 s, 군집별 e 평균 [-0.051  0.016] -> steady = 군집 1, steady 판정 비율 0.588, 오염률 0.033, 보존률 0.610
+[Step 3] fold 2 seed 4: 9 s, 군집별 e 평균 [ 0.016 -0.051] -> steady = 군집 0, steady 판정 비율 0.588, 오염률 0.033, 보존률 0.610
+[Step 3] fold 3 seed 0: 5 s, 군집별 e 평균 [ 0.018 -0.05 ] -> steady = 군집 0, steady 판정 비율 0.618, 오염률 0.036, 보존률 0.647
+[Step 3] fold 3 seed 1: 6 s, 군집별 e 평균 [-0.05   0.018] -> steady = 군집 1, steady 판정 비율 0.618, 오염률 0.036, 보존률 0.647
+[Step 3] fold 3 seed 2: 5 s, 군집별 e 평균 [ 0.018 -0.05 ] -> steady = 군집 0, steady 판정 비율 0.618, 오염률 0.036, 보존률 0.647
+[Step 3] fold 3 seed 3: 6 s, 군집별 e 평균 [-0.05   0.018] -> steady = 군집 1, steady 판정 비율 0.618, 오염률 0.036, 보존률 0.647
+[Step 3] fold 3 seed 4: 6 s, 군집별 e 평균 [ 0.018 -0.05 ] -> steady = 군집 0, steady 판정 비율 0.618, 오염률 0.036, 보존률 0.647
+[Step 3] fold 4 seed 0: 6 s, 군집별 e 평균 [-0.05   0.017] -> steady = 군집 1, steady 판정 비율 0.613, 오염률 0.034, 보존률 0.639
+[Step 3] fold 4 seed 1: 5 s, 군집별 e 평균 [-0.05   0.017] -> steady = 군집 1, steady 판정 비율 0.613, 오염률 0.034, 보존률 0.639
+[Step 3] fold 4 seed 2: 6 s, 군집별 e 평균 [ 0.017 -0.05 ] -> steady = 군집 0, steady 판정 비율 0.613, 오염률 0.034, 보존률 0.639
+[Step 3] fold 4 seed 3: 5 s, 군집별 e 평균 [ 0.017 -0.05 ] -> steady = 군집 0, steady 판정 비율 0.613, 오염률 0.034, 보존률 0.639
+[Step 3] fold 4 seed 4: 5 s, 군집별 e 평균 [ 0.017 -0.05 ] -> steady = 군집 0, steady 판정 비율 0.613, 오염률 0.034, 보존률 0.639
+[Step 3] fold 5 seed 0: 5 s, 군집별 e 평균 [ 0.018 -0.049] -> steady = 군집 0, steady 판정 비율 0.614, 오염률 0.029, 보존률 0.646
+[Step 3] fold 5 seed 1: 6 s, 군집별 e 평균 [-0.049  0.018] -> steady = 군집 1, steady 판정 비율 0.614, 오염률 0.029, 보존률 0.646
+[Step 3] fold 5 seed 2: 5 s, 군집별 e 평균 [ 0.018 -0.049] -> steady = 군집 0, steady 판정 비율 0.614, 오염률 0.029, 보존률 0.646
+[Step 3] fold 5 seed 3: 7 s, 군집별 e 평균 [ 0.018 -0.049] -> steady = 군집 0, steady 판정 비율 0.614, 오염률 0.029, 보존률 0.646
+[Step 3] fold 5 seed 4: 5 s, 군집별 e 평균 [-0.049  0.018] -> steady = 군집 1, steady 판정 비율 0.614, 오염률 0.029, 보존률 0.646
+[save] run     -> outputs/03_baselines/03_moment/MOMENT_run_metrics.csv
+[save] fold    -> outputs/03_baselines/03_moment/MOMENT_fold_metrics.csv
+[save] summary -> outputs/03_baselines/03_moment/MOMENT_summary.csv
+[save] config  -> outputs/03_baselines/03_moment/MOMENT_config.csv
+[save] heatmap -> outputs/03_baselines/03_moment/MOMENT_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/03_baselines/03_moment/MOMENT_heatmap_retention_rate.png / .pdf
+[done] MOMENT 평가 완료
