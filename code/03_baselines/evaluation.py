@@ -29,6 +29,8 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 from sklearn.mixture import GaussianMixture
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import roc_auc_score, average_precision_score, f1_score
 
 # =============================================================================
@@ -100,22 +102,24 @@ def _labels():
 def fit_steady_gmm(z_train, e_train, seed):
     # 역할 : 학습 fold 의 시점별 표현으로 2-군집 GMM 을 학습하고, 어느 군집이 steady 인지 지정한다.
     #        지정 규칙: 군집별 e 평균의 절댓값이 더 작은 쪽 = steady (e 평균이 0 에 가까운 쪽).
-    #        라벨을 쓰지 않는다.
+    #        표현의 축마다 단위·분산이 다르면 분산이 큰 축이 군집을 지배하므로, GMM 앞에 표준화를 둔다.
+    #        표준화도 GMM 도 학습 fold 로만 적합하며, 라벨을 쓰지 않는다.
     # 입력 : z_train (n_tr, d) 학습 fold 시점별 표현 / e_train (n_tr,) 같은 시점의 e / seed 난수 시드
-    # 출력 : (gmm 학습된 모델, steady_idx steady 로 지정된 군집 번호, e_means 군집별 e 평균)
-    gmm = GaussianMixture(n_components=N_GMM_COMPONENTS, covariance_type=GMM_COVARIANCE_TYPE,
-                          random_state=seed).fit(z_train)
-    c = gmm.predict(z_train)
+    # 출력 : (model 학습된 표준화+GMM, steady_idx steady 로 지정된 군집 번호, e_means 군집별 e 평균)
+    model = make_pipeline(StandardScaler(),
+                          GaussianMixture(n_components=N_GMM_COMPONENTS, covariance_type=GMM_COVARIANCE_TYPE,
+                                          random_state=seed)).fit(z_train)
+    c = model.predict(z_train)
     e_means = np.array([e_train[c == j].mean() if (c == j).any() else np.nan for j in range(N_GMM_COMPONENTS)])
     steady_idx = int(np.nanargmin(np.abs(e_means)))
-    return gmm, steady_idx, e_means
+    return model, steady_idx, e_means
 
 
-def predict_steady(gmm, steady_idx, z):
-    # 역할 : 학습된 GMM 을 그대로 적용해 시점별 steady 여부와 non-steady 점수를 만든다.
-    # 입력 : gmm 학습된 모델 / steady_idx steady 군집 번호 / z (n, d) 시점별 표현
+def predict_steady(model, steady_idx, z):
+    # 역할 : 학습된 표준화+GMM 을 그대로 적용해 시점별 steady 여부와 non-steady 점수를 만든다.
+    # 입력 : model 학습된 모델 / steady_idx steady 군집 번호 / z (n, d) 시점별 표현
     # 출력 : (pred (n,) 1 = steady, score (n,) non-steady 사후확률 = 1 - steady 군집 사후확률)
-    p_steady = gmm.predict_proba(z)[:, steady_idx]
+    p_steady = model.predict_proba(z)[:, steady_idx]
     return (p_steady >= 0.5).astype(int), 1.0 - p_steady
 
 
