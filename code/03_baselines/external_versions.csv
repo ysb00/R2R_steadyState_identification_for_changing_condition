@@ -1,0 +1,2 @@
+method,repo_url,commit,cloned_date,clone_path,original_modified,env,note
+TS2Vec,https://github.com/yuezhihan/ts2vec,b0088e14a99706c05451316dc6db8d3da9351163,2026-10-22,code/03_baselines/external/ts2vec,no,main (torch 2.11+cu128 / numpy 2.4.4),requirements.txt 는 torch 1.8.1 / numpy 1.19 을 적지만 본 환경에서 수정 없이 동작함. 사라진 np.bool/np.float 은 data_dropout 과 datautils.py 에만 있고 이 경로에서 쓰지 않는다

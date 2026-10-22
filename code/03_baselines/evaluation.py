@@ -39,7 +39,9 @@ from sklearn.metrics import roc_auc_score, average_precision_score, f1_score
 DT = 0.109                      # 샘플 간격 (s). 원본 `Date` 기준 평균의 근사값 (docs/data_dictionary.md)
 ENTRY_MIN_CONSEC = 10           # steady 진입 판정: 이만큼 연속으로 steady 로 판정된 첫 시점 = 진입. 임의의 값
 N_GMM_COMPONENTS = 2            # 2-군집 GMM (계획 고정값)
-GMM_COVARIANCE_TYPE = 'full'    # GMM 공분산 형태. 임의의 값
+GMM_COVARIANCE_TYPE = 'diag'    # GMM 공분산 형태. full 은 고차원 표현(예: TS2Vec 320차원)에서 공분산이
+                                # 특이행렬이 되어 적합에 실패한다. diag 는 2차원부터 수백 차원까지 안정적이고
+                                # 모든 비교군이 같은 후단을 쓰게 해준다 (공정성). 대신 차원 간 상관구조는 버린다
 
 MERGED_PATH = 'outputs/merged_data.csv'
 LABEL_COL = 'Trigger 4'         # 원본 컬럼명 (변경하지 않음). 이 파일 안에서만 읽는다
