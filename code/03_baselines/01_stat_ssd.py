@@ -42,6 +42,9 @@ LAMBDA2 = 0.1                   # R-test 필터 상수 (원 논문 권장값)
 LAMBDA3 = 0.1                   # R-test 필터 상수 (원 논문 권장값)
 R_CRIT_TS = 2.5                 # R > 이 값이면 steady 기각 -> non-steady (원 논문 기본 임계값)
 R_CRIT_SS = 0.9                 # R < 이 값이면 steady 수용. 두 값 사이면 직전 판정을 유지 (원 논문 기본 임계값)
+RTEST_DECIMATE = 10             # R-test 용 다운샘플링 배수. 원 논문은 "정상상태 잡음에 자기상관이 없도록
+                                # 샘플링 간격을 고른다"고 전제하는데 본 데이터는 9 Hz 에서 lag1 자기상관 0.85 라
+                                # 전제가 깨진다. lag10 에서 0.16 까지 떨어지는 것을 근거로 10 을 쓴다. 임의의 값
 
 WINDOW = 64                     # 이동창 길이 (samples, 약 7.0 s). 임의의 값
 SPEED_REF = 125                 # 속도별 창 조정의 기준 속도 (mm/s). 조건 격자 중앙값. 임의의 값
@@ -132,6 +135,12 @@ for run_id, g in df.groupby('run_id', sort=False):
     w_speed = int(round(WINDOW * SPEED_REF / g[VS].iloc[0]))           # 속도가 빠를수록 짧은 창
     g['R'] = rtest_statistic(e)
     g['pred_rtest'] = rtest_decide(g.R.to_numpy())
+    # 다운샘플링판 R-test : 간격을 늘린 신호로 R 을 계산·판정하고, 판정을 원래 시점으로 되돌린다.
+    # 되돌릴 때는 직전 다운샘플 시점의 판정을 그대로 끌고 온다 (causal, forward-fill).
+    r_dec = rtest_statistic(e[::RTEST_DECIMATE])
+    back = np.arange(len(e)) // RTEST_DECIMATE
+    g['R_dec'] = r_dec[back]
+    g['pred_rtest_dec'] = rtest_decide(r_dec)[back]
     g['std_fixed'], g['slope_fixed'] = rolling_std_slope(e, WINDOW)
     g['std_speed'], g['slope_speed'] = rolling_std_slope(e, w_speed)
     g['w_speed'] = w_speed
@@ -139,8 +148,12 @@ for run_id, g in df.groupby('run_id', sort=False):
 df = pd.concat(parts, ignore_index=True)
 print(f'[Step 2] 특징 계산 완료. 속도별 창 길이 = '
       f'{df.groupby(VS).w_speed.first().to_dict()} samples ({time.time() - t0:.1f} s)')
-print(f'[Step 2] R 통계량: 중앙값 {df.R.median():.2f}, steady 쪽 임계값({R_CRIT_SS}) 미만 비율 '
-      f'{(df.R < R_CRIT_SS).mean():.3f}, TS 쪽 임계값({R_CRIT_TS}) 초과 비율 {(df.R > R_CRIT_TS).mean():.3f}')
+for name, col, dec in [('원 샘플링(9 Hz)', 'R', 1), (f'1/{RTEST_DECIMATE} 다운샘플링', 'R_dec', RTEST_DECIMATE)]:
+    # R-test 전제 확인용: 다운샘플링 후 lag1 자기상관이 실제로 얼마나 줄었는지 run 평균으로 본다
+    ac = df.groupby('run_id').e.apply(lambda s, d=dec: np.corrcoef(s.to_numpy()[::d][:-1], s.to_numpy()[::d][1:])[0, 1])
+    print(f'[Step 2] {name}: lag1 자기상관 run평균 {ac.mean():.2f}, R 중앙값 {df[col].median():.2f}, '
+          f'steady 임계값({R_CRIT_SS}) 미만 {(df[col] < R_CRIT_SS).mean():.3f}, '
+          f'TS 임계값({R_CRIT_TS}) 초과 {(df[col] > R_CRIT_TS).mean():.3f}')
 
 ID_COLS = ['run_id', 'k', TS, RS, VS]
 
@@ -148,21 +161,23 @@ ID_COLS = ['run_id', 'k', TS, RS, VS]
 # Step 3. 방법 1 — R-test : 학습 없이 원 논문 임계값으로 판정하고 검증 fold 에서 채점
 #         non-steady 점수는 R 통계량 자체 (클수록 과도상태)
 # =============================================================================
-t0 = time.time()
-run_m, fold_m = [], []
-for f in sorted(df.fold.unique()):
-    va = df[df.fold == f]
-    r, fr = ev.score_fold(va[ID_COLS], va.pred_rtest.to_numpy(), va.R.to_numpy(), 'R-test', f, SEED)
-    run_m.append(r), fold_m.append(fr)
-    print(f'[Step 3] fold {f}: steady 판정 비율 {va.pred_rtest.mean():.3f}, '
-          f'오염률 {fr.pooled_contamination_rate.iloc[0]:.3f}, 보존률 {fr.pooled_retention_rate.iloc[0]:.3f}')
-run_m, fold_m = pd.concat(run_m, ignore_index=True), pd.concat(fold_m, ignore_index=True)
-ev.save_results(OUT_DIR, 'R-test', run_m, fold_m,
-                {**ev.EVAL_CONFIG, 'SEED': SEED, 'LAMBDA1': LAMBDA1, 'LAMBDA2': LAMBDA2, 'LAMBDA3': LAMBDA3,
-                 'R_CRIT_TS': R_CRIT_TS, 'R_CRIT_SS': R_CRIT_SS})
-for metric, label in [('contamination_rate', 'Contamination rate'), ('retention_rate', 'Retention rate')]:
-    ev.plot_condition_heatmap(run_m, metric, OUT_DIR, 'R-test', label)
-print(f'[Step 3] R-test 완료 ({time.time() - t0:.1f} s)')
+for method, pcol, scol, dec in [('R-test', 'pred_rtest', 'R', 1),
+                                ('R-test-decimated', 'pred_rtest_dec', 'R_dec', RTEST_DECIMATE)]:
+    t0 = time.time()
+    run_m, fold_m = [], []
+    for f in sorted(df.fold.unique()):
+        va = df[df.fold == f]
+        r, fr = ev.score_fold(va[ID_COLS], va[pcol].to_numpy(), va[scol].to_numpy(), method, f, SEED)
+        run_m.append(r), fold_m.append(fr)
+        print(f'[Step 3] {method} fold {f}: steady 판정 비율 {va[pcol].mean():.3f}, '
+              f'오염률 {fr.pooled_contamination_rate.iloc[0]:.3f}, 보존률 {fr.pooled_retention_rate.iloc[0]:.3f}')
+    run_m, fold_m = pd.concat(run_m, ignore_index=True), pd.concat(fold_m, ignore_index=True)
+    ev.save_results(OUT_DIR, method, run_m, fold_m,
+                    {**ev.EVAL_CONFIG, 'SEED': SEED, 'LAMBDA1': LAMBDA1, 'LAMBDA2': LAMBDA2, 'LAMBDA3': LAMBDA3,
+                     'R_CRIT_TS': R_CRIT_TS, 'R_CRIT_SS': R_CRIT_SS, 'decimate': dec})
+    for metric, label in [('contamination_rate', 'Contamination rate'), ('retention_rate', 'Retention rate')]:
+        ev.plot_condition_heatmap(run_m, metric, OUT_DIR, method, label)
+    print(f'[Step 3] {method} 완료 ({time.time() - t0:.1f} s)')
 
 # =============================================================================
 # Step 4. 방법 2 — 이동창 std + 기울기 : (std, |기울기|) 2차원을 표현으로 보고 트랙 A 후단 적용

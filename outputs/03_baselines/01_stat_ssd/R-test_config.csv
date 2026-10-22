@@ -9,3 +9,4 @@ LAMBDA2,0.1
 LAMBDA3,0.1
 R_CRIT_TS,2.5
 R_CRIT_SS,0.9
+decimate,1
