@@ -96,7 +96,9 @@ def unpad(z):
 # Step 3. fold × seed 별로 학습 fold 에서 인코더를 자기지도 학습하고,
 #         학습 fold 표현으로 트랙 A 후단(GMM)을 적합한 뒤 검증 fold 에 적용한다
 # =============================================================================
-run_m, fold_m = [], []
+#         중간 결과(fold×seed 지표, 학습 손실, 인코더 가중치)는 하나 끝날 때마다 바로 저장한다
+run_m, fold_m, loss_m = [], [], []
+os.makedirs(f'{OUT_DIR}/checkpoints', exist_ok=True)
 for f in sorted(folds.fold_tension.unique()):
     is_val_run = row_fold == f
     is_val_pt = pt_fold == f
@@ -105,23 +107,34 @@ for f in sorted(folds.fold_tension.unique()):
         init_dl_program(0 if DEVICE == 'cuda' else 'cpu', seed=seed)   # 저장소 원본의 시드 초기화
         model = TS2Vec(input_dims=1, output_dims=REPR_DIMS, device=DEVICE,
                        lr=LR, batch_size=BATCH_SIZE, max_train_length=MAX_TRAIN_LENGTH)
-        model.fit(x[~is_val_run], n_iters=N_ITERS, verbose=False)      # 학습 fold 신호만, 라벨 없음
+        loss_log = model.fit(x[~is_val_run], n_iters=N_ITERS, verbose=False)   # 학습 fold 신호만, 라벨 없음
         t_fit = time.time() - t0
+        model.save(f'{OUT_DIR}/checkpoints/{METHOD}_fold{f}_seed{seed}.pt')    # 학습된 인코더 (재현·재분석용)
 
         z = unpad(model.encode(x))                                     # 전체 run 을 인코딩 후 fold 로 나눈다
         gmm, sidx, emeans = ev.fit_steady_gmm(z[~is_val_pt], e_flat[~is_val_pt], seed)
         pred, score = ev.predict_steady(gmm, sidx, z[is_val_pt])
         r, fr = ev.score_fold(id_flat[is_val_pt], pred, score, METHOD, f, seed)
-        run_m.append(r), fold_m.append(fr)
+        fr['fit_sec'], fr['total_sec'] = t_fit, time.time() - t0
+        fr['n_epochs'], fr['n_iters'], fr['final_loss'] = model.n_epochs, model.n_iters, loss_log[-1]
+        fr['steady_cluster'], fr['e_mean_c0'], fr['e_mean_c1'] = sidx, emeans[0], emeans[1]
+        lo = pd.DataFrame({'fold': f, 'seed': seed, 'epoch': np.arange(len(loss_log)), 'loss': loss_log})
+        run_m.append(r), fold_m.append(fr), loss_m.append(lo)
+
+        ev.append_progress(OUT_DIR, METHOD, 'progress_fold', fr)       # 중간 저장 (끊겨도 여기까지 남는다)
+        ev.append_progress(OUT_DIR, METHOD, 'progress_run', r)
+        ev.append_progress(OUT_DIR, METHOD, 'loss', lo)
         print(f'[Step 3] fold {f} seed {seed}: 학습 {t_fit:.0f} s, 전체 {time.time() - t0:.0f} s, '
+              f'epoch {model.n_epochs} 손실 {loss_log[0]:.3f} -> {loss_log[-1]:.3f}, '
               f'군집별 e 평균 {np.round(emeans, 3)} -> steady = 군집 {sidx}, '
               f'steady 판정 비율 {pred.mean():.3f}, 오염률 {fr.pooled_contamination_rate.iloc[0]:.3f}, '
-              f'보존률 {fr.pooled_retention_rate.iloc[0]:.3f}')
+              f'보존률 {fr.pooled_retention_rate.iloc[0]:.3f}', flush=True)
 
 # =============================================================================
 # Step 4. 결과 저장 + 조건별 heatmap
 # =============================================================================
 run_m, fold_m = pd.concat(run_m, ignore_index=True), pd.concat(fold_m, ignore_index=True)
+ev.plot_loss_curves(pd.concat(loss_m, ignore_index=True), OUT_DIR, METHOD, 'Hierarchical contrastive loss')
 ev.save_results(OUT_DIR, METHOD, run_m, fold_m,
                 {**ev.EVAL_CONFIG, 'SEED': SEED, 'N_SEEDS': N_SEEDS, 'DEVICE': DEVICE, 'BATCH_SIZE': BATCH_SIZE,
                  'LR': LR, 'REPR_DIMS': REPR_DIMS, 'MAX_TRAIN_LENGTH': MAX_TRAIN_LENGTH, 'N_ITERS': N_ITERS,

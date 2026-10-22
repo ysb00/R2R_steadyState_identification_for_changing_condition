@@ -223,6 +223,47 @@ PAGE_WIDTH = 6.5                # 논문 지면 폭 (in). 그림 폭을 여기�
 HEATMAP_NCOLS = 3               # heatmap subplot 을 한 줄에 몇 개 놓을지. 임의의 값
 
 
+def append_progress(out_dir, prefix, name, frame):
+    # 역할 : fold×seed 가 하나 끝날 때마다 중간 결과를 이어 붙여 저장한다 (덮어쓰지 않고 append).
+    #        장시간 실행이 중간에 끊겨도 여기까지의 결과가 남는다. 최종 결과는 save_results 가 따로 쓴다.
+    # 입력 : out_dir 결과 폴더 / prefix 파일 이름 앞부분 / name 중간 파일 종류 ('progress', 'loss' 등)
+    #        frame 이어 붙일 DataFrame
+    # 출력 : 없음 (csv 1개에 append)
+    os.makedirs(out_dir, exist_ok=True)
+    p = f'{out_dir}/{prefix}_{name}.csv'
+    frame.to_csv(p, mode='a', header=not os.path.exists(p), index=False)
+
+
+def plot_loss_curves(loss_df, out_dir, prefix, ylabel='Training loss'):
+    # 역할 : fold×seed 별 자기지도 학습 손실 곡선을 그린다 (fold 하나 = subplot, seed 는 옅은 선 + 평균 진한 선).
+    #        학습이 제대로 수렴했는지, seed 간 흔들림이 얼마나 큰지 확인용.
+    # 입력 : loss_df [fold, seed, epoch, loss] / out_dir 저장 폴더 / prefix 파일 이름 앞부분 / ylabel y축 이름
+    # 출력 : 없음 (PNG 300 dpi + PDF 저장)
+    folds = sorted(loss_df.fold.unique())
+    ncols = min(HEATMAP_NCOLS, len(folds))
+    nrows = int(np.ceil(len(folds) / ncols))
+    fig, axes = plt.subplots(nrows, ncols, squeeze=False, layout='constrained', sharex=True, sharey=True,
+                             figsize=(PAGE_WIDTH, nrows * 1.7 + 0.5))
+    for ax, f in zip(axes.ravel(), folds):
+        g = loss_df[loss_df.fold == f]
+        for _, s in g.groupby('seed'):
+            ax.plot(s.epoch, s.loss, color='#2a78d6', linewidth=1.0, alpha=0.35)
+        m = g.groupby('epoch').loss.mean()
+        ax.plot(m.index, m.to_numpy(), color='#2a78d6', linewidth=2.0)       # seed 평균
+        ax.set_title(f'Fold {int(f)}')
+    for ax in axes.ravel()[len(folds):]:
+        ax.axis('off')
+    fig.supxlabel('Epoch', fontsize=FONT_SIZE)
+    fig.supylabel(ylabel, fontsize=FONT_SIZE)
+    os.makedirs(out_dir, exist_ok=True)
+    for ext in ['png', 'pdf']:
+        p = f'{out_dir}/{prefix}_loss.{ext}'
+        assert not os.path.exists(p), f'이미 그림 파일이 있다 (덮어쓰기 금지): {p}'
+        fig.savefig(p, dpi=DPI)
+    plt.close(fig)
+    print(f'[save] loss curve -> {out_dir}/{prefix}_loss.png / .pdf')
+
+
 def plot_condition_heatmap(run_metrics, metric, out_dir, prefix, label, row_col=RS, col_col=VS, fold_setting=TS):
     # 역할 : 검증 fold 안의 운전조건 격자에 run별 성능을 깔아 heatmap 으로 그린다 (fold 하나 = subplot 하나).
     #        seed 반복이 있으면 run별로 평균한 값을 쓴다.

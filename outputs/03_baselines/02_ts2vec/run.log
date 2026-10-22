@@ -1,0 +1,35 @@
+[Step 1] rows = 268933, runs = 210 (0.1 s)
+[Step 2] 입력 배열 (210, 1300, 1), run 길이 1275~1300, 패딩 비율 0.015 (0.0 s)
+[Step 3] fold 1 seed 0: 학습 25 s, 전체 38 s, epoch 28 손실 3.327 -> 1.389, 군집별 e 평균 [-0.047  0.02 ] -> steady = 군집 1, steady 판정 비율 0.539, 오염률 0.001, 보존률 0.602
+[Step 3] fold 1 seed 1: 학습 23 s, 전체 33 s, epoch 28 손실 3.389 -> 1.115, 군집별 e 평균 [-0.051  0.012] -> steady = 군집 1, steady 판정 비율 0.649, 오염률 0.000, 보존률 0.725
+[Step 3] fold 1 seed 2: 학습 26 s, 전체 30 s, epoch 28 손실 3.367 -> 1.700, 군집별 e 평균 [-0.014 -0.004] -> steady = 군집 1, steady 판정 비율 0.201, 오염률 0.004, 보존률 0.223
+[Step 3] fold 1 seed 3: 학습 26 s, 전체 29 s, epoch 28 손실 3.504 -> 3.051, 군집별 e 평균 [-0.015  0.   ] -> steady = 군집 1, steady 판정 비율 0.198, 오염률 0.000, 보존률 0.222
+[Step 3] fold 1 seed 4: 학습 24 s, 전체 28 s, epoch 28 손실 3.402 -> 1.434, 군집별 e 평균 [ 0.028 -0.055] -> steady = 군집 0, steady 판정 비율 0.519, 오염률 0.010, 보존률 0.563
+[Step 3] fold 2 seed 0: 학습 24 s, 전체 29 s, epoch 28 손실 3.329 -> 1.637, 군집별 e 평균 [-0.047  0.004] -> steady = 군집 1, steady 판정 비율 0.717, 오염률 0.000, 보존률 0.831
+[Step 3] fold 2 seed 1: 학습 22 s, 전체 27 s, epoch 28 손실 3.390 -> 2.678, 군집별 e 평균 [-0.028  0.001] -> steady = 군집 1, steady 판정 비율 0.598, 오염률 0.000, 보존률 0.695
+[Step 3] fold 2 seed 2: 학습 22 s, 전체 26 s, epoch 28 손실 3.368 -> 3.006, 군집별 e 평균 [-0.026 -0.   ] -> steady = 군집 1, steady 판정 비율 0.597, 오염률 0.000, 보존률 0.695
+[Step 3] fold 2 seed 3: 학습 22 s, 전체 26 s, epoch 28 손실 3.375 -> 3.095, 군집별 e 평균 [ 0.   -0.05] -> steady = 군집 0, steady 판정 비율 0.787, 오염률 0.003, 보존률 0.906
+[Step 3] fold 2 seed 4: 학습 22 s, 전체 26 s, epoch 28 손실 3.498 -> 3.211, 군집별 e 평균 [-0.001 -0.046] -> steady = 군집 0, steady 판정 비율 0.785, 오염률 0.001, 보존률 0.906
+[Step 3] fold 3 seed 0: 학습 22 s, 전체 25 s, epoch 28 손실 3.330 -> 2.967, 군집별 e 평균 [-0.043 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.917
+[Step 3] fold 3 seed 1: 학습 22 s, 전체 25 s, epoch 28 손실 3.389 -> 3.272, 군집별 e 평균 [-0.044 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.916
+[Step 3] fold 3 seed 2: 학습 21 s, 전체 25 s, epoch 28 손실 3.392 -> 3.166, 군집별 e 평균 [-0.013  0.003] -> steady = 군집 1, steady 판정 비율 0.200, 오염률 0.000, 보존률 0.236
+[Step 3] fold 3 seed 3: 학습 22 s, 전체 26 s, epoch 28 손실 3.503 -> 3.120, 군집별 e 평균 [-0.001 -0.043] -> steady = 군집 0, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.917
+[Step 3] fold 3 seed 4: 학습 22 s, 전체 26 s, epoch 28 손실 3.497 -> 3.226, 군집별 e 평균 [-0.001 -0.043] -> steady = 군집 0, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.917
+[Step 3] fold 4 seed 0: 학습 22 s, 전체 26 s, epoch 28 손실 3.332 -> 2.983, 군집별 e 평균 [-0.05  0.  ] -> steady = 군집 1, steady 판정 비율 0.787, 오염률 0.003, 보존률 0.919
+[Step 3] fold 4 seed 1: 학습 25 s, 전체 29 s, epoch 28 손실 3.391 -> 3.257, 군집별 e 평균 [-0.045 -0.001] -> steady = 군집 1, steady 판정 비율 0.783, 오염률 0.000, 보존률 0.918
+[Step 3] fold 4 seed 2: 학습 24 s, 전체 33 s, epoch 28 손실 3.389 -> 3.214, 군집별 e 평균 [-0.025 -0.   ] -> steady = 군집 1, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.709
+[Step 3] fold 4 seed 3: 학습 24 s, 전체 28 s, epoch 28 손실 3.488 -> 3.080, 군집별 e 평균 [-0.001 -0.045] -> steady = 군집 0, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.918
+[Step 3] fold 4 seed 4: 학습 27 s, 전체 30 s, epoch 28 손실 3.516 -> 3.222, 군집별 e 평균 [-0.001 -0.045] -> steady = 군집 0, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.919
+[Step 3] fold 5 seed 0: 학습 24 s, 전체 27 s, epoch 28 손실 3.331 -> 2.963, 군집별 e 평균 [-0.024  0.   ] -> steady = 군집 1, steady 판정 비율 0.594, 오염률 0.000, 보존률 0.706
+[Step 3] fold 5 seed 1: 학습 24 s, 전체 27 s, epoch 28 손실 3.391 -> 3.252, 군집별 e 평균 [-0.042 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.924
+[Step 3] fold 5 seed 2: 학습 23 s, 전체 27 s, epoch 28 손실 3.392 -> 3.130, 군집별 e 평균 [-0.012 -0.001] -> steady = 군집 1, steady 판정 비율 0.201, 오염률 0.002, 보존률 0.238
+[Step 3] fold 5 seed 3: 학습 23 s, 전체 27 s, epoch 28 손실 3.490 -> 1.529, 군집별 e 평균 [-0.012 -0.001] -> steady = 군집 1, steady 판정 비율 0.203, 오염률 0.012, 보존률 0.239
+[Step 3] fold 5 seed 4: 학습 23 s, 전체 26 s, epoch 28 손실 3.516 -> 3.226, 군집별 e 평균 [-0.001 -0.042] -> steady = 군집 0, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.924
+[save] loss curve -> outputs/03_baselines/02_ts2vec/TS2Vec_loss.png / .pdf
+[save] run     -> outputs/03_baselines/02_ts2vec/TS2Vec_run_metrics.csv
+[save] fold    -> outputs/03_baselines/02_ts2vec/TS2Vec_fold_metrics.csv
+[save] summary -> outputs/03_baselines/02_ts2vec/TS2Vec_summary.csv
+[save] config  -> outputs/03_baselines/02_ts2vec/TS2Vec_config.csv
+[save] heatmap -> outputs/03_baselines/02_ts2vec/TS2Vec_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/03_baselines/02_ts2vec/TS2Vec_heatmap_retention_rate.png / .pdf
+[done] TS2Vec 평가 완료
