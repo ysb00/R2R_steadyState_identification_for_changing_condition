@@ -332,6 +332,7 @@ W 를 늘리면 개선이 예상된다. 다만 **속도별창은 이미 모든 �
 | **A2** | **SimMTM 어댑터 작성 + 실행** — 미착수 2개 중 나머지 | 없음 (창은 144 고정) | A1 과 같은 구조의 작업. 저장소 기본 `TSlength_aligned=178` 은 본 데이터용이 아니므로 144 를 쓴다 |
 | ~~A3~~ | ~~TS-TCC·SimMTM 손실 기록 단위~~ | — | **A1·A2 에 통합** |
 | ~~A4~~ | ~~CoST 본문 창~~ | — | **해소됨** — §12 의 규칙 1b 로 144 확정 |
+| **A7** | **`auprc_steady` 를 채우기 위한 전면 재실행** — 지표 감사 결과 steady 를 positive 로 한 AUPRC 가 전 방법에서 빠져 있다. AUPRC 는 비대칭(기준선 ns 0.081 / st 0.919)이라 별도 값이 필요한데, **혼동행렬만으로 복원할 수 없어 점수 분포가 필요하다**. `f1_steady` 는 복원식으로 채웠다(검증 10만 건, 실패 0) | 없음 | 전 방법 재실행 약 3시간 (R-test·MovStd 수분 / TS2Vec·MOMENT 각 10분 / CoST 5창 약 1시간 / SoftCLT 2변형 90분 / ablation 3종 16분). **논문 표에 AUPRC(st)를 싣지 않기로 하면 불필요** |
 | **A6** | **TS-TCC permutation 제거 ablation** — strong aug 에서 permutation 만 빼고 재학습해 baseline 과 비교 | **A1 (TS-TCC 어댑터)** | 입력 구간의 수렴 순서를 보존하는 것이 중요한지 검토한다. 설계 의도와 해석은 `research_experiments_plan.md` §8.3 |
 | A5 | R-test 임계값을 학습 fold 분위수로 보정한 변형 추가 여부 | 없음 | 리뷰어가 요구할 가능성이 높다. 라벨 없이 가능 |
 

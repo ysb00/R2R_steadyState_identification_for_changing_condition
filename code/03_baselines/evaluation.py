@@ -154,7 +154,12 @@ def score_fold(df_val, pred, score, method, fold, seed):
     #          보존률 = recall_steady          (실제 steady 시점 중 steady 로 판정한 비율)
     #          precision_steady / recall_steady       : steady = positive
     #          precision_nonsteady / recall_nonsteady : non-steady = positive
-    #          f1_nonsteady, auroc, auprc             : non-steady = positive
+    #          f1_steady, auprc_steady                : steady = positive
+    #          f1_nonsteady, auprc                    : non-steady = positive
+    #          auroc                                  : **클래스 대칭** — positive 를 바꾸고 점수를
+    #                                                   뒤집으면 같은 값이므로 하나만 기록한다
+    #        AUPRC 는 비대칭이다. 기준선이 positive 클래스의 유병률이라
+    #        (ns 0.0813 / st 0.9187) 두 값을 같은 잣대로 비교하면 안 된다.
     #        오염률·보존률은 도메인 이름이라 유지하고, 같은 양을 precision/recall 이름으로도 함께 남긴다.
     #        논문 표에는 중복해서 싣지 않는다.
     # 입력 : df_val  검증 fold 의 시점 표 [run_id, k, TS, RS, VS] (라벨 없음, pred/score 와 같은 순서)
@@ -186,9 +191,15 @@ def score_fold(df_val, pred, score, method, fold, seed):
             # precision_steady = 1 - contamination_rate, recall_steady = retention_rate 로 같은 양이다.
             'precision_steady': float((p_st & ~y_ns).sum() / p_st.sum()) if p_st.sum() else np.nan,
             'recall_steady': float((p_st & ~y_ns).sum() / (~y_ns).sum()) if (~y_ns).sum() else np.nan,
+            'f1_steady': f1_score(~y_ns, p_st, zero_division=0) if (~y_ns).any() else np.nan,
             'precision_nonsteady': float((~p_st & y_ns).sum() / (~p_st).sum()) if (~p_st).sum() else np.nan,
             'recall_nonsteady': float((~p_st & y_ns).sum() / y_ns.sum()) if y_ns.sum() else np.nan,
             'f1_nonsteady': f1_score(y_ns, ~p_st, zero_division=0) if y_ns.any() else np.nan,
+            # AUPRC 는 **비대칭**이다 — 기준선이 positive 클래스의 유병률이라 두 클래스 값이 전혀 다르다
+            # (ns 기준선 0.081, st 기준선 0.919). 그래서 양쪽을 모두 기록한다.
+            # AUROC 는 대칭이므로(positive 를 바꾸고 점수를 뒤집으면 같은 값) 하나만 기록한다.
+            'auprc_steady': average_precision_score(~y_ns, 1.0 - s['score'])
+            if (~y_ns).any() and y_ns.any() else np.nan,
             'auroc': roc_auc_score(y_ns, s['score']) if 0 < y_ns.sum() < len(y_ns) else np.nan,
             'auprc': average_precision_score(y_ns, s['score']) if y_ns.any() else np.nan,
             'entry_pred_k': entry_pred, 'entry_true_k': entry_true,
@@ -206,13 +217,16 @@ def score_fold(df_val, pred, score, method, fold, seed):
         'pooled_retention_rate': float((p_st & ~y_ns).sum() / (~y_ns).sum()) if (~y_ns).sum() else np.nan,
         'pooled_precision_steady': float((p_st & ~y_ns).sum() / p_st.sum()) if p_st.sum() else np.nan,
         'pooled_recall_steady': float((p_st & ~y_ns).sum() / (~y_ns).sum()) if (~y_ns).sum() else np.nan,
+        'pooled_f1_steady': f1_score(~y_ns, p_st, zero_division=0),
         'pooled_precision_nonsteady': float((~p_st & y_ns).sum() / (~p_st).sum()) if (~p_st).sum() else np.nan,
         'pooled_recall_nonsteady': float((~p_st & y_ns).sum() / y_ns.sum()) if y_ns.sum() else np.nan,
         'pooled_f1_nonsteady': f1_score(y_ns, ~p_st, zero_division=0),
+        'pooled_auprc_steady': average_precision_score(~y_ns, 1.0 - sd['score']) if y_ns.any() else np.nan,
         'pooled_auroc': roc_auc_score(y_ns, sd['score']) if 0 < y_ns.sum() < len(y_ns) else np.nan,
         'pooled_auprc': average_precision_score(y_ns, sd['score']) if y_ns.any() else np.nan,
     }
-    for c in ['contamination_rate', 'retention_rate', 'precision_steady', 'recall_steady',
+    for c in ['contamination_rate', 'retention_rate',
+              'precision_steady', 'recall_steady', 'f1_steady', 'auprc_steady',
               'precision_nonsteady', 'recall_nonsteady', 'f1_nonsteady', 'auroc', 'auprc']:
         fold_row[f'runmean_{c}'] = run_metrics[c].mean()              # 정의되지 않은 run 은 자동 제외 (NaN)
         fold_row[f'runstd_{c}'] = run_metrics[c].std()
@@ -235,7 +249,7 @@ def derive_precision_recall(metrics, prefix='pooled_'):
     #        prefix   지표 컬럼 이름 앞부분
     # 출력 : {prefix}precision_steady / recall_steady / precision_nonsteady / recall_nonsteady 가 채워진 사본
     d = metrics.copy()
-    if f'{prefix}precision_nonsteady' in d.columns:
+    if f'{prefix}f1_steady' in d.columns:                               # 이미 다 있으면 그대로
         return d
     ret, f1 = d[f'{prefix}retention_rate'], d[f'{prefix}f1_nonsteady']
     n_s = d.n_scored - d.n_nonsteady
@@ -243,10 +257,15 @@ def derive_precision_recall(metrics, prefix='pooled_'):
     fn = n_s - tp
     fp = (2 * d.n_nonsteady * (1 - f1) - f1 * fn) / (2 - f1)
     tn = d.n_nonsteady - fp
-    d[f'{prefix}precision_steady'] = 1 - d[f'{prefix}contamination_rate']
-    d[f'{prefix}recall_steady'] = ret
-    d[f'{prefix}precision_nonsteady'] = tn / (tn + fn)
-    d[f'{prefix}recall_nonsteady'] = tn / d.n_nonsteady
+    for col, val in [(f'{prefix}precision_steady', 1 - d[f'{prefix}contamination_rate']),
+                     (f'{prefix}recall_steady', ret),
+                     (f'{prefix}f1_steady', 2 * tp / (2 * tp + fp + fn)),
+                     (f'{prefix}precision_nonsteady', tn / (tn + fn)),
+                     (f'{prefix}recall_nonsteady', tn / d.n_nonsteady)]:
+        if col not in d.columns:                                        # 저장된 값이 있으면 보존
+            d[col] = val
+    # auprc_steady 는 혼동행렬만으로 복원할 수 없다 (점수 분포가 필요하다).
+    # 과거 결과에는 없으며, 채우려면 재실행해야 한다.
     return d
 
 

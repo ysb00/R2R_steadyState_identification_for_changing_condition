@@ -241,10 +241,11 @@ for m, lbl, col, d in VARIANTS:
                  # 오염률(= 1 - precision_steady)이 그림에서 사라진다 (outputs_guide.md §2.3).
                  'Precision (st)': mean.pooled_precision_steady,        # = 1 - 오염률
                  'Recall (st)': mean.pooled_recall_steady,              # = 보존률
+                 'F1 (st)': mean.pooled_f1_steady,
                  'Precision (ns)': mean.pooled_precision_nonsteady,
                  'Recall (ns)': mean.pooled_recall_nonsteady,
                  'F1 (ns)': mean.pooled_f1_nonsteady,
-                 'AUROC': mean.pooled_auroc, 'AUPRC': mean.pooled_auprc,
+                 'AUROC': mean.pooled_auroc, 'AUPRC (ns)': mean.pooled_auprc,
                  'contamination': mean.pooled_contamination_rate,
                  'entry_bias': mean.runmean_entry_err_s, 'entry_mae': mean.runmae_entry_err_s})
 cmp = pd.DataFrame(rows)
@@ -252,29 +253,30 @@ cmp.drop(columns='color').to_csv(f'{OUT_DIR}/ablation_comparison.csv', index=Fal
 
 # steady 쪽 2개 + non-steady 쪽 3개 + 순위 2개. 모두 '높을수록 좋다' 로 방향을 통일했다
 # (오염률은 '낮을수록 좋다' 라 같은 축에 섞으면 오독을 부른다 — Precision (st) = 1 - 오염률 로 넣는다)
-METRICS = ['Precision (st)', 'Recall (st)', 'Precision (ns)', 'Recall (ns)', 'F1 (ns)', 'AUROC', 'AUPRC']
-BASE_RATE = 0.0813                                                      # non-steady 비율 (자명해 기준선)
+METRICS = ['Precision (st)', 'Recall (st)', 'F1 (st)',
+           'Precision (ns)', 'Recall (ns)', 'F1 (ns)', 'AUROC', 'AUPRC (ns)']
+BASE_RATE = 0.0813                                                      # non-steady 비율
 
-# 지표 비교는 **점 그림(dot plot)** 으로 그린다. 값이 0.82~0.99 에 몰려 있어 막대로는 차이가 보이지 않는데,
-# 막대는 0 에서 시작해야 하므로 축을 좁힐 수 없다. 점은 길이로 크기를 나타내지 않으므로
-# 축을 데이터 범위로 좁혀도 왜곡이 아니다.
-fig, ax = plt.subplots(figsize=(ev.PAGE_WIDTH, 3.5), layout='constrained')
-ypos = np.arange(len(METRICS))[::-1]
+# 점 그림(dot plot). 값이 0.8~1.0 에 몰려 막대로는 차이가 안 보이는데 막대는 0 에서 시작해야
+# 하므로 축을 좁힐 수 없다. 점은 길이로 크기를 나타내지 않으므로 축을 좁혀도 왜곡이 아니다.
+# 가로축 = 지표, 세로축 = 점수.
+fig, ax = plt.subplots(figsize=(ev.PAGE_WIDTH, 3.2), layout='constrained')
+xpos = np.arange(len(METRICS))
 off = np.linspace(-0.26, 0.26, len(cmp))
-for yy in ypos:
-    ax.axhline(yy, color='#e1e0d9', linewidth=0.8, zorder=0)
+for xx in xpos:
+    ax.axvline(xx, color='#e1e0d9', linewidth=0.8, zorder=0)
 for i, r in cmp.iterrows():
-    ax.plot([r[m] for m in METRICS], ypos + off[i], linestyle='none', marker='o', markersize=6,
+    ax.plot(xpos + off[i], [r[m] for m in METRICS], linestyle='none', marker='o', markersize=6,
             color=r['color'], markeredgecolor='#ffffff', markeredgewidth=0.6, label=r['label'], zorder=3)
-ax.set_yticks(ypos, [m + ' = 1 - contam.' if m == 'Precision (st)' else m for m in METRICS])
-ax.set_xlim(float(cmp[METRICS].min().min()) - 0.02, 1.005)
-ax.set_ylim(-0.6, len(METRICS) - 0.4)
-ax.set_xlabel('Score')
-ax.grid(axis='y', visible=False)
-# 범례를 그림 밖(아래)에 두어 점과 겹치지 않게 한다
+ax.set_xticks(xpos, [m.replace(' (', '\n(') for m in METRICS], fontsize=ev.FONT_SIZE - 1)
+ax.set_ylim(float(cmp[METRICS].min().min()) - 0.02, 1.005)
+ax.set_xlim(-0.6, len(METRICS) - 0.4)
+ax.set_ylabel('Score')
+ax.grid(axis='x', visible=False)
 ax.legend(ncol=4, frameon=False, fontsize=ev.FONT_SIZE - 1,
-          loc='upper center', bbox_to_anchor=(0.5, -0.17))
-ax.set_title(f'No-information baseline = {BASE_RATE:.3f} (off scale);  higher is better for all metrics',
+          loc='upper center', bbox_to_anchor=(0.5, -0.20))
+ax.set_title('(st) = steady positive,  (ns) = non-steady positive;  higher is better for all.  '
+             f'AUPRC (ns) baseline = {BASE_RATE:.3f}',
              fontsize=ev.FONT_SIZE - 2, color='#52514e', loc='left')
 for ext in ('png', 'pdf'):
     pth = f'{OUT_DIR}/ablation_metrics.{ext}'

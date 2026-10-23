@@ -354,6 +354,9 @@ outputs/03_baselines/<단계폴더>/<방법이름>_<종류>.<확장자>
 
 ## 4.3 판정 품질 (9개)
 
+두 클래스(steady / non-steady)에 대해 precision·recall·F1 을 **모두** 기록한다.
+어느 쪽이 positive 인지 이름 뒤에 붙어 있다.
+
 | 컬럼 | 수식 | 방향 | 비고 |
 |---|---|---|---|
 | `contamination_rate` | FP/(TP+FP) | **낮을수록** | 오염률 (§2.1) |
@@ -362,9 +365,11 @@ outputs/03_baselines/<단계폴더>/<방법이름>_<종류>.<확장자>
 | `recall_steady` | TP/(TP+FN) = 보존률 | 높을수록 | 보존률과 **같은 양**. 중복 컬럼 |
 | `precision_nonsteady` | TN/(TN+FN) | 높을수록 | **기준선 0.081 과 비교** |
 | `recall_nonsteady` | TN/(TN+FP) | 높을수록 | 1.0 인데 precision 이 낮으면 "전부 non-steady" 상태 |
-| `f1_nonsteady` | 위 두 값의 조화평균 | 높을수록 | |
-| `auroc` | ROC 곡선 아래 면적 (non-steady = positive) | 높을수록 | 기준선 0.5. steady 나 non-steady 가 한쪽도 없는 run 은 빈칸 |
-| `auprc` | PR 곡선 아래 면적 (non-steady = positive) | 높을수록 | **기준선 0.081** |
+| `f1_steady` | steady 쪽 조화평균 | 높을수록 | |
+| `f1_nonsteady` | non-steady 쪽 조화평균 | 높을수록 | |
+| `auroc` | ROC 곡선 아래 면적 | 높을수록 | 기준선 0.5. **클래스 대칭이라 하나뿐이다** — positive 를 바꾸고 점수를 뒤집으면 같은 값이 나온다(수치 검증 완료) |
+| `auprc` | PR 곡선 아래 면적 (**non-steady** = positive) | 높을수록 | **기준선 0.081** |
+| `auprc_steady` | PR 곡선 아래 면적 (**steady** = positive) | 높을수록 | **기준선 0.919.** AUPRC 는 비대칭이라 두 값을 같은 잣대로 비교하면 안 된다. **2026-10-23 이전 실행분에는 없고, 혼동행렬만으로 복원할 수 없어(점수 분포 필요) 재실행해야 채워진다** |
 
 > `precision_steady`·`recall_steady` 가 오염률·보존률과 중복인 이유: 도메인 이름(오염률·보존률)을
 > 유지하면서 표준 지표 이름으로도 찾을 수 있게 둔 것이다. **논문 표에는 중복해 싣지 않는다.**
