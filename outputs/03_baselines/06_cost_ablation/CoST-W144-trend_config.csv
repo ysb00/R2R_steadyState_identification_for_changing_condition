@@ -1,0 +1,15 @@
+name,value
+DT,0.109
+ENTRY_MIN_CONSEC,10
+N_GMM_COMPONENTS,2
+GMM_COVARIANCE_TYPE,diag
+SEED,0
+N_SEEDS,5
+WINDOW,144
+ablation,component
+component,trend
+repr_dims,160
+retrained,False
+checkpoint_from,CoST-W144
+repo,salesforce/CoST
+commit,7bb5271c2b66cd5a1d634c27f5df308f190b50ec
