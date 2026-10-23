@@ -60,8 +60,11 @@ from utils import init_dl_program                                       # 외부
 SEED = 0                        # 난수 시드 (seed 반복의 시작값)
 N_SEEDS = 5                     # seed 반복 횟수
 
-WINDOWS = [160, 256, 306, 512]  # 창 길이 4종. fs 유도값 256 을 본문에 쓰고 나머지는 민감도용
-                                # 4종 모두 5 fold × 5 seed 로 동등하게 돌린다
+# 창 길이 5종. **본문 표는 144** — 회전 외란 주기에서 유도한 값이다
+# (지름 약 249 mm 고정 롤러, 둘레 783.5 mm -> V=50 의 1주기 = 144 샘플.
+#  docs/periodic_disturbance.md §7). 나머지 4종은 창 길이 민감도용이다.
+# 5종 모두 5 fold × 5 seed 로 동등하게 돌린다.
+WINDOWS = [144, 160, 256, 306, 512]
 N_ITERS = None                  # 저장소 기본값. None 이면 CoST 내부 규칙으로 정해진다
                                 # (학습 데이터 원소 수 > 100,000 이면 600, 아니면 200). 본 데이터는 600 이 된다
 
@@ -124,6 +127,9 @@ def unpad(z):
 os.makedirs(f'{OUT_DIR}/checkpoints', exist_ok=True)
 for W in WINDOWS:
     method = f'CoST-W{W}'
+    if os.path.exists(f'{OUT_DIR}/{method}_fold_metrics.csv'):      # 이미 돌린 창은 건너뛴다
+        print(f'[Step 3] {method}: 이미 결과가 있어 건너뛴다', flush=True)
+        continue
     run_m, fold_m, loss_m = [], [], []
     for f in sorted(folds.fold_tension.unique()):
         is_val_run = row_fold == f

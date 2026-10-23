@@ -46,8 +46,16 @@ RTEST_DECIMATE = 10             # R-test 용 다운샘플링 배수. 원 논문�
                                 # 샘플링 간격을 고른다"고 전제하는데 본 데이터는 9 Hz 에서 lag1 자기상관 0.85 라
                                 # 전제가 깨진다. lag10 에서 0.16 까지 떨어지는 것을 근거로 10 을 쓴다. 임의의 값
 
-WINDOW = 64                     # 이동창 길이 (samples, 약 7.0 s). 임의의 값
+WINDOW = 64                     # 이동창 길이 (samples, 약 7.0 s). **임의의 값** (초기 변형용, 유지)
 SPEED_REF = 125                 # 속도별 창 조정의 기준 속도 (mm/s). 조건 격자 중앙값. 임의의 값
+
+# 규칙 1b — 창 길이를 회전 외란 주기에서 유도한다 (docs/periodic_disturbance.md §7)
+#   주기 외란의 출처가 지름 약 249 mm 의 고정 지름 회전체임을 210 run 스펙트럼으로 확인했고,
+#   그 둘레가 783.5 mm 다. 창이 가장 느린 조건(V=50)의 1주기를 담도록 길이를 정한다.
+#   라벨을 쓰지 않는다 — 입력은 속도 설정값과 run 전체 스펙트럼뿐이다.
+ROLL_CIRCUMFERENCE_MM = 783.5   # 역산 둘레 (205 run 평균, 지름 249.4 mm). outputs/02_eda/ 참조
+V_MIN = 50                      # 조건 격자의 최저 속도 (mm/s)
+W_RULE = int(np.ceil((1.0 / ev.DT) * ROLL_CIRCUMFERENCE_MM / V_MIN))    # = 144 samples (15.7 s)
 
 IN_PATH = 'outputs/merged_data.csv'
 FOLD_PATH = 'outputs/03_baselines/folds.csv'
@@ -144,6 +152,11 @@ for run_id, g in df.groupby('run_id', sort=False):
     g['std_fixed'], g['slope_fixed'] = rolling_std_slope(e, WINDOW)
     g['std_speed'], g['slope_speed'] = rolling_std_slope(e, w_speed)
     g['w_speed'] = w_speed
+    # 규칙 1b 변형 : 고정 창은 W_RULE, 속도별 창은 그 속도의 회전 주기 1회를 담는 길이
+    w_rot = int(np.ceil((1.0 / ev.DT) * ROLL_CIRCUMFERENCE_MM / g[VS].iloc[0]))
+    g['std_fixed_rule1b'], g['slope_fixed_rule1b'] = rolling_std_slope(e, W_RULE)
+    g['std_speed_rule1b'], g['slope_speed_rule1b'] = rolling_std_slope(e, w_rot)
+    g['w_rot'] = w_rot
     parts.append(g)
 df = pd.concat(parts, ignore_index=True)
 print(f'[Step 2] 특징 계산 완료. 속도별 창 길이 = '
@@ -164,6 +177,9 @@ ID_COLS = ['run_id', 'k', TS, RS, VS]
 for method, pcol, scol, dec in [('R-test', 'pred_rtest', 'R', 1),
                                 ('R-test-decimated', 'pred_rtest_dec', 'R_dec', RTEST_DECIMATE)]:
     t0 = time.time()
+    if os.path.exists(f'{OUT_DIR}/{method}_fold_metrics.csv'):            # 이미 돌린 방법은 건너뛴다
+        print(f'[Step 3] {method}: 이미 결과가 있어 건너뛴다')
+        continue
     run_m, fold_m = [], []
     for f in sorted(df.fold.unique()):
         va = df[df.fold == f]
@@ -183,9 +199,16 @@ for method, pcol, scol, dec in [('R-test', 'pred_rtest', 'R', 1),
 # Step 4. 방법 2 — 이동창 std + 기울기 : (std, |기울기|) 2차원을 표현으로 보고 트랙 A 후단 적용
 #         창 길이 고정(fixed) / 속도별 조정(speed-scaled) 두 변형을 각각 돌린다
 # =============================================================================
-for variant, cols in [('fixed', ['std_fixed', 'slope_fixed']), ('speed', ['std_speed', 'slope_speed'])]:
+VARIANTS = [('fixed', ['std_fixed', 'slope_fixed']),                       # 임의 창 64
+            ('speed', ['std_speed', 'slope_speed']),                       # 임의 기준값 64 × 125/V
+            ('fixed-rule1b', ['std_fixed_rule1b', 'slope_fixed_rule1b']),  # 규칙 1b 고정 창 (144)
+            ('speed-rule1b', ['std_speed_rule1b', 'slope_speed_rule1b'])]  # 규칙 1b 속도별 창
+for variant, cols in VARIANTS:
     t0 = time.time()
     method = f'MovStd-Slope-{variant}'
+    if os.path.exists(f'{OUT_DIR}/{method}_fold_metrics.csv'):             # 이미 돌린 변형은 건너뛴다
+        print(f'[Step 4] {method}: 이미 결과가 있어 건너뛴다 (다시 돌리려면 해당 파일들을 먼저 지울 것)')
+        continue
     z = np.column_stack([df[cols[0]].to_numpy(), np.abs(df[cols[1]].to_numpy())])   # 기울기는 크기만 쓴다
     run_m, fold_m = [], []
     for f in sorted(df.fold.unique()):
@@ -201,7 +224,11 @@ for variant, cols in [('fixed', ['std_fixed', 'slope_fixed']), ('speed', ['std_s
     run_m, fold_m = pd.concat(run_m, ignore_index=True), pd.concat(fold_m, ignore_index=True)
     ev.save_results(OUT_DIR, method, run_m, fold_m,
                     {**ev.EVAL_CONFIG, 'SEED': SEED, 'N_SEEDS': N_SEEDS, 'WINDOW': WINDOW,
-                     'SPEED_REF': SPEED_REF, 'window_mode': variant})
+                     'SPEED_REF': SPEED_REF, 'window_mode': variant,
+                     'ROLL_CIRCUMFERENCE_MM': ROLL_CIRCUMFERENCE_MM, 'W_RULE': W_RULE,
+                     'window_used': {'fixed': WINDOW, 'fixed-rule1b': W_RULE,
+                                     'speed': dict(df.groupby(VS).w_speed.first()),
+                                     'speed-rule1b': dict(df.groupby(VS).w_rot.first())}[variant]})
     for metric, label in [('contamination_rate', 'Contamination rate'), ('retention_rate', 'Retention rate')]:
         ev.plot_condition_heatmap(run_m, metric, OUT_DIR, method, label)
     print(f'[Step 4] {method} 완료 ({time.time() - t0:.1f} s)')
