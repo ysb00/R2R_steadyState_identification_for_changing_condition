@@ -134,7 +134,12 @@ for f in sorted(folds.fold_tension.unique()):
 # Step 4. 결과 저장 + 조건별 heatmap
 # =============================================================================
 run_m, fold_m = pd.concat(run_m, ignore_index=True), pd.concat(fold_m, ignore_index=True)
-ev.plot_loss_curves(pd.concat(loss_m, ignore_index=True), OUT_DIR, METHOD, 'Hierarchical contrastive loss')
+# x축은 epoch 이다 — 저장된 결과(outputs/03_baselines/02_ts2vec/)를 이 설정으로 만들었기 때문이다.
+# 이 저장소도 after_iter_callback 을 제공하므로 iteration 단위로 바꿀 수 있지만, 그러면 재실행이 필요하고
+# 재실행은 학습량 결정(worklog 2026-10-23 §2)과 함께 하기로 보류했다.
+# TS2Vec 은 run 이 분할되지 않아 1 epoch = 21 iteration 으로 일정하므로, 축 환산은 epoch × iters_per_epoch 다.
+ev.plot_loss_curves(pd.concat(loss_m, ignore_index=True), OUT_DIR, METHOD, 'Hierarchical contrastive loss',
+                    x_col='epoch')
 ev.save_results(OUT_DIR, METHOD, run_m, fold_m,
                 {**ev.EVAL_CONFIG, 'SEED': SEED, 'N_SEEDS': N_SEEDS, 'DEVICE': DEVICE, 'BATCH_SIZE': BATCH_SIZE,
                  'LR': LR, 'REPR_DIMS': REPR_DIMS, 'MAX_TRAIN_LENGTH': MAX_TRAIN_LENGTH, 'N_ITERS': N_ITERS,

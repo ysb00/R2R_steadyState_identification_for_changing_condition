@@ -69,20 +69,28 @@ SEQ_CMAP = LinearSegmentedColormap.from_list('seq_blue', [
     '#cde2fb', '#b7d3f6', '#9ec5f4', '#86b6ef', '#6da7ec', '#5598e7', '#3987e5',
     '#2a78d6', '#256abf', '#1c5cab', '#184f95', '#104281', '#0d366b'])
 
-# 방법별 고정 스타일 (color, marker, linestyle).
-# 검증된 categorical 색은 5계열까지이므로 색은 '계열' 단위로 고정하고,
-# 같은 계열 안의 방법은 marker · linestyle 로 구분한다 -> 방법마다 고정된 식별자 1조합.
+# 방법별 고정 스타일 (color, marker, linestyle). 방법마다 고유 색 + 고유 marker 다.
+#
+# 색 선정: Okabe-Ito 8색(색각이상 대응 표준) 중 흰 종이 대비가 1.29 밖에 안 되는 yellow 를 빼고,
+# 나머지 5색은 OKLab 거리 + Machado-Oliveira-Fernandes(2009) 색각이상 시뮬레이션으로 탐색해
+# '전체 66쌍의 min(protan, deutan) 거리 최솟값' 을 최대화했다. 측정값(전체 쌍, OKLab dE x100):
+#   색각이상 7.6 / 정상시각 15.6 / tritan 8.5,  정상시각 15 미달 쌍 0개
+# 색각이상 7.6 은 '6-8 구간 = 보조 식별자 필수' 에 해당하므로 marker 와 linestyle 을 함께 고정한다.
+# 명도를 색상과 별개의 식별 채널로 쓰려고(명도 차이는 색각이상에 불변) 어두운 색 4개를 포함했고,
+# 방법 변형 2개짜리(R-test, MovStd-Slope)는 같은 색상의 명암 쌍으로 묶었다.
 METHOD_STYLE = {
-    'R-test':       ('#2a78d6', 'o', '-'),      # 통계 SSD
-    'MovStd-Slope': ('#2a78d6', 's', '--'),     # 통계 SSD
-    'TS2Vec':       ('#eb6834', 'o', '-'),      # 대조학습
-    'SoftCLT':      ('#eb6834', 's', '--'),     # 대조학습
-    'TNC':          ('#eb6834', '^', '-.'),     # 대조학습
-    'TS-TCC':       ('#eb6834', 'D', ':'),      # 대조학습
-    'CoST':         ('#eb6834', 'v', (0, (3, 1, 1, 1))),  # 대조학습
-    'SimMTM':       ('#1baf7a', 'o', '-'),      # 생성/복원
-    'MOMENT':       ('#eda100', 'o', '-'),      # 파운데이션 모델
-    'Proposed':     ('#e87ba4', 'o', '-'),      # 제안 방법
+    'R-test':             ('#56b4e9', 'v', '-'),    # 통계 SSD — 원 샘플링
+    'R-test-decimated':   ('#0072b2', '^', '--'),   # 통계 SSD — 다운샘플링 (R-test 와 같은 색상 계열)
+    'MovStd-Slope-fixed': ('#009e73', 's', '-'),    # 통계 SSD — 고정 창
+    'MovStd-Slope-speed': ('#005a00', 'D', '--'),   # 통계 SSD — 속도별 창 (위와 같은 색상 계열)
+    'TS2Vec':             ('#e69f00', 'p', '-'),    # 대조학습
+    'SoftCLT':            ('#5a1b00', 'P', '--'),   # 대조학습 (TS2Vec 파생이라 같은 색상 계열)
+    'TNC':                ('#cc79a7', 'X', '-'),    # 대조학습
+    'TS-TCC':             ('#873f51', '*', '--'),   # 대조학습
+    'CoST':               ('#d55e00', '<', '-.'),   # 대조학습
+    'SimMTM':             ('#091b7e', '>', '-.'),   # 생성/복원
+    'MOMENT':             ('#662aa2', 'h', ':'),    # 파운데이션 모델
+    'Proposed':           ('#000000', 'o', '-'),    # 제안 방법
 }
 
 # =============================================================================
@@ -140,6 +148,15 @@ def steady_entry_k(pred, min_consec=ENTRY_MIN_CONSEC):
 def score_fold(df_val, pred, score, method, fold, seed):
     # 역할 : 검증 fold 의 판정을 `Trigger 4` 로 채점한다. ambiguous(2) 는 채점에서 제외한다.
     #        지표는 pooled(fold 전체 시점을 한 덩어리로) 와 run 평균(run별 계산 후 평균) 두 가지로 모두 기록한다.
+    #
+    #        positive 클래스 규약 — 지표마다 다르므로 이름에 클래스를 명시한다:
+    #          오염률 = 1 - precision_steady   (steady 로 판정한 시점 중 실제 non-steady 비율)
+    #          보존률 = recall_steady          (실제 steady 시점 중 steady 로 판정한 비율)
+    #          precision_steady / recall_steady       : steady = positive
+    #          precision_nonsteady / recall_nonsteady : non-steady = positive
+    #          f1_nonsteady, auroc, auprc             : non-steady = positive
+    #        오염률·보존률은 도메인 이름이라 유지하고, 같은 양을 precision/recall 이름으로도 함께 남긴다.
+    #        논문 표에는 중복해서 싣지 않는다.
     # 입력 : df_val  검증 fold 의 시점 표 [run_id, k, TS, RS, VS] (라벨 없음, pred/score 와 같은 순서)
     #        pred (n,) 판정 (1 = steady) / score (n,) non-steady 점수
     #        method 방법 이름 / fold fold 번호 / seed 난수 시드
@@ -165,6 +182,12 @@ def score_fold(df_val, pred, score, method, fold, seed):
             'n': len(g), 'n_scored': len(s), 'n_nonsteady': int(y_ns.sum()),
             'contamination_rate': float((p_st & y_ns).sum() / p_st.sum()) if p_st.sum() else np.nan,
             'retention_rate': float((p_st & ~y_ns).sum() / (~y_ns).sum()) if (~y_ns).sum() else np.nan,
+            # precision/recall 을 두 클래스 모두에 대해 명시적으로 기록한다 (어느 쪽이 positive 인지 혼동 방지).
+            # precision_steady = 1 - contamination_rate, recall_steady = retention_rate 로 같은 양이다.
+            'precision_steady': float((p_st & ~y_ns).sum() / p_st.sum()) if p_st.sum() else np.nan,
+            'recall_steady': float((p_st & ~y_ns).sum() / (~y_ns).sum()) if (~y_ns).sum() else np.nan,
+            'precision_nonsteady': float((~p_st & y_ns).sum() / (~p_st).sum()) if (~p_st).sum() else np.nan,
+            'recall_nonsteady': float((~p_st & y_ns).sum() / y_ns.sum()) if y_ns.sum() else np.nan,
             'f1_nonsteady': f1_score(y_ns, ~p_st, zero_division=0) if y_ns.any() else np.nan,
             'auroc': roc_auc_score(y_ns, s['score']) if 0 < y_ns.sum() < len(y_ns) else np.nan,
             'auprc': average_precision_score(y_ns, s['score']) if y_ns.any() else np.nan,
@@ -181,11 +204,16 @@ def score_fold(df_val, pred, score, method, fold, seed):
         'n_runs': run_metrics.run_id.nunique(), 'n_scored': len(sd), 'n_nonsteady': int(y_ns.sum()),
         'pooled_contamination_rate': float((p_st & y_ns).sum() / p_st.sum()) if p_st.sum() else np.nan,
         'pooled_retention_rate': float((p_st & ~y_ns).sum() / (~y_ns).sum()) if (~y_ns).sum() else np.nan,
+        'pooled_precision_steady': float((p_st & ~y_ns).sum() / p_st.sum()) if p_st.sum() else np.nan,
+        'pooled_recall_steady': float((p_st & ~y_ns).sum() / (~y_ns).sum()) if (~y_ns).sum() else np.nan,
+        'pooled_precision_nonsteady': float((~p_st & y_ns).sum() / (~p_st).sum()) if (~p_st).sum() else np.nan,
+        'pooled_recall_nonsteady': float((~p_st & y_ns).sum() / y_ns.sum()) if y_ns.sum() else np.nan,
         'pooled_f1_nonsteady': f1_score(y_ns, ~p_st, zero_division=0),
         'pooled_auroc': roc_auc_score(y_ns, sd['score']) if 0 < y_ns.sum() < len(y_ns) else np.nan,
         'pooled_auprc': average_precision_score(y_ns, sd['score']) if y_ns.any() else np.nan,
     }
-    for c in ['contamination_rate', 'retention_rate', 'f1_nonsteady', 'auroc', 'auprc']:
+    for c in ['contamination_rate', 'retention_rate', 'precision_steady', 'recall_steady',
+              'precision_nonsteady', 'recall_nonsteady', 'f1_nonsteady', 'auroc', 'auprc']:
         fold_row[f'runmean_{c}'] = run_metrics[c].mean()              # 정의되지 않은 run 은 자동 제외 (NaN)
         fold_row[f'runstd_{c}'] = run_metrics[c].std()
         fold_row[f'n_runs_{c}'] = int(run_metrics[c].notna().sum())
@@ -194,6 +222,32 @@ def score_fold(df_val, pred, score, method, fold, seed):
     fold_row['runstd_entry_err_s'] = run_metrics.entry_err_s.std()
     fold_row['n_runs_no_entry'] = int((run_metrics.entry_pred_k < 0).sum())   # steady 를 전혀 판정하지 못한 run
     return run_metrics, pd.DataFrame([fold_row])
+
+
+def derive_precision_recall(metrics, prefix='pooled_'):
+    # 역할 : precision/recall 컬럼이 없는 과거 결과(2026-10-23 이전 실행)에 그 값을 채워 넣는다.
+    #        혼동행렬 4칸이 저장된 컬럼만으로 정확히 복원된다 — 무작위 혼동행렬 10만 건으로 검증했다.
+    #          n_steady = n_scored - n_nonsteady,  TP = 보존률 x n_steady,  FN = n_steady - TP
+    #          f1 = 2·TN / (2·TN + FN + FP) 를 FP 에 대해 풀면
+    #          FP = [2·n_nonsteady·(1 - f1) - f1·FN] / (2 - f1),   TN = n_nonsteady - FP
+    #        이미 컬럼이 있으면(새 실행) 그대로 돌려준다.
+    # 입력 : metrics  fold_metrics (prefix='pooled_') 또는 run_metrics (prefix='')
+    #        prefix   지표 컬럼 이름 앞부분
+    # 출력 : {prefix}precision_steady / recall_steady / precision_nonsteady / recall_nonsteady 가 채워진 사본
+    d = metrics.copy()
+    if f'{prefix}precision_nonsteady' in d.columns:
+        return d
+    ret, f1 = d[f'{prefix}retention_rate'], d[f'{prefix}f1_nonsteady']
+    n_s = d.n_scored - d.n_nonsteady
+    tp = ret * n_s
+    fn = n_s - tp
+    fp = (2 * d.n_nonsteady * (1 - f1) - f1 * fn) / (2 - f1)
+    tn = d.n_nonsteady - fp
+    d[f'{prefix}precision_steady'] = 1 - d[f'{prefix}contamination_rate']
+    d[f'{prefix}recall_steady'] = ret
+    d[f'{prefix}precision_nonsteady'] = tn / (tn + fn)
+    d[f'{prefix}recall_nonsteady'] = tn / d.n_nonsteady
+    return d
 
 
 def save_results(out_dir, prefix, run_metrics, fold_metrics, config):
@@ -234,11 +288,17 @@ def append_progress(out_dir, prefix, name, frame):
     frame.to_csv(p, mode='a', header=not os.path.exists(p), index=False)
 
 
-def plot_loss_curves(loss_df, out_dir, prefix, ylabel='Training loss'):
+def plot_loss_curves(loss_df, out_dir, prefix, ylabel='Training loss', x_col='iter', xlabel=None):
     # 역할 : fold×seed 별 자기지도 학습 손실 곡선을 그린다 (fold 하나 = subplot, seed 는 옅은 선 + 평균 진한 선).
     #        학습이 제대로 수렴했는지, seed 간 흔들림이 얼마나 큰지 확인용.
-    # 입력 : loss_df [fold, seed, epoch, loss] / out_dir 저장 폴더 / prefix 파일 이름 앞부분 / ylabel y축 이름
+    # 입력 : loss_df [fold, seed, x_col, loss] / out_dir 저장 폴더 / prefix 파일 이름 앞부분 / ylabel y축 이름
+    #        x_col 가로축 컬럼 이름. **기본값은 'iter' 다** — 'epoch' 은 저장소마다 iteration 수가 달라
+    #        (TS2Vec·SoftCLT 21, CoST 는 창 길이에 따라 42~168) 방법 간·설정 간 비교가 불가능하다.
+    #        iteration 단위 손실은 저장소가 제공하는 after_iter_callback 훅으로 받는다.
+    #        epoch 단위 손실만 얻을 수 있는 저장소(TS-TCC, SimMTM)는 x_col='epoch' 로 쓰고 캡션에 명시한다.
+    #        xlabel 가로축 이름 (None 이면 x_col 로 자동)
     # 출력 : 없음 (PNG 300 dpi + PDF 저장)
+    assert x_col in loss_df.columns, f'loss_df 에 {x_col} 컬럼이 없다: {list(loss_df.columns)}'
     folds = sorted(loss_df.fold.unique())
     ncols = min(HEATMAP_NCOLS, len(folds))
     nrows = int(np.ceil(len(folds) / ncols))
@@ -247,13 +307,13 @@ def plot_loss_curves(loss_df, out_dir, prefix, ylabel='Training loss'):
     for ax, f in zip(axes.ravel(), folds):
         g = loss_df[loss_df.fold == f]
         for _, s in g.groupby('seed'):
-            ax.plot(s.epoch, s.loss, color='#2a78d6', linewidth=1.0, alpha=0.35)
-        m = g.groupby('epoch').loss.mean()
+            ax.plot(s[x_col], s.loss, color='#2a78d6', linewidth=1.0, alpha=0.35)
+        m = g.groupby(x_col).loss.mean()
         ax.plot(m.index, m.to_numpy(), color='#2a78d6', linewidth=2.0)       # seed 평균
         ax.set_title(f'Fold {int(f)}')
     for ax in axes.ravel()[len(folds):]:
         ax.axis('off')
-    fig.supxlabel('Epoch', fontsize=FONT_SIZE)
+    fig.supxlabel(xlabel or ('Iteration' if x_col == 'iter' else x_col.capitalize()), fontsize=FONT_SIZE)
     fig.supylabel(ylabel, fontsize=FONT_SIZE)
     os.makedirs(out_dir, exist_ok=True)
     for ext in ['png', 'pdf']:

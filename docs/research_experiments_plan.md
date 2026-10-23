@@ -6,7 +6,7 @@
 
 ---
 
-## 1. 1차 비교군 (9개)
+## 1. 1차 비교군 (8개)
 
 | 구분 | 방법 | 논문 | PDF / 원문 | 코드 |
 |---|---|---|---|---|
@@ -14,7 +14,6 @@
 | 통계 SSD | 이동창 표준편차 + 기울기 임계값 | 특정 원 논문 없음 (단순 기준선) | – | 직접 구현 |
 | 대조학습 | TS2Vec | Yue et al., AAAI 2022 | https://arxiv.org/pdf/2106.10466 | https://github.com/yuezhihan/ts2vec |
 | 대조학습 | SoftCLT | Lee et al., ICLR 2024 | https://arxiv.org/pdf/2312.16424 | https://github.com/seunghan96/softclt |
-| 대조학습 | TNC | Tonekaboni et al., ICLR 2021 | https://arxiv.org/pdf/2106.00750 | https://github.com/sanatonek/TNC_representation_learning |
 | 대조학습 | TS-TCC | Eldele et al., IJCAI 2021 | https://arxiv.org/pdf/2106.14112 | https://github.com/emadeldeen24/TS-TCC |
 | 대조학습 | CoST | Woo et al., ICLR 2022 | https://arxiv.org/pdf/2202.01575 | https://github.com/salesforce/CoST |
 | 생성/복원 | SimMTM | Dong et al., NeurIPS 2023 | https://arxiv.org/pdf/2302.00861 | https://github.com/thuml/SimMTM |
@@ -22,6 +21,12 @@
 
 - 코드 저장소는 `git ls-remote`로 존재를 확인함 (내용·라이선스·실행 가능 여부는 미확인).
 - 외부 코드는 실행 전 내용을 검토한다.
+
+### 1.1 제외한 방법
+
+| 방법 | 제외 사유 |
+|---|---|
+| TNC (Tonekaboni et al., ICLR 2021) | 음성 쌍 샘플러가 `delta = 5·epsilon·W` (epsilon ≤ 3) 로 이웃 밖 거리를 정하므로, 기록 길이가 이웃 범위보다 훨씬 길 것을 전제한다. 본 데이터의 run 길이 1,288 샘플(140 s)에서는 음성 쌍이 run 양 끝으로 몰린다 — 창 64 에서 23.6%(균등 기준선 10.5% 의 2.2배), 창 128 에서 82.5%, 창 192 에서 99.5%. run 맨 앞은 본 데이터에서 시동 과도구간이므로, `research_plan.md` 0절이 금지한 **위치 가정과 동등한 정보가 비교군에만 주입**된다. 측정 근거는 `worklog.md` 2026-10-23 §7 |
 
 ## 2. 2차 비교군 (1차 결과 확인 후 결정)
 
@@ -39,7 +44,7 @@
 | 항목 | 설정 |
 |---|---|
 | 입력 | 단일 채널 e = `Film Tension #1 (kg)` − `Film-Tension Setting Value (kg)` |
-| 표현 → 시점별 판정 | 시점 단위 표현 방법(TS2Vec, SoftCLT, CoST, MOMENT)은 그대로; 구간 단위 방법(TNC, TS-TCC, SimMTM)은 이동창으로 시점별 표현 생성 |
+| 표현 → 시점별 판정 | 시점 단위 표현 방법(TS2Vec, SoftCLT)은 그대로; 나머지는 방법별로 변환 — MOMENT 는 patch(8 샘플) 표현을 해당 시점에 복제, CoST 는 마지막 시점만 내놓으므로 이동창(`sliding_length=1`, causal), TS-TCC·SimMTM 은 이동창 |
 | 평가 방식 | **트랙 A만 사용 (라벨 없음)**: 표현 → 2-군집 GMM → 정의 규칙(e 평균 ≈ 0, 기울기 ≈ 0)으로 steady 군집 지정 → 판정 |
 | 채점 | `Trigger 4` (0 = non-steady, 1 = steady); ambiguous(2)는 채점에서 제외 |
 | 하이퍼파라미터 | 각 저장소 기본값 (라벨로 조정하지 않음) |
