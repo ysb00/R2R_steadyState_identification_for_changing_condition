@@ -128,6 +128,60 @@ for k, p in paths.items():
     print(f'[save] {p}  {s.shape[0]} 행 x {s.shape[1]} 컬럼')
 
 # =============================================================================
+# Step 4. 논문 표용 — "평균±표준편차" 문자열로 합친 표
+#         ①의 `__mean`/`__std` 가 두 열로 나뉘어 있어 수동 결합이 필요한 것을 없앤다.
+#         `research_experiments_plan.md` 4.1 이 요구한 **fold별 값**도 한 열에 담는다.
+# =============================================================================
+#   비율 지표는 소수 3자리, 초 단위는 1자리, 개수는 정수로 맞춘다 (표에 그대로 붙일 수 있게).
+PAPER_COLS = [                                                      # (표에 쓸 이름, 원 컬럼, 소수 자리)
+    ('Contamination',   'pooled_contamination_rate', 3),
+    ('Retention',       'pooled_retention_rate',     3),
+    ('Precision (ns)',  'pooled_precision_nonsteady', 3),
+    ('Recall (ns)',     'pooled_recall_nonsteady',   3),
+    ('F1 (ns)',         'pooled_f1_nonsteady',       3),
+    ('F1 (st)',         'pooled_f1_steady',          3),
+    ('AUROC',           'pooled_auroc',              3),
+    ('AUPRC (ns)',      'pooled_auprc',              3),
+    ('AUPRC (st)',      'pooled_auprc_steady',       3),
+    ('Entry bias (s)',  'runmean_entry_err_s',       1),
+    ('Entry MAE (s)',   'runmae_entry_err_s',        1),
+    ('No-entry runs',   'n_runs_no_entry',           1),
+]
+FOLD_COLS = ['pooled_auprc', 'pooled_auroc', 'pooled_retention_rate']   # fold별 값을 실을 지표
+
+
+def fmt_pm(mean, std, nd):
+    # 역할 : "0.832±0.147" 형태로 합친다. 표준편차가 없으면(seed 1회 등) 평균만 돌려준다.
+    # 입력 : mean, std 값 / nd 소수 자리 수
+    # 출력 : 문자열 ('—' 이면 값이 없음)
+    if pd.isna(mean):
+        return '—'
+    if pd.isna(std):
+        return f'{mean:.{nd}f}'
+    return f'{mean:.{nd}f}±{std:.{nd}f}'
+
+
+fold_tbl = pd.concat(by_fold, ignore_index=True)
+paper = []
+for _, r in t.iterrows():
+    row = {'method': r.method, 'category': r.category, 'role': r.table_role,
+           'n_fold x n_seed': f'{int(r.n_folds)}x{int(r.n_seeds)}',
+           'degenerate': int(r.n_degenerate)}
+    for name, col, nd in PAPER_COLS:
+        row[name] = fmt_pm(r.get(f'{col}__mean'), r.get(f'{col}__std'), nd)
+    # fold별 값 — 'fold1/fold2/.../fold5' 로 한 칸에 담는다
+    sub = fold_tbl[fold_tbl.method == r.method].sort_values('fold')
+    for col in FOLD_COLS:
+        vals = sub[col].tolist() if col in sub else []
+        row[f'{col} by fold'] = '/'.join('—' if pd.isna(v) else f'{v:.3f}' for v in vals) or '—'
+    paper.append(row)
+
+paper = pd.DataFrame(paper).sort_values(['role', 'AUPRC (ns)'], ascending=[True, False])
+paper.to_csv(f'{OUT_DIR}/_paper_table.csv', index=False)
+print(f'[save] {OUT_DIR}/_paper_table.csv  {paper.shape[0]} 행 x {paper.shape[1]} 컬럼 '
+      f'(평균±표준편차 문자열 + fold별 값)')
+
+# =============================================================================
 # Step 3. 전 비율 지표가 [0, 1] 범위인지 검증 (도출식 오용·집계 실수 탐지)
 # =============================================================================
 RATIO = ('precision', 'recall', 'retention', 'contamination', 'f1', 'auroc', 'auprc')
