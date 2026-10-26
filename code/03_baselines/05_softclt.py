@@ -37,6 +37,13 @@
 #                  (장력 × 리와인더 × 속도) 인접 run 은 최대 6개, 학습 fold(장력 4수준)에서 4~6개다.
 #                  MinMax 가 fold 마다 다시 적합되므로 tau 값 자체도 fold 마다 다르다 —
 #                  고정하는 것은 tau 가 아니라 '이웃으로 보는 run 수' 다.
+#   (3) SoftCLT-fs-rule1b : (2) 에서 tau_temp 만 창 규칙 1b 로 바꾼 것 (docs/hyperparameters.md §13.2 B5).
+#       (2) 의 반경 32 는 MovStd-Slope 의 임의 창 64 에서 왔고, 그 64 가 규칙 1b 의 144 로 교체되면서
+#       근거가 사라졌다. 반경 규약('창의 절반')은 그대로 두고 창만 144 로 바꾼다 -> r = 72 샘플(7.8 s),
+#       tau_temp = ln3 / 72 = 0.0153. 한 번에 하나만 바꾼다는 원칙(research_experiments_plan.md §8.4)에 따라
+#       tau_inst 유도 방식과 나머지 설정은 (2) 와 완전히 동일하다.
+#       주의 — 반경은 규칙 1b 가 정해주는 양이 아니다. 규칙 1b 는 '1주기를 담는 창 길이' 를 주는데
+#       tau_temp 반경은 '두 시점을 같은 상태로 볼 시간 거리' 로 다른 양이다. '창의 절반' 은 본 연구의 규약이다.
 #
 # 입력 : outputs/merged_data.csv        (`Trigger 4` 는 읽지 않는다 — 채점은 evaluation.py 안에서만)
 #        outputs/03_baselines/folds.csv (고정된 fold 배정)
@@ -69,6 +76,8 @@ N_EFF_TARGET = 5.0              # 인접 조건 run 수(장력·리와인더·�
 VARIANTS = [
     {'name': 'SoftCLT-fs',  'tau_inst': None, 'n_eff_target': N_EFF_TARGET, 'tau_temp': 0.034},
     {'name': 'SoftCLT-ref', 'tau_inst': 5.0,  'n_eff_target': None,         'tau_temp': 1.0},
+    # 규칙 1b 반영 : 반경 r = W_RULE(144)/2 = 72 샘플 -> tau_temp = ln3/72 = 0.0153 (헤더 (3) 참조)
+    {'name': 'SoftCLT-fs-rule1b', 'tau_inst': None, 'n_eff_target': N_EFF_TARGET, 'tau_temp': 0.0153},
 ]
 N_ITERS = None                  # 저장소 기본값. None 이면 TS2Vec 계열 내부 규칙으로 정해진다
                                 # (학습 데이터 원소 수 > 100,000 이면 600, 아니면 200). 본 데이터는 600 이 된다
@@ -184,6 +193,9 @@ def soft_labels_for(d, tau_inst):
 os.makedirs(f'{OUT_DIR}/checkpoints', exist_ok=True)
 for v in VARIANTS:
     method, tau_temp = v['name'], v['tau_temp']
+    if os.path.exists(f'{OUT_DIR}/{method}_fold_metrics.csv'):          # 이미 돌린 변형은 건너뛴다
+        print(f'[Step 4] {method}: 이미 결과가 있어 건너뛴다 (다시 돌리려면 해당 파일들을 먼저 지울 것)', flush=True)
+        continue
     run_m, fold_m, loss_m = [], [], []
     for f in sorted(folds.fold_tension.unique()):
         is_val_run = row_fold == f
