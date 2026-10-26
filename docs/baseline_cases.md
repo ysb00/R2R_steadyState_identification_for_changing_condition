@@ -1,9 +1,32 @@
 # 비교군 case 설명서 — 23종이 각각 무엇인가
 
 - 작성일: 2026-10-26
-- 목적: `outputs/03_baselines/_all_methods_full_table.csv` 의 **각 행이 무엇에 해당하는 모델·변형인지**,
-  왜 돌렸는지, 설정값이 어디서 왔는지, 어떤 주의사항이 있는지를 한곳에 정리한다.
+- 목적: 집계 표의 **각 행이 무엇에 해당하는 모델·변형인지**, 왜 돌렸는지, 설정값이 어디서 왔는지,
+  어떤 주의사항이 있는지를 한곳에 정리한다.
   **표에서 어느 행을 본문에 남기고 어느 행을 뺄지 판단하기 위한 자료다.**
+- 집계 표 3단계 (생성: `code/03_baselines/09_summary_tables.py`)
+
+| 파일 | 크기 | 해상도 |
+|---|---|---|
+| `outputs/03_baselines/_all_methods_full_table.csv` | 23 × 390 | **방법당 1행.** 지표마다 `__mean` / `__std` / `__foldstd` / `__seedstd` + `cfg_*` 설정값 |
+| `outputs/03_baselines/_all_methods_by_fold.csv` | 115 × 80 | **방법 × fold.** `research_experiments_plan.md` 4.1 이 요구한 "fold별 값" |
+| `outputs/03_baselines/_all_methods_by_fold_seed.csv` | 535 × 84 | **방법 × fold × seed.** 평균 전 원자료 |
+
+  run 단위 원자료(방법당 22컬럼 × 1,050행)는 각 방법의 `*_run_metrics.csv` 에 그대로 있다.
+  23종을 합치면 24,150행이라 묶지 않았다.
+
+- **표준편차 4종의 뜻** — 분산을 분해해야 "무엇 때문에 흔들리는가" 가 보인다
+
+| 컬럼 | 뜻 |
+|---|---|
+| `__mean` | fold × seed 25회 전체 평균 |
+| `__std` | 25회 전체 표준편차. **논문 표의 "±" 에 쓸 값** |
+| `__foldstd` | fold 평균들의 표준편차 → **조건 난이도 차이**(fold 1·5 외삽, 2·3·4 내삽) |
+| `__seedstd` | fold 내 seed 표준편차의 fold 평균 → **학습 운** |
+
+  실측으로 두 집단이 갈린다 — CoST·MovStd·R-test·MOMENT 는 `__seedstd` ≈ 0 (재현성 높음),
+  SoftCLT·TS-TCC·SimMTM·TS2Vec 은 `__seedstd` ≥ `__foldstd` (학습 운이 결과를 지배한다).
+  AUPRC(ns) 기준으로 CoST-W144 는 0.002, TS2Vec 은 0.144 로 **70배** 차이다.
 - 실험 조건: **A 실험** — 210 run 전체, Film Tension 수준별 leave-one-level-out **5-fold × seed 5 = 25회**.
   평가는 전 방법 동일한 트랙 A 후단(학습 fold 표준화 + 2-군집 GMM → |e 평균| 작은 군집 = steady).
 - 관련: `docs/hyperparameters.md`(설정값 전체), `docs/outputs_guide.md`(지표 정의·CSV 컬럼),
@@ -40,10 +63,28 @@
 
 | 컬럼 | 빈칸 이유 |
 |---|---|
-| `auprc_st` | `evaluation.py` 가 2026-10-23 부터 저장한다. **그 이전 실행분에는 없고 혼동행렬로 복원 불가**(점수 분포 필요). 신규 실행분(R-test 보정판 2, SoftCLT-fs-rule1b, TS-TCC, SimMTM)에만 있다 |
+| `pooled_auprc_steady__*` | `evaluation.py` 가 2026-10-23 부터 저장한다. **그 이전 실행분에는 없고 혼동행렬로 복원 불가**(점수 분포 필요). 신규 실행분(R-test 보정판 2, SoftCLT-fs-rule1b, TS-TCC, SimMTM)에만 있다 |
+| `runmean_precision_steady` 등 | 어댑터가 나중에 저장하기 시작했다. **도출하지 않는다** — `derive_precision_recall` 은 혼동행렬 항등식이라 pooled_ 에만 유효하고, `runmean_` 에 쓰면 fold 전체 `n_scored` 와 run별 비율의 평균을 섞어 **recall > 1 이 나온다** |
 | `data_passes`·`iters_per_epoch` | 어댑터가 나중에 기록하기 시작했다. 없는 경우 §0.4 표의 값을 쓸 것 |
 | `final_loss`·`fit_sec` | 학습이 없는 방법(통계 SSD, MOMENT)은 해당 없음 |
-| `window` | 창 개념이 없는 방법 |
+| `cfg_WINDOW` | 창 개념이 없는 방법 |
+| **`__seedstd`** (R-test 2종) | **그 2종만 seed 1회**다 — 파이프라인에 난수가 전혀 없다(EWMA 재귀 + 고정 임계값, 학습 없음). seed 를 바꿔도 결과가 비트 단위로 같아 5회 돌리면 같은 값 5줄이 된다. 같은 "학습 없는" 다른 7종은 5회 돌렸고 `__seedstd` 가 **0.0000~0.0001** 로 나왔으므로, R-test 도 0 이었을 값이다. 다만 **처리가 한 방법만 다른 것은 일관성 문제**이고 메우는 비용이 수 분이다 |
+
+### 0.3.1 `n_runs_*` 열을 함께 봐야 하는 이유
+
+**지표마다 계산 가능한 run 수가 다르다** (검증 fold 42 run 기준):
+
+| 지표 | 유효 run | 이유 |
+|---|---|---|
+| 오염률·보존률 | 42.0 | 전 run |
+| `precision_nonsteady` | 32.0~42.0 | non-steady 판정이 0인 run 은 분모가 없다 |
+| **AUROC·AUPRC·F1(ns)** | **36.8** | **steady 또는 non-steady 가 한쪽도 없는 run 약 5개는 빈칸** |
+| `R-test` 오염률 | **3.4 / 42** | steady 판정이 거의 없어 분모가 사라진다 |
+| `R-test-decimated` 오염률 | **18.8 / 42** | 같은 이유 |
+
+즉 **AUROC·AUPRC 의 run 평균은 42 run 이 아니라 약 37 run 에서만 계산된 값**이다.
+그리고 `R-test` 계열의 run 평균 오염률이 pooled 와 12배 차이 나는 이유가 여기 있다
+(0.244 vs 0.021) — **42 run 중 3.4개에서만 계산됐다.**
 
 `f1_st`(steady 쪽 F1)는 **혼동행렬로 복원**되므로 전 방법에 값이 있다
 (`evaluation.derive_precision_recall`, 무작위 10만 건 검증 실패 0).
