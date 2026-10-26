@@ -196,6 +196,59 @@ for method, pcol, scol, dec in [('R-test', 'pred_rtest', 'R', 1),
     print(f'[Step 3] {method} 완료 ({time.time() - t0:.1f} s)')
 
 # =============================================================================
+# Step 3b. 방법 1 보정판 — 임계값을 원 논문 고정값 대신 학습 fold 에서 정한다
+#          (docs/hyperparameters.md §13.1 A5)
+#
+#          왜 필요한가: R 통계량 자체는 전제를 맞춰주면 잘 분리하는데(다운샘플링판 AUROC 0.901,
+#          통계 기준선 중 1위) 고정 임계값 2.5/0.9 가 본 데이터의 R 분포와 맞지 않는다 —
+#          9 Hz 에서 R 중앙값이 3.77 이라 `R < 0.9` 인 시점이 0.0% 이고 보존률이 0.000 이 된다.
+#          즉 깨진 것은 통계량이 아니라 임계값 보정이다. 보정판 없이 표를 실으면 "비교군을
+#          불리한 설정으로 돌렸다" 가 되고, 함께 실으면 연구 동기(조건별 임계값 재튜닝 필요)가
+#          얼마나 큰 효과인지 정량화된다.
+#
+#          방법: R 1차원을 '표현' 으로 보고 다른 모든 비교군과 **동일한** 트랙 A 후단에 넣는다
+#          (학습 fold 표준화 + 2-군집 GMM -> |e 평균| 작은 군집 = steady). MovStd-Slope 가
+#          임계값을 손으로 정하지 않는 방식과 같은 구조이고(docs/outputs_guide.md §10.3.3),
+#          라벨을 쓰지 않으며 **새 임의값이 생기지 않는다**(분위수를 고르면 임의값이 늘어난다).
+#
+#          원 샘플링·다운샘플링 둘 다 보정해 2x2 로 둔다 — '샘플링 전제' 효과와 '임계값 보정'
+#          효과를 각각 분리해 읽기 위해서다. 한쪽만 보정하면 그 선택이 새 임의값이 된다.
+#
+#          주의: 이 보정판은 원 논문의 2-임계값 히스테리시스를 쓰지 않는다. 트랙 A 후단은
+#          사후확률 >= 0.5 의 단일 임계이므로 경계 깜빡임 억제가 없고, 연속 조건은 진입 시점
+#          정의(ENTRY_MIN_CONSEC)에만 남는다. 바뀐 것이 '임계값' 뿐이 아니라 '임계 규칙' 이기도
+#          하므로, 원 논문판과의 차이를 임계값 보정 하나로만 해석하면 안 된다.
+# =============================================================================
+for method, scol, dec in [('R-test-calibrated', 'R', 1),
+                          ('R-test-decimated-calibrated', 'R_dec', RTEST_DECIMATE)]:
+    t0 = time.time()
+    if os.path.exists(f'{OUT_DIR}/{method}_fold_metrics.csv'):             # 이미 돌린 변형은 건너뛴다
+        print(f'[Step 3b] {method}: 이미 결과가 있어 건너뛴다 (다시 돌리려면 해당 파일들을 먼저 지울 것)')
+        continue
+    z = df[scol].to_numpy().reshape(-1, 1)                                 # R 1차원을 표현으로 쓴다
+    run_m, fold_m = [], []
+    for f in sorted(df.fold.unique()):
+        is_val = (df.fold == f).to_numpy()
+        for seed in range(SEED, SEED + N_SEEDS):
+            model, sidx, emeans = ev.fit_steady_gmm(z[~is_val], df.e.to_numpy()[~is_val], seed)
+            pred, score = ev.predict_steady(model, sidx, z[is_val])
+            r, fr = ev.score_fold(df.loc[is_val, ID_COLS], pred, score, method, f, seed)
+            run_m.append(r), fold_m.append(fr)
+        print(f'[Step 3b] {method} fold {f}: 군집별 e 평균 {np.round(emeans, 3)} -> steady = 군집 {sidx}, '
+              f'steady 판정 비율 {pred.mean():.3f}, 오염률 {fr.pooled_contamination_rate.iloc[0]:.3f}, '
+              f'보존률 {fr.pooled_retention_rate.iloc[0]:.3f}')
+    run_m, fold_m = pd.concat(run_m, ignore_index=True), pd.concat(fold_m, ignore_index=True)
+    ev.save_results(OUT_DIR, method, run_m, fold_m,
+                    {**ev.EVAL_CONFIG, 'SEED': SEED, 'N_SEEDS': N_SEEDS,
+                     'LAMBDA1': LAMBDA1, 'LAMBDA2': LAMBDA2, 'LAMBDA3': LAMBDA3,
+                     'decimate': dec, 'R_CRIT_TS': None, 'R_CRIT_SS': None,
+                     'threshold_source': '학습 fold 트랙 A 후단 (표준화 + 2-군집 GMM). '
+                                         '원 논문 고정 임계값 2.5/0.9 와 히스테리시스는 쓰지 않는다'})
+    for metric, label in [('contamination_rate', 'Contamination rate'), ('retention_rate', 'Retention rate')]:
+        ev.plot_condition_heatmap(run_m, metric, OUT_DIR, method, label)
+    print(f'[Step 3b] {method} 완료 ({time.time() - t0:.1f} s)')
+
+# =============================================================================
 # Step 4. 방법 2 — 이동창 std + 기울기 : (std, |기울기|) 2차원을 표현으로 보고 트랙 A 후단 적용
 #         창 길이 고정(fixed) / 속도별 조정(speed-scaled) 두 변형을 각각 돌린다
 # =============================================================================
