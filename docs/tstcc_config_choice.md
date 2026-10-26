@@ -204,7 +204,40 @@ ValueError: setting an array element with a sequence.
 손실은 epoch 단위로만 얻는다(iteration 훅이 없다). `iters_per_epoch` 를 함께 기록해 다른 방법의
 iteration 축과 환산할 수 있게 했다.
 
-### 7.5 무해한 경고 1건
+### 7.5 표현을 float64 로 넘겨야 한다 — float32 로는 GMM 적합이 실패한다
+
+첫 실행이 fold 2 seed 2 에서 멈췄다:
+
+```
+ValueError: Fitting the mixture model failed because some components have ill-defined
+empirical covariance ... The numerical accuracy can also be improved by passing
+float64 data instead of float32.
+```
+
+**원인을 실험으로 확정했다** (해당 fold×seed 체크포인트로 재현):
+
+| 조건 | 결과 |
+|---|---|
+| float32 / 2,560 차원 | **실패** |
+| float32 / 표준편차 > 0 인 2,553 차원만 | **실패** |
+| **float64 / 2,560 차원** | **성공** |
+| float64 / 2,553 차원 | 성공 |
+
+처음에는 **dead ReLU 차원**(2,560 중 7개가 최대 절댓값까지 정확히 0)이 원인이라고 보았으나,
+그 7개를 제거해도 **여전히 실패했다.** 즉 원인은 퇴화 차원이 아니라 **정밀도**다 —
+sklearn 이 분산을 `E[X²] − E[X]²` 로 계산할 때, 거의 퇴화한 차원에서 float32 자리수 소실로
+음수가 나오고 `_compute_precision_cholesky` 가 거부한다.
+
+**처리**: `encode_windows` 가 표현을 float64 로 돌려준다. 0분산 차원은 **제거하지 않는다**
+(제거가 해결책이 아님이 위 실험으로 확인됐고, 정보가 0 이라 GMM 결과에도 영향이 없다).
+
+**주의 — 다른 비교군과의 비대칭**: 다른 방법은 인코더 출력이 torch 기본 dtype 이라 float32 로
+후단에 들어간다. TS-TCC 만 float64 인 것은 **모델 선택이 아니라 수치 정밀도 보정**이며,
+이 표현이 2,560 차원(다른 방법의 320~512 차원보다 5~8배)이라 필요해진 것이다.
+전 방법을 float64 로 통일하면 기존 결과가 미세하게 바뀌어 전면 재실행이 필요하므로
+**후일 작업으로 남긴다**(`docs/hyperparameters.md` §13.3 과 함께 처리).
+
+### 7.6 무해한 경고 1건
 
 `TC.py:14` 의 `nn.LogSoftmax()` 가 `dim` 을 지정하지 않아 deprecation 경고가 난다.
 2-D 입력에서는 기존 동작과 같으므로 결과에 영향이 없다. 원본 미수정.

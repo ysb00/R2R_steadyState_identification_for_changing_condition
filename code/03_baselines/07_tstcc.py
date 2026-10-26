@@ -192,8 +192,24 @@ def encode_windows(model, e, window, batch):
     #        (MovStd-Slope 와 동일한 규약 — 창 길이가 달라도 채점 대상 시점 수가 같도록).
     #        표현은 특징맵을 평탄화한 것이다 — TS-TCC 자신의 분류 헤드가 쓰는 형태와 같다
     #        (model.py:34 `x_flat = x.reshape(x.shape[0], -1)`).
+    #
+    #        **float64 로 돌려준다.** float32 로는 트랙 A 후단의 GMM 적합이 실패한다 —
+    #        2,560 차원 중 7개가 dead ReLU 로 항상 0 이고 그 밖에도 거의 퇴화한 차원이 있어,
+    #        sklearn 이 분산을 E[X^2] - E[X]^2 로 계산할 때 float32 자리수 소실로 음수가 나오고
+    #        `_compute_precision_cholesky` 가 ValueError 를 던진다
+    #        ("some components have ill-defined empirical covariance ... passing float64 instead").
+    #        실험으로 원인을 확정했다 (fold 2 seed 2 체크포인트로 재현):
+    #          float32 / 2560차원        -> 실패
+    #          float32 / std>0 만 2553차원 -> **실패** (0분산 차원 제거로는 해결되지 않는다)
+    #          float64 / 2560차원        -> 성공
+    #        즉 원인은 퇴화 차원이 아니라 **정밀도**다. 0분산 차원을 지우지 않는 이유도 이것이다.
+    #
+    #        주의 — 다른 비교군은 float32 로 후단에 들어간다 (인코더 출력이 torch 기본 dtype).
+    #        TS-TCC 만 float64 인 것은 모델 선택이 아니라 **수치 정밀도 보정**이고, 이 표현이
+    #        2,560 차원(다른 방법의 320~512 차원보다 5~8배)이라 필요해진 것이다. 전 방법을
+    #        float64 로 통일하면 기존 결과가 미세하게 바뀌어 전면 재실행이 필요하다 -> 후일 작업.
     # 입력 : model 학습된 base_Model / e (n,) / window 창 길이 / batch 추론 배치 크기
-    # 출력 : (n, features_len * final_out_channels) 시점별 표현
+    # 출력 : (n, features_len * final_out_channels) 시점별 표현, dtype float64
     n = len(e)
     starts = np.arange(0, n - window + 1)                           # 완전창의 시작 index
     idx = starts[:, None] + np.arange(window)                       # (n_full, window)
@@ -204,7 +220,7 @@ def encode_windows(model, e, window, batch):
             x = torch.from_numpy(e[idx[b:b + batch]]).float().unsqueeze(1).to(DEVICE)
             _, feat = model(x)                                      # feat: (B, ch, features_len)
             out.append(feat.reshape(feat.shape[0], -1).cpu().numpy())
-    z_full = np.concatenate(out).astype(np.float32)                 # (n-window+1, d)
+    z_full = np.concatenate(out).astype(np.float64)                 # (n-window+1, d) — float64 필수 (위 주석)
     head = np.repeat(z_full[:1], window - 1, axis=0)                # 앞 window-1 개를 첫 창으로 채움
     return np.concatenate([head, z_full])
 
@@ -338,6 +354,8 @@ ev.save_results(OUT_DIR, METHOD, run_m, fold_m,
                  'config_base': 'Epilepsy (단일 채널·길이 178·kernel 8/stride 1 — docs/tstcc_config_choice.md)',
                  'FEATURES_LEN': FEATURES_LEN, 'REPR_DIMS': REPR_DIMS,
                  'repr_form': '특징맵 평탄화 (TS-TCC 자신의 분류 헤드와 같은 형태)',
+                 'repr_dtype': 'float64 — float32 로는 GMM 적합이 실패한다(퇴화 차원 + 2,560 차원에서의 '
+                               '자리수 소실). 다른 비교군은 float32. 모델 선택이 아니라 수치 정밀도 보정',
                  'NUM_EPOCH': configs.num_epoch, 'BATCH_SIZE': configs.batch_size, 'LR': configs.lr,
                  'BETAS': (configs.beta1, configs.beta2), 'WEIGHT_DECAY': 3e-4,
                  'DROP_LAST': configs.drop_last, 'DROPOUT': configs.dropout,
