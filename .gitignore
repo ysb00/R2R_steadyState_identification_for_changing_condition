@@ -8,6 +8,7 @@ code/03_baselines/external/
 
 # 학습된 인코더 가중치 (재현·재분석용 중간 산출물, 용량 큼). 결과 csv/plot 은 추적한다.
 outputs/03_baselines/*/checkpoints/
+outputs/04_speed_extrap/*/checkpoints/
 
 # 에디터 / 로컬 환경
 .vscode/

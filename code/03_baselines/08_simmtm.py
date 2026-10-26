@@ -73,10 +73,13 @@
 # (docs/worklog.md 2026-10-23 §2).
 #
 # 입력 : outputs/merged_data.csv        (`Trigger 4` 는 읽지 않는다 — 채점은 evaluation.py 안에서만)
-#        outputs/03_baselines/folds.csv (고정된 fold 배정)
-# 출력 : outputs/03_baselines/08_simmtm/  run/fold/summary/config csv + heatmap + 손실곡선
+#        splits.py 가 분할에 맞는 fold 파일을 읽는다 (A: folds.csv / C: folds_c.csv)
+# 출력 : A -> outputs/03_baselines/08_simmtm/ , C -> outputs/04_speed_extrap/08_simmtm/
+#        run/fold/summary/config csv + heatmap + 손실곡선
 # 실험 : 주 실험 (Film Tension 수준별 5-fold) 만 수행
-# 실행 : python code/03_baselines/08_simmtm.py   (repo 루트에서)
+# 실험 : 인자로 고른다 — 'tension' (A: 장력 5-fold) / 'c' (C: 저속 학습 -> 고속 test, 8 fold)
+# 실행 : python code/03_baselines/08_simmtm.py        (A 실험, 기본값)
+#        python code/03_baselines/08_simmtm.py c      (C 실험)
 # =============================================================================
 import os, sys, time
 import numpy as np
@@ -88,10 +91,13 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, 'external', 'SimMTM', 'SimMTM_Classification', 'code'))
 import evaluation as ev
+import splits
 from config_files.SleepEEG_Configs import Config as SleepEEGConfig       # 외부 저장소 원본
 from model import TFC                                                   # 외부 저장소 원본
 from trainer import model_pretrain                                       # 외부 저장소 원본 사전학습 1 epoch
 
+
+SPLIT = sys.argv[1] if len(sys.argv) > 1 else 'tension'   # 'tension' (A) | 'c' (C)
 # =============================================================================
 # hyperparameter
 # =============================================================================
@@ -108,8 +114,7 @@ ENCODE_BATCH = 512              # 표현 추출 배치 크기. **[임의]** — 
 DEVICE = 'cuda'                 # 저장소 기본값 (main.py --device)
 
 IN_PATH = 'outputs/merged_data.csv'
-FOLD_PATH = 'outputs/03_baselines/folds.csv'
-OUT_DIR = 'outputs/03_baselines/08_simmtm'
+OUT_DIR = splits.resolve(SPLIT, '08_simmtm')
 METHOD = 'SimMTM'
 
 T1 = 'Film Tension #1 (kg)'     # 원본 컬럼명 (변경하지 않음)
@@ -223,16 +228,14 @@ def encode_windows(model, e, window, batch):
 t0 = time.time()
 df = pd.read_csv(IN_PATH, usecols=['run_id', 'k', T1, TS, RS, VS])
 df['e'] = df[T1] - df[TS]
-folds = pd.read_csv(FOLD_PATH)
+sp = splits.load(SPLIT)
 df = df.sort_values(['run_id', 'k']).reset_index(drop=True)
-run_ids = folds.run_id.tolist()                                         # run 순서는 folds.csv 를 따른다
+run_ids = sp.run_ids                                                    # run 순서는 분할 파일을 따른다
 by_run = {r: g for r, g in df.groupby('run_id', sort=False)}
 e_by_run = {r: by_run[r].e.to_numpy() for r in run_ids}
 lengths = np.array([len(e_by_run[r]) for r in run_ids])
 e_flat = np.concatenate([e_by_run[r] for r in run_ids])                 # 표현과 같은 시점 순서
 id_flat = pd.concat([by_run[r][['run_id', 'k', TS, RS, VS]] for r in run_ids], ignore_index=True)
-row_fold = folds.set_index('run_id').loc[run_ids, 'fold_tension'].to_numpy()
-pt_fold = np.repeat(row_fold, lengths)                                  # 시점마다의 fold 번호
 print(f'[Step 1] rows = {len(df)}, runs = {len(run_ids)}, run 길이 {lengths.min()}~{lengths.max()} '
       f'({time.time() - t0:.1f} s)')
 
@@ -263,9 +266,10 @@ if os.path.exists(f'{OUT_DIR}/{METHOD}_fold_metrics.csv'):
     sys.exit(0)
 
 run_m, fold_m, loss_m = [], [], []
-for f in sorted(folds.fold_tension.unique()):
-    is_val_run = row_fold == f
-    is_val_pt = pt_fold == f
+for f in sp.folds:
+    # C 실험에서는 '학습 = 검증 아닌 전부' 가 아니다 (고속 run 은 CV fold 에서 미사용)
+    is_train_run, is_val_run = sp.run_role(f)
+    is_train_pt, is_val_pt = sp.point_role(f, lengths)
     x_train = np.concatenate([win_by_run[r] for r, v in zip(run_ids, is_val_run) if not v])
     for seed in range(SEED, SEED + N_SEEDS):
         t0 = time.time()
@@ -300,7 +304,7 @@ for f in sorted(folds.fold_tension.unique()):
         # 표현 추출은 pretrain=False 경로여야 한다 (h, z 를 돌려준다)
         model.training_mode = 'eval'
         z = np.concatenate([encode_windows(model, e_by_run[r], WINDOW, ENCODE_BATCH) for r in run_ids])
-        gmm, sidx, emeans = ev.fit_steady_gmm(z[~is_val_pt], e_flat[~is_val_pt], seed)
+        gmm, sidx, emeans = ev.fit_steady_gmm(z[is_train_pt], e_flat[is_train_pt], seed)
         pred, score = ev.predict_steady(gmm, sidx, z[is_val_pt])
         r, fr = ev.score_fold(id_flat[is_val_pt], pred, score, METHOD, f, seed)
         del z
@@ -340,7 +344,7 @@ ev.plot_loss_curves(pd.concat(loss_m, ignore_index=True), OUT_DIR, METHOD,
                     'Masked reconstruction + contrastive loss', x_col='epoch',
                     xlabel='Epoch (SimMTM 은 iteration 손실 훅이 없다 — iters_per_epoch 는 fold_metrics 참조)')
 ev.save_results(OUT_DIR, METHOD, run_m, fold_m,
-                {**ev.EVAL_CONFIG, 'SEED': SEED, 'N_SEEDS': N_SEEDS,
+                {**ev.EVAL_CONFIG, 'SPLIT': SPLIT, 'SEED': SEED, 'N_SEEDS': N_SEEDS,
                  'WINDOW': WINDOW, 'ROLL_CIRCUMFERENCE_MM': ROLL_CIRCUMFERENCE_MM,
                  'config_base': 'SleepEEG — **강제**. Epilepsy config 는 CNNoutput_channel 이 없어 '
                                 '사전학습 모델을 만들 수 없다 (model.py:35)',

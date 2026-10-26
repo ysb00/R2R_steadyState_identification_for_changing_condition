@@ -19,10 +19,13 @@
 #   W(V) = WINDOW * SPEED_REF / V 로 둔다 (= 필름 이동 거리 기준 창과 같은 형태).
 #
 # 입력 : outputs/merged_data.csv        (`Trigger 4` 는 읽지 않는다 — 채점은 evaluation.py 안에서만)
-#        outputs/03_baselines/folds.csv (고정된 fold 배정)
-# 출력 : outputs/03_baselines/01_stat_ssd/  방법별 run/fold/summary/config csv + 조건별 heatmap
+#        splits.py 가 분할에 맞는 fold 파일을 읽는다 (A: folds.csv / C: folds_c.csv)
+# 출력 : A -> outputs/03_baselines/01_stat_ssd/ , C -> outputs/04_speed_extrap/01_stat_ssd/
+#        방법별 run/fold/summary/config csv + 조건별 heatmap
 # 실험 : 주 실험 (Film Tension 수준별 5-fold) 만 수행한다. 보조 실험(속도별 7-fold)은 1차 결과 확인 후.
-# 실행 : python code/03_baselines/01_stat_ssd.py   (repo 루트에서)
+# 실험 : 인자로 고른다 — 'tension' (A: 장력 5-fold) / 'c' (C: 저속 학습 -> 고속 test, 8 fold)
+# 실행 : python code/03_baselines/01_stat_ssd.py        (A 실험, 기본값)
+#        python code/03_baselines/01_stat_ssd.py c      (C 실험)
 # =============================================================================
 import os, sys, time
 import numpy as np
@@ -30,7 +33,10 @@ import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import evaluation as ev
+import splits
 
+
+SPLIT = sys.argv[1] if len(sys.argv) > 1 else 'tension'   # 'tension' (A) | 'c' (C)
 # =============================================================================
 # hyperparameter
 # =============================================================================
@@ -58,8 +64,7 @@ V_MIN = 50                      # 조건 격자의 최저 속도 (mm/s)
 W_RULE = int(np.ceil((1.0 / ev.DT) * ROLL_CIRCUMFERENCE_MM / V_MIN))    # = 144 samples (15.7 s)
 
 IN_PATH = 'outputs/merged_data.csv'
-FOLD_PATH = 'outputs/03_baselines/folds.csv'
-OUT_DIR = 'outputs/03_baselines/01_stat_ssd'
+OUT_DIR = splits.resolve(SPLIT, '01_stat_ssd')
 
 T1 = 'Film Tension #1 (kg)'     # 원본 컬럼명 (변경하지 않음)
 TS, RS, VS = ev.TS, ev.RS, ev.VS
@@ -126,11 +131,10 @@ def rolling_std_slope(e, w):
 t0 = time.time()
 df = pd.read_csv(IN_PATH, usecols=['run_id', 'k', T1, TS, RS, VS])
 df['e'] = df[T1] - df[TS]
-folds = pd.read_csv(FOLD_PATH)
-fold_of = dict(zip(folds.run_id, folds.fold_tension))
-df['fold'] = df.run_id.map(fold_of)
-print(f'[Step 1] rows = {len(df)}, runs = {df.run_id.nunique()}, folds = {sorted(df.fold.unique())} '
+sp = splits.load(SPLIT)
+print(f'[Step 1] rows = {len(df)}, runs = {df.run_id.nunique()}, 분할 {SPLIT} fold {sp.folds} '
       f'({time.time() - t0:.1f} s)')
+print(sp.summary().to_string(index=False))
 
 # =============================================================================
 # Step 2. run별 특징 계산 (R-statistic, 고정창 std/기울기, 속도별창 std/기울기)
@@ -170,6 +174,17 @@ for name, col, dec in [('원 샘플링(9 Hz)', 'R', 1), (f'1/{RTEST_DECIMATE} �
 
 ID_COLS = ['run_id', 'k', TS, RS, VS]
 
+
+def fold_masks(f):
+    # 역할 : fold f 의 시점 단위 학습/검증 마스크를 df 행 순서로 만든다.
+    #        C 실험에서는 '학습 = 검증 아닌 전부' 가 아니다 — 고속 run 은 CV fold 에서 미사용이므로
+    #        학습 마스크를 분할이 주는 대로 받아야 한다.
+    # 입력 : f  sp.folds 의 원소
+    # 출력 : (is_train (n_row,) bool, is_val (n_row,) bool)
+    tr_run, va_run = sp.run_role(f)
+    tr, va = dict(zip(sp.run_ids, tr_run)), dict(zip(sp.run_ids, va_run))
+    return df.run_id.map(tr).to_numpy(), df.run_id.map(va).to_numpy()
+
 # =============================================================================
 # Step 3. 방법 1 — R-test : 학습 없이 원 논문 임계값으로 판정하고 검증 fold 에서 채점
 #         non-steady 점수는 R 통계량 자체 (클수록 과도상태)
@@ -181,15 +196,15 @@ for method, pcol, scol, dec in [('R-test', 'pred_rtest', 'R', 1),
         print(f'[Step 3] {method}: 이미 결과가 있어 건너뛴다')
         continue
     run_m, fold_m = [], []
-    for f in sorted(df.fold.unique()):
-        va = df[df.fold == f]
+    for f in sp.folds:
+        va = df[fold_masks(f)[1]]
         r, fr = ev.score_fold(va[ID_COLS], va[pcol].to_numpy(), va[scol].to_numpy(), method, f, SEED)
         run_m.append(r), fold_m.append(fr)
         print(f'[Step 3] {method} fold {f}: steady 판정 비율 {va[pcol].mean():.3f}, '
               f'오염률 {fr.pooled_contamination_rate.iloc[0]:.3f}, 보존률 {fr.pooled_retention_rate.iloc[0]:.3f}')
     run_m, fold_m = pd.concat(run_m, ignore_index=True), pd.concat(fold_m, ignore_index=True)
     ev.save_results(OUT_DIR, method, run_m, fold_m,
-                    {**ev.EVAL_CONFIG, 'SEED': SEED, 'LAMBDA1': LAMBDA1, 'LAMBDA2': LAMBDA2, 'LAMBDA3': LAMBDA3,
+                    {**ev.EVAL_CONFIG, 'SPLIT': SPLIT, 'SEED': SEED, 'LAMBDA1': LAMBDA1, 'LAMBDA2': LAMBDA2, 'LAMBDA3': LAMBDA3,
                      'R_CRIT_TS': R_CRIT_TS, 'R_CRIT_SS': R_CRIT_SS, 'decimate': dec})
     for metric, label in [('contamination_rate', 'Contamination rate'), ('retention_rate', 'Retention rate')]:
         ev.plot_condition_heatmap(run_m, metric, OUT_DIR, method, label)
@@ -227,10 +242,10 @@ for method, scol, dec in [('R-test-calibrated', 'R', 1),
         continue
     z = df[scol].to_numpy().reshape(-1, 1)                                 # R 1차원을 표현으로 쓴다
     run_m, fold_m = [], []
-    for f in sorted(df.fold.unique()):
-        is_val = (df.fold == f).to_numpy()
+    for f in sp.folds:
+        is_train, is_val = fold_masks(f)
         for seed in range(SEED, SEED + N_SEEDS):
-            model, sidx, emeans = ev.fit_steady_gmm(z[~is_val], df.e.to_numpy()[~is_val], seed)
+            model, sidx, emeans = ev.fit_steady_gmm(z[is_train], df.e.to_numpy()[is_train], seed)
             pred, score = ev.predict_steady(model, sidx, z[is_val])
             r, fr = ev.score_fold(df.loc[is_val, ID_COLS], pred, score, method, f, seed)
             run_m.append(r), fold_m.append(fr)
@@ -239,7 +254,7 @@ for method, scol, dec in [('R-test-calibrated', 'R', 1),
               f'보존률 {fr.pooled_retention_rate.iloc[0]:.3f}')
     run_m, fold_m = pd.concat(run_m, ignore_index=True), pd.concat(fold_m, ignore_index=True)
     ev.save_results(OUT_DIR, method, run_m, fold_m,
-                    {**ev.EVAL_CONFIG, 'SEED': SEED, 'N_SEEDS': N_SEEDS,
+                    {**ev.EVAL_CONFIG, 'SPLIT': SPLIT, 'SEED': SEED, 'N_SEEDS': N_SEEDS,
                      'LAMBDA1': LAMBDA1, 'LAMBDA2': LAMBDA2, 'LAMBDA3': LAMBDA3,
                      'decimate': dec, 'R_CRIT_TS': None, 'R_CRIT_SS': None,
                      'threshold_source': '학습 fold 트랙 A 후단 (표준화 + 2-군집 GMM). '
@@ -264,10 +279,10 @@ for variant, cols in VARIANTS:
         continue
     z = np.column_stack([df[cols[0]].to_numpy(), np.abs(df[cols[1]].to_numpy())])   # 기울기는 크기만 쓴다
     run_m, fold_m = [], []
-    for f in sorted(df.fold.unique()):
-        is_val = (df.fold == f).to_numpy()
+    for f in sp.folds:
+        is_train, is_val = fold_masks(f)
         for seed in range(SEED, SEED + N_SEEDS):
-            model, sidx, emeans = ev.fit_steady_gmm(z[~is_val], df.e.to_numpy()[~is_val], seed)
+            model, sidx, emeans = ev.fit_steady_gmm(z[is_train], df.e.to_numpy()[is_train], seed)
             pred, score = ev.predict_steady(model, sidx, z[is_val])
             r, fr = ev.score_fold(df.loc[is_val, ID_COLS], pred, score, method, f, seed)
             run_m.append(r), fold_m.append(fr)
@@ -276,7 +291,7 @@ for variant, cols in VARIANTS:
               f'보존률 {fr.pooled_retention_rate.iloc[0]:.3f}')
     run_m, fold_m = pd.concat(run_m, ignore_index=True), pd.concat(fold_m, ignore_index=True)
     ev.save_results(OUT_DIR, method, run_m, fold_m,
-                    {**ev.EVAL_CONFIG, 'SEED': SEED, 'N_SEEDS': N_SEEDS, 'WINDOW': WINDOW,
+                    {**ev.EVAL_CONFIG, 'SPLIT': SPLIT, 'SEED': SEED, 'N_SEEDS': N_SEEDS, 'WINDOW': WINDOW,
                      'SPEED_REF': SPEED_REF, 'window_mode': variant,
                      'ROLL_CIRCUMFERENCE_MM': ROLL_CIRCUMFERENCE_MM, 'W_RULE': W_RULE,
                      'window_used': {'fixed': WINDOW, 'fixed-rule1b': W_RULE,

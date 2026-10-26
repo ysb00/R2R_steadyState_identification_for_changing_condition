@@ -1,0 +1,9 @@
+name,value
+LOW_SPEEDS,"[50, 75, 100, 125]"
+HIGH_SPEEDS,"[150, 175, 200]"
+TENSION_LEVELS,"[3, 4, 5, 6, 7]"
+SPEEDEXT_FOLDS,"[('S1', [50, 75], [100]), ('S2', [50, 75, 100], [125])]"
+n_folds,8
+n_low_runs,120
+n_high_runs,90
+IN_PATH,outputs/merged_data.csv

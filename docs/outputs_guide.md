@@ -304,8 +304,24 @@ run 마다 거의 고유해서 모델에 주면 **run 식별 지름길**이 된�
 # 4. 파일 이름 규칙
 
 ```
-outputs/03_baselines/<단계폴더>/<방법이름>_<종류>.<확장자>
+outputs/<실험폴더>/<단계폴더>/<방법이름>_<종류>.<확장자>
 ```
+
+**실험 폴더가 2개다.** 같은 어댑터 코드를 분할만 바꿔 돌리므로 단계 폴더·방법 이름은 같고
+**결과가 섞이지 않도록 상위 폴더로 나눈다** (연구자 지시 2026-10-26).
+
+| 실험 폴더 | 실험 | 분할 | 실행 |
+|---|---|---|---|
+| `outputs/03_baselines/` | **A** — 새 장력 설정값에 일반화되는가 | 장력 leave-one-level-out 5-fold (210 run) | `python code/03_baselines/04_cost.py` |
+| `outputs/04_speed_extrap/` | **C** — 저속만 학습해도 고속에 되는가 | 저속(50~125) 학습+CV / 고속(150~200) 최종 test, **fold 8개** | `python code/03_baselines/04_cost.py c` |
+
+C 의 fold 는 `cv_T1`~`cv_T5`(저속 안 장력 LOO), `cv_S1`·`cv_S2`(속도 누적 외삽),
+`final_test`(최종)다. 배정은 `outputs/04_speed_extrap/folds_c.csv` 에 run 마다
+`role__<fold>` = `train`/`val`/`unused` 로 적혀 있다 — C 에서는 **"학습 = 검증 아닌 전부" 가
+성립하지 않기** 때문이다(고속 run 은 CV fold 에서 미사용). 상세는 `hyperparameters.md` §13.0.
+
+**주의**: `fold` 컬럼 값이 A 는 정수(1~5), C 는 문자열(`cv_T1` 등)이다. 집계할 때
+**C 의 `cv_*` 와 `final_test` 는 묻는 질문이 달라 평균내면 안 된다.**
 
 | 단계 폴더 | 방법 이름 |
 |---|---|

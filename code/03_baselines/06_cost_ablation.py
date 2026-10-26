@@ -29,11 +29,15 @@
 # 창 길이 : **144 고정** (docs/periodic_disturbance.md §7 규칙 1b). 본문 표와 같은 값이라
 #   기존 CoST-W144 결과와 직접 비교된다. 창 길이 민감도는 이미 CoST-W{144,160,256,306,512} 에 있다.
 #
-# 입력 : outputs/merged_data.csv, outputs/03_baselines/folds.csv
-#        outputs/03_baselines/04_cost/checkpoints/CoST-W144_fold*_seed*.pt   (A 용, 학습 생략)
-# 출력 : outputs/03_baselines/06_cost_ablation/  변형별 run/fold/summary/config csv + heatmap
+# 입력 : outputs/merged_data.csv / splits.py 가 분할에 맞는 fold 파일을 읽는다
+#        <분할 폴더>/04_cost/checkpoints/CoST-W144_fold*_seed*.pt   (Ablation A 는 학습 생략)
+#        **같은 분할로 04_cost.py 를 먼저 돌려야 한다** — C 를 돌리려면 C 체크포인트가 필요하다
+# 출력 : A -> outputs/03_baselines/06_cost_ablation/ , C -> outputs/04_speed_extrap/06_cost_ablation/
+#        변형별 run/fold/summary/config csv + heatmap
 #        + 기존 CoST-W144 와 비교하는 그림 2종
-# 실행 : python code/03_baselines/06_cost_ablation.py   (repo 루트에서)
+# 실험 : 인자로 고른다 — 'tension' (A: 장력 5-fold) / 'c' (C: 저속 학습 -> 고속 test, 8 fold)
+# 실행 : python code/03_baselines/06_cost_ablation.py        (A 실험, 기본값)
+#        python code/03_baselines/06_cost_ablation.py c      (C 실험)
 # =============================================================================
 import os, sys, time
 import matplotlib.pyplot as plt
@@ -44,25 +48,35 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, 'external', 'CoST'))
 import evaluation as ev
+import splits
 import cost as cost_module                                              # shim 대상 (원본 미수정)
 from cost import CoST                                                   # 외부 저장소 원본
 from utils import init_dl_program                                       # 외부 저장소 원본의 시드 초기화
 
+
+SPLIT = sys.argv[1] if len(sys.argv) > 1 else 'tension'   # 'tension' (A) | 'c' (C)
 # =============================================================================
 # hyperparameter — 창 길이와 증강을 뺀 나머지는 04_cost.py 와 완전히 동일하다
 # =============================================================================
 SEED, N_SEEDS = 0, 5
 WINDOW = 144                    # 규칙 1b 유도값. 본문 표와 같은 창으로 고정한다
-N_ITERS = None                  # 저장소 기본값 (600)
+N_ITERS = None if SPLIT == 'tension' else 600
+# A 실험 : 저장소 기본값 None. 내부 규칙(학습 데이터 원소 수 > 100,000 이면 600, 아니면 200)이 적용되고,
+#          학습 168 run x 1300 = 218,400 이라 **항상 600** 이 선택됐다.
+# C 실험 : **600 으로 고정한다** (연구자 결정 2026-10-26). fold 마다 학습 run 수가 60~120 으로 다른데
+#          자동 규칙을 두면 cv_S1(60 run, 78,000) 만 200 이 되어 혼자 1/3 만 학습한다. 그러면 cv_S1 의
+#          성능이 '외삽이 어려워서' 인지 '덜 학습해서' 인지 분리되지 않는다. 600 은 A 에서 저장소 규칙이
+#          실제로 고른 값이므로 임의값을 새로 들인 것이 아니다.
+#          **As-published 에서 벗어난 유일한 지점** (docs/hyperparameters.md 13.0)
 DEVICE, BATCH_SIZE, LR, REPR_DIMS = 'cuda', 8, 0.001, 320
 KERNELS = [1, 2, 4, 8, 16, 32, 64, 128]
 ALPHA = 0.0005
 COMPONENT_DIMS = REPR_DIMS // 2  # = 160. 앞 160 = 추세, 뒤 160 = 계절
 
 IN_PATH = 'outputs/merged_data.csv'
-FOLD_PATH = 'outputs/03_baselines/folds.csv'
-COST_DIR = 'outputs/03_baselines/04_cost'
-OUT_DIR = 'outputs/03_baselines/06_cost_ablation'
+
+COST_DIR = splits.resolve(SPLIT, '04_cost')       # 체크포인트 출처도 같은 분할이어야 한다
+OUT_DIR = splits.resolve(SPLIT, '06_cost_ablation')
 BASE_METHOD = f'CoST-W{WINDOW}'                                         # 비교 기준 (이미 실행됨)
 
 T1 = 'Film Tension #1 (kg)'
@@ -82,9 +96,9 @@ class NoScaleShiftDataset(cost_module.PretrainDataset):
 t0 = time.time()
 df = pd.read_csv(IN_PATH, usecols=['run_id', 'k', T1, TS, RS, VS])
 df['e'] = df[T1] - df[TS]
-folds = pd.read_csv(FOLD_PATH)
+sp = splits.load(SPLIT)
 df = df.sort_values(['run_id', 'k']).reset_index(drop=True)
-run_ids = folds.run_id.tolist()
+run_ids = sp.run_ids
 by_run = {r: g for r, g in df.groupby('run_id', sort=False)}
 lengths = np.array([len(by_run[r]) for r in run_ids])
 x = np.full((len(run_ids), lengths.max(), 1), np.nan)
@@ -92,8 +106,6 @@ for i, r in enumerate(run_ids):
     x[i, :lengths[i], 0] = by_run[r].e.to_numpy()
 e_flat = np.concatenate([by_run[r].e.to_numpy() for r in run_ids])
 id_flat = pd.concat([by_run[r][['run_id', 'k', TS, RS, VS]] for r in run_ids], ignore_index=True)
-row_fold = folds.set_index('run_id').loc[run_ids, 'fold_tension'].to_numpy()
-pt_fold = np.repeat(row_fold, lengths)
 print(f'[Step 1] runs = {len(run_ids)}, 입력 {x.shape} ({time.time() - t0:.1f} s)')
 
 
@@ -114,12 +126,13 @@ def encode_all(model):
                               sliding_padding=WINDOW - 1, batch_size=len(run_ids)))
 
 
-def evaluate(z, method, f, seed, is_val_pt, extra):
+def evaluate(z, method, f, seed, is_train_pt, is_val_pt, extra):
     # 역할 : 표현 z 를 트랙 A 후단에 넣어 채점한다 (모든 비교군과 동일한 후단).
     # 입력 : z (n_point, d) 시점별 표현 / method 이름 / f fold / seed / is_val_pt 검증 시점 마스크
+    #        is_train_pt 학습 시점 마스크 — C 실험에서는 ~is_val_pt 와 다르다 (미사용 run 이 있다)
     #        extra fold_metrics 에 덧붙일 dict
     # 출력 : (run_metrics, fold_row)
-    gmm, sidx, emeans = ev.fit_steady_gmm(z[~is_val_pt], e_flat[~is_val_pt], seed)
+    gmm, sidx, emeans = ev.fit_steady_gmm(z[is_train_pt], e_flat[is_train_pt], seed)
     pred, score = ev.predict_steady(gmm, sidx, z[is_val_pt])
     r, fr = ev.score_fold(id_flat[is_val_pt], pred, score, method, f, seed)
     for k, v in {**extra, 'steady_cluster': sidx, 'e_mean_c0': emeans[0], 'e_mean_c1': emeans[1]}.items():
@@ -135,8 +148,8 @@ SLICES = {'trend': slice(0, COMPONENT_DIMS),                # 앞 160차원
 res = {f'{BASE_METHOD}-{k}': {'run': [], 'fold': []} for k in SLICES}
 todo_a = [m for m in res if not os.path.exists(f'{OUT_DIR}/{m}_fold_metrics.csv')]
 if todo_a:
-    for f in sorted(folds.fold_tension.unique()):
-        is_val_pt = pt_fold == f
+    for f in sp.folds:
+        is_train_pt, is_val_pt = sp.point_role(f, lengths)
         for seed in range(SEED, SEED + N_SEEDS):
             t0 = time.time()
             ckpt = f'{COST_DIR}/checkpoints/{BASE_METHOD}_fold{f}_seed{seed}.pt'
@@ -149,7 +162,7 @@ if todo_a:
                 method = f'{BASE_METHOD}-{name}'
                 if method not in todo_a:
                     continue
-                r, fr = evaluate(z[:, sl], method, f, seed, is_val_pt,
+                r, fr = evaluate(z[:, sl], method, f, seed, is_train_pt, is_val_pt,
                                  {'window': WINDOW, 'component': name, 'repr_dims': sl.stop - sl.start,
                                   'retrained': False, 'total_sec': time.time() - t0})
                 res[method]['run'].append(r), res[method]['fold'].append(fr)
@@ -162,7 +175,7 @@ if todo_a:
         run_m = pd.concat(res[method]['run'], ignore_index=True)
         fold_m = pd.concat(res[method]['fold'], ignore_index=True)
         ev.save_results(OUT_DIR, method, run_m, fold_m,
-                        {**ev.EVAL_CONFIG, 'SEED': SEED, 'N_SEEDS': N_SEEDS, 'WINDOW': WINDOW,
+                        {**ev.EVAL_CONFIG, 'SPLIT': SPLIT, 'SEED': SEED, 'N_SEEDS': N_SEEDS, 'WINDOW': WINDOW,
                          'ablation': 'component', 'component': method.split('-')[-1],
                          'repr_dims': COMPONENT_DIMS, 'retrained': False,
                          'checkpoint_from': BASE_METHOD,
@@ -182,8 +195,9 @@ if not os.path.exists(f'{OUT_DIR}/{method_b}_fold_metrics.csv'):
     print(f'[Step 4] shim 적용: PretrainDataset.transform = jitter only (scale·shift 제거)')
     os.makedirs(f'{OUT_DIR}/checkpoints', exist_ok=True)
     run_m, fold_m, loss_m = [], [], []
-    for f in sorted(folds.fold_tension.unique()):
-        is_val_run, is_val_pt = row_fold == f, pt_fold == f
+    for f in sp.folds:
+        is_train_run, is_val_run = sp.run_role(f)
+        is_train_pt, is_val_pt = sp.point_role(f, lengths)
         for seed in range(SEED, SEED + N_SEEDS):
             t0 = time.time()
             init_dl_program(0 if DEVICE == 'cuda' else 'cpu', seed=seed)
@@ -192,11 +206,11 @@ if not os.path.exists(f'{OUT_DIR}/{method_b}_fold_metrics.csv'):
                          output_dims=REPR_DIMS, device=DEVICE, lr=LR, batch_size=BATCH_SIZE,
                          after_iter_callback=lambda _m, l: iter_loss.append(l),
                          after_epoch_callback=lambda m, _l: epoch_iters.append(m.n_iters))
-            loss_log = model.fit(x[~is_val_run], n_iters=N_ITERS, verbose=False)
+            loss_log = model.fit(x[is_train_run], n_iters=N_ITERS, verbose=False)
             t_fit = time.time() - t0
             model.save(f'{OUT_DIR}/checkpoints/{method_b}_fold{f}_seed{seed}.pt')
             z = encode_all(model)
-            r, fr = evaluate(z, method_b, f, seed, is_val_pt,
+            r, fr = evaluate(z, method_b, f, seed, is_train_pt, is_val_pt,
                              {'window': WINDOW, 'ablation': 'no scale/shift aug', 'retrained': True,
                               'fit_sec': t_fit, 'total_sec': time.time() - t0,
                               'n_epochs': model.n_epochs, 'n_iters': model.n_iters,
@@ -213,7 +227,7 @@ if not os.path.exists(f'{OUT_DIR}/{method_b}_fold_metrics.csv'):
     run_m, fold_m = pd.concat(run_m, ignore_index=True), pd.concat(fold_m, ignore_index=True)
     ev.plot_loss_curves(pd.concat(loss_m, ignore_index=True), OUT_DIR, method_b, 'CoST contrastive loss')
     ev.save_results(OUT_DIR, method_b, run_m, fold_m,
-                    {**ev.EVAL_CONFIG, 'SEED': SEED, 'N_SEEDS': N_SEEDS, 'WINDOW': WINDOW,
+                    {**ev.EVAL_CONFIG, 'SPLIT': SPLIT, 'SEED': SEED, 'N_SEEDS': N_SEEDS, 'WINDOW': WINDOW,
                      'N_ITERS': N_ITERS, 'BATCH_SIZE': BATCH_SIZE, 'LR': LR, 'REPR_DIMS': REPR_DIMS,
                      'KERNELS': KERNELS, 'ALPHA': ALPHA, 'ablation': 'no scale/shift aug',
                      'augmentation': 'jitter only (scale, shift removed via runtime shim)',

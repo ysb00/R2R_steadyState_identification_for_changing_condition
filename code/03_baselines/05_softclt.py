@@ -46,11 +46,15 @@
 #       tau_temp 반경은 '두 시점을 같은 상태로 볼 시간 거리' 로 다른 양이다. '창의 절반' 은 본 연구의 규약이다.
 #
 # 입력 : outputs/merged_data.csv        (`Trigger 4` 는 읽지 않는다 — 채점은 evaluation.py 안에서만)
-#        outputs/03_baselines/folds.csv (고정된 fold 배정)
-# 출력 : outputs/03_baselines/05_softclt/  변형마다 run/fold/summary/config csv + heatmap + 손실곡선
-#        outputs/03_baselines/05_softclt/dtw_dist.npy  run 간 DTW 거리 행렬 (한 번 계산해 재사용)
+#        splits.py 가 분할에 맞는 fold 파일을 읽는다 (A: folds.csv / C: folds_c.csv)
+# 출력 : A -> outputs/03_baselines/05_softclt/ , C -> outputs/04_speed_extrap/05_softclt/
+#        변형마다 run/fold/summary/config csv + heatmap + 손실곡선
+#        outputs/03_baselines/05_softclt/dtw_dist.npy  run 간 DTW 거리 행렬
+#        (210x210 전체를 한 번 계산해 둔 것이고 run 쌍 거리는 분할과 무관하므로 C 도 이 캐시를 쓴다)
 # 실험 : 주 실험 (Film Tension 수준별 5-fold) 만 수행
-# 실행 : python code/03_baselines/05_softclt.py   (repo 루트에서)
+# 실험 : 인자로 고른다 — 'tension' (A: 장력 5-fold) / 'c' (C: 저속 학습 -> 고속 test, 8 fold)
+# 실행 : python code/03_baselines/05_softclt.py        (A 실험, 기본값)
+#        python code/03_baselines/05_softclt.py c      (C 실험)
 # =============================================================================
 import os, sys, time
 import numpy as np
@@ -61,10 +65,13 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, 'external', 'softclt', 'softclt_ts2vec'))
 import evaluation as ev
+import splits
 from soft_ts2vec import TS2Vec as SoftTS2Vec                            # 외부 저장소 원본
 from utils import init_dl_program                                       # 외부 저장소 원본의 시드 초기화
 from utils_distance_matrix import densify                               # 외부 저장소 원본의 soft label 변환
 
+
+SPLIT = sys.argv[1] if len(sys.argv) > 1 else 'tension'   # 'tension' (A) | 'c' (C)
 # =============================================================================
 # hyperparameter
 # =============================================================================
@@ -79,7 +86,14 @@ VARIANTS = [
     # 규칙 1b 반영 : 반경 r = W_RULE(144)/2 = 72 샘플 -> tau_temp = ln3/72 = 0.0153 (헤더 (3) 참조)
     {'name': 'SoftCLT-fs-rule1b', 'tau_inst': None, 'n_eff_target': N_EFF_TARGET, 'tau_temp': 0.0153},
 ]
-N_ITERS = None                  # 저장소 기본값. None 이면 TS2Vec 계열 내부 규칙으로 정해진다
+N_ITERS = None if SPLIT == 'tension' else 600
+# A 실험 : 저장소 기본값 None. 내부 규칙(학습 데이터 원소 수 > 100,000 이면 600, 아니면 200)이 적용되고,
+#          학습 168 run x 1300 = 218,400 이라 **항상 600** 이 선택됐다.
+# C 실험 : **600 으로 고정한다** (연구자 결정 2026-10-26). fold 마다 학습 run 수가 60~120 으로 다른데
+#          자동 규칙을 두면 cv_S1(60 run, 78,000) 만 200 이 되어 혼자 1/3 만 학습한다. 그러면 cv_S1 의
+#          성능이 '외삽이 어려워서' 인지 '덜 학습해서' 인지 분리되지 않는다. 600 은 A 에서 저장소 규칙이
+#          실제로 고른 값이므로 임의값을 새로 들인 것이 아니다.
+#          **As-published 에서 벗어난 유일한 지점** (docs/hyperparameters.md 13.0)
                                 # (학습 데이터 원소 수 > 100,000 이면 600, 아니면 200). 본 데이터는 600 이 된다
 TAU_INST_BRACKET = (1.0, 1e5)   # n_eff 목표를 맞추는 tau_inst 수치해의 탐색 구간
 
@@ -93,9 +107,8 @@ REPR_DIMS = 320                 # 저장소 기본값 (train.py --repr-dims)
 MAX_TRAIN_LENGTH = 3000         # 저장소 기본값 (train.py --max-train-length). run 길이 1300 < 3000 이므로 분할되지 않는다
 
 IN_PATH = 'outputs/merged_data.csv'
-FOLD_PATH = 'outputs/03_baselines/folds.csv'
-OUT_DIR = 'outputs/03_baselines/05_softclt'
-DTW_PATH = f'{OUT_DIR}/dtw_dist.npy'
+OUT_DIR = splits.resolve(SPLIT, '05_softclt')
+DTW_PATH = 'outputs/03_baselines/05_softclt/dtw_dist.npy'   # run 쌍 거리는 분할과 무관하므로 A 캐시를 재사용한다
 
 T1 = 'Film Tension #1 (kg)'     # 원본 컬럼명 (변경하지 않음)
 TS, RS, VS = ev.TS, ev.RS, ev.VS
@@ -106,9 +119,9 @@ TS, RS, VS = ev.TS, ev.RS, ev.VS
 t0 = time.time()
 df = pd.read_csv(IN_PATH, usecols=['run_id', 'k', T1, TS, RS, VS])
 df['e'] = df[T1] - df[TS]
-folds = pd.read_csv(FOLD_PATH)
+sp = splits.load(SPLIT)
 df = df.sort_values(['run_id', 'k']).reset_index(drop=True)
-run_ids = folds.run_id.tolist()                                         # run 순서는 folds.csv 를 따른다
+run_ids = sp.run_ids                                                    # run 순서는 분할 파일을 따른다
 print(f'[Step 1] rows = {len(df)}, runs = {len(run_ids)} ({time.time() - t0:.1f} s)')
 
 # =============================================================================
@@ -123,8 +136,6 @@ for i, r in enumerate(run_ids):
     x[i, :lengths[i], 0] = by_run[r].e.to_numpy()
 e_flat = np.concatenate([by_run[r].e.to_numpy() for r in run_ids])      # 패딩을 제거한 시점 순서 (표현과 같은 순서)
 id_flat = pd.concat([by_run[r][['run_id', 'k', TS, RS, VS]] for r in run_ids], ignore_index=True)
-row_fold = folds.set_index('run_id').loc[run_ids, 'fold_tension'].to_numpy()
-pt_fold = np.repeat(row_fold, lengths)                                  # 시점마다의 fold 번호
 print(f'[Step 2] 입력 배열 {x.shape}, run 길이 {lengths.min()}~{lengths.max()}, '
       f'패딩 비율 {np.isnan(x).mean():.3f} ({time.time() - t0:.1f} s)')
 
@@ -197,10 +208,11 @@ for v in VARIANTS:
         print(f'[Step 4] {method}: 이미 결과가 있어 건너뛴다 (다시 돌리려면 해당 파일들을 먼저 지울 것)', flush=True)
         continue
     run_m, fold_m, loss_m = [], [], []
-    for f in sorted(folds.fold_tension.unique()):
-        is_val_run = row_fold == f
-        is_val_pt = pt_fold == f
-        train_idx = np.flatnonzero(~is_val_run)
+    for f in sp.folds:
+        # C 실험에서는 '학습 = 검증 아닌 전부' 가 아니다 (고속 run 은 CV fold 에서 미사용)
+        is_train_run, is_val_run = sp.run_role(f)
+        is_train_pt, is_val_pt = sp.point_role(f, lengths)
+        train_idx = np.flatnonzero(is_train_run)        # DTW 부분행렬·soft label 도 학습 run 만
         d_norm = norm_dist(train_idx)
         if v['tau_inst'] is not None:
             tau_inst = v['tau_inst']
@@ -225,13 +237,13 @@ for v in VARIANTS:
                                soft_instance=True, soft_temporal=True,
                                after_iter_callback=lambda _m, l: iter_loss.append(l),
                                after_epoch_callback=lambda m, _l: epoch_iters.append(m.n_iters))
-            loss_log = model.fit(x[~is_val_run], 0, 0, 0, sl,           # 학습 fold 신호 + soft label, 라벨 없음
+            loss_log = model.fit(x[is_train_run], 0, 0, 0, sl,           # 학습 fold 신호 + soft label, 라벨 없음
                                  run_dir=f'{OUT_DIR}/_result_tmp', n_iters=N_ITERS, verbose=False)
             t_fit = time.time() - t0
             model.save(f'{OUT_DIR}/checkpoints/{method}_fold{f}_seed{seed}.pt')   # 학습된 인코더 (재현·재분석용)
 
             z = np.concatenate([model.encode(x)[i, :lengths[i]] for i in range(len(lengths))])
-            gmm, sidx, emeans = ev.fit_steady_gmm(z[~is_val_pt], e_flat[~is_val_pt], seed)
+            gmm, sidx, emeans = ev.fit_steady_gmm(z[is_train_pt], e_flat[is_train_pt], seed)
             pred, score = ev.predict_steady(gmm, sidx, z[is_val_pt])
             r, fr = ev.score_fold(id_flat[is_val_pt], pred, score, method, f, seed)
             fr['tau_inst'], fr['tau_temp'] = tau_inst, tau_temp
@@ -264,7 +276,7 @@ for v in VARIANTS:
     run_m, fold_m = pd.concat(run_m, ignore_index=True), pd.concat(fold_m, ignore_index=True)
     ev.plot_loss_curves(pd.concat(loss_m, ignore_index=True), OUT_DIR, method, 'Soft hierarchical contrastive loss')
     ev.save_results(OUT_DIR, method, run_m, fold_m,
-                    {**ev.EVAL_CONFIG, 'SEED': SEED, 'N_SEEDS': N_SEEDS, 'N_ITERS': N_ITERS,
+                    {**ev.EVAL_CONFIG, 'SPLIT': SPLIT, 'SEED': SEED, 'N_SEEDS': N_SEEDS, 'N_ITERS': N_ITERS,
                      'TAU_INST_SPEC': v['tau_inst'] if v['tau_inst'] is not None
                      else f"n_eff 중앙값 = {v['n_eff_target']} 이 되도록 fold 마다 수치해",
                      'TAU_INST_BY_FOLD': dict(zip(fold_m.fold, fold_m.tau_inst.round(1))),
