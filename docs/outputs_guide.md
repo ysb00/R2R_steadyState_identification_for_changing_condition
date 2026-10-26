@@ -309,11 +309,17 @@ outputs/03_baselines/<단계폴더>/<방법이름>_<종류>.<확장자>
 
 | 단계 폴더 | 방법 이름 |
 |---|---|
-| `01_stat_ssd/` | `R-test`, `R-test-decimated`, `MovStd-Slope-fixed`, `MovStd-Slope-speed` |
+| `01_stat_ssd/` | `R-test`, `R-test-decimated`, **`R-test-calibrated`**, **`R-test-decimated-calibrated`**, `MovStd-Slope-fixed`, `MovStd-Slope-speed`, **`MovStd-Slope-fixed-rule1b`**, **`MovStd-Slope-speed-rule1b`** |
 | `02_ts2vec/` | `TS2Vec` |
 | `03_moment/` | `MOMENT` |
-| `04_cost/` | `CoST-W160`, `CoST-W256`, `CoST-W306`, `CoST-W512` |
-| `05_softclt/` | `SoftCLT-fs`, `SoftCLT-ref` |
+| `04_cost/` | **`CoST-W144`**, `CoST-W160`, `CoST-W256`, `CoST-W306`, `CoST-W512` |
+| `05_softclt/` | `SoftCLT-fs`, **`SoftCLT-fs-rule1b`**, `SoftCLT-ref` |
+| **`06_cost_ablation/`** | **`CoST-W144-trend`**, **`CoST-W144-season`**, **`CoST-W144-noscaleshift`** (+ 비교 그림·표) |
+| **`07_tstcc/`** | **`TS-TCC`** |
+| **`08_simmtm/`** | **`SimMTM`** |
+
+**단계 폴더에 속하지 않는 집계 표 4개**가 `outputs/03_baselines/` 바로 아래에 있다
+(생성: `code/03_baselines/09_summary_tables.py`). 아래 §16 참조.
 
 | 종류 | 1행의 단위 | 행 수 |
 |---|---|---|
@@ -834,3 +840,111 @@ TS2Vec 주황 / SoftCLT 갈색). 혼동이 생기더라도 같은 계열 안에�
 3. **AUROC 가 높다고 쓸 수 있는 게 아니다.** R-test 다운샘플판은 AUROC 0.901 인데 `Prec(ns)` 0.092, 보존률 0.174 다. 순위는 매기지만 임계값이 틀렸다.
 4. **현재 학습량(600 iter)이 수렴 전이다.** TS2Vec 에서 학습이 덜 된 쪽이 모든 지표에서 더 좋았다. 따라서 학습 있는 방법의 성능이 **설계 덕인지 미학습 덕인지 아직 구분되지 않는다.**
 5. **CoST 창 길이 비교는 학습량과 교란되어 있다.** `max_train_length = W` 때문에 같은 600 iter 에서 데이터 통과 횟수가 창별로 3.57~14.29회로 4배 차이 난다. "창이 길면 나빠진다" 를 창 효과로 단정할 수 없다. 상세는 `hyperparameters.md` §11 문제 9.
+
+---
+
+# 16. 집계 표 4개 — 방법을 가로질러 비교할 때
+
+방법별 `*_fold_metrics.csv` 를 묶은 것이다. **생성: `code/03_baselines/09_summary_tables.py`**
+(방법을 추가하면 그 스크립트의 `CATEGORY` 에 등록하고 다시 돌린다. 등록 안 된 방법은 경고가 나온다.)
+
+| 파일 | 크기 | 1행의 단위 | 쓸 곳 |
+|---|---|---|---|
+| **`_paper_table.csv`** | 23 × 20 | 방법 1개 | **논문 표에 바로 붙인다.** `"0.832±0.147"` 문자열 |
+| `_all_methods_full_table.csv` | 23 × 390 | 방법 1개 | 지표 전부. 접미사 4종 + `cfg_*` 설정값 |
+| `_all_methods_by_fold.csv` | 115 × 80 | 방법 × fold | **fold별 값** (4.1절이 요구한 것) |
+| `_all_methods_by_fold_seed.csv` | 535 × 84 | 방법 × fold × seed | 평균 전 원자료 |
+
+(535 = 21방법 × 25 + R-test 2종 × 5. R-test 원 논문판은 **결정론적이라 seed 1회**다 — 파이프라인에
+난수가 없다. 같은 '학습 없는' 다른 7종은 5회 돌려 `__seedstd` 가 0.0000~0.0001 로 측정됐다.)
+
+run 단위 원자료는 묶지 않았다 — 방법당 22컬럼 × 1,050행이고 23종을 합치면 24,150행이다.
+조건별 성능을 보려면 각 방법의 `*_run_metrics.csv` 를 쓴다.
+
+## 16.1 `_all_methods_full_table.csv` 의 접미사 4종
+
+지표마다 네 값을 저장한다. **분산을 분해해야 "무엇 때문에 흔들리는가" 가 보인다.**
+
+| 접미사 | 계산 | 뜻 |
+|---|---|---|
+| `__mean` | 25회 전체 평균 | 표의 본값 |
+| **`__std`** | 25회 전체 표준편차 | **논문 표의 "±" 에 쓸 값** |
+| `__foldstd` | fold 평균들의 표준편차 | **조건 난이도 차이** (fold 1·5 외삽, 2·3·4 내삽) |
+| `__seedstd` | fold 내 seed 표준편차의 fold 평균 | **학습 운** |
+
+예: `pooled_auprc__mean` / `pooled_auprc__std` / `pooled_auprc__foldstd` / `pooled_auprc__seedstd`.
+
+**실측으로 두 집단이 갈린다** (AUPRC(ns) 기준):
+
+| 지배 요인 | 방법 | `__foldstd` | `__seedstd` |
+|---|---|---|---|
+| **fold (조건 난이도)** | CoST 5창, MovStd 4종, R-test 4종, MOMENT | 0.027~0.187 | **0.000~0.014** |
+| **seed (학습 운)** | SoftCLT 3종, TS-TCC, SimMTM, TS2Vec | 0.049~0.090 | **0.092~0.173** |
+
+CoST-W144 의 `__seedstd` 는 0.002, TS2Vec 은 0.144 로 **70배** 차이다. 앞쪽 집단은 같은 fold 에서
+seed 를 바꿔도 결과가 거의 같아 재현성이 높고, 뒤쪽은 학습 운이 결과를 지배한다.
+단 CoST 는 데이터 통과 횟수가 3.17회로 가장 적어 **"학습이 거의 안 돼서 seed 가 영향을 못 준 것"**
+일 수 있다 (`hyperparameters.md` §11 문제 9 와 같은 교란).
+
+## 16.2 `_paper_table.csv` 의 열
+
+| 열 종류 | 내용 |
+|---|---|
+| 식별 | `method`, `category`, `role`, `n_fold x n_seed`, `degenerate` |
+| 지표 12종 | `Contamination`, `Retention`, `Precision (ns)`, `Recall (ns)`, `F1 (ns)`, `F1 (st)`, `AUROC`, `AUPRC (ns)`, `AUPRC (st)`, `Entry bias (s)`, `Entry MAE (s)`, `No-entry runs` |
+| **fold별 값 3종** | `pooled_auprc by fold`, `pooled_auroc by fold`, `pooled_retention_rate by fold` — `fold1/fold2/.../fold5` 로 한 칸에 |
+
+`role` 은 `main`(본문 표 후보 8종) / `sensitivity`(변형 12종) / `ablation`(3종)이다.
+근거는 `docs/baseline_cases.md` §10.
+
+**fold별 값을 함께 보면 "±" 의 정체가 보인다** — **fold 1(장력 3 kg, 외삽)이 전 방법에서
+가장 어렵다.** CoST-W144 는 0.553/0.837/0.930/0.931/0.911, TS2Vec 은
+0.089/0.303/0.478/0.506/0.343 으로 fold 1 이 평균의 **26%** 다. 즉 표준편차의 상당 부분이
+**단일 fold 의 외삽 난이도**에서 온다. 예외는 `MovStd-Slope-fixed`(0.656~0.785, 표준편차 0.049)로
+**2차원 통계 기준선이 조건 변화에 가장 둔감하다.**
+
+## 16.3 읽을 때 주의 3가지
+
+**① `runmean_` 의 일부 컬럼은 비어 있고, 도출하지 않는다.**
+`derive_precision_recall` 은 혼동행렬 항등식(`TP = 보존률 × n_steady`)이라 **`pooled_` 에만
+유효**하다. `runmean_` 에 쓰면 fold 전체 `n_scored`/`n_nonsteady` 와 run별 비율의 평균을 섞게 되어
+**recall > 1 이 나온다**(실제로 1.166 이 나와 발견했다). 그래서 저장된 값만 쓰고 없으면 빈칸이다.
+
+**② `n_runs_*` 를 함께 봐야 한다** — 지표마다 계산 가능한 run 수가 다르다.
+
+| 지표 | 유효 run (검증 fold 42 run 중) | 이유 |
+|---|---|---|
+| 오염률·보존률 | 42.0 | 전 run |
+| `precision_nonsteady` | 32.0~42.0 | non-steady 판정이 0인 run 은 분모가 없다 |
+| **AUROC·AUPRC·F1(ns)** | **36.8** | 한쪽 클래스가 없는 run 약 5개는 빈칸 |
+| `R-test` 오염률 | **3.4** | steady 판정이 거의 없어 분모가 사라진다 |
+
+즉 **AUROC·AUPRC 의 run 평균은 42 run 이 아니라 약 37 run 에서만 계산된 값**이다.
+그리고 `R-test` 계열의 run 평균 오염률이 pooled 와 12배 차이 나는 이유가 여기 있다
+(0.244 vs 0.021) — **42 run 중 3.4개에서만 계산됐다.**
+
+**③ `degenerate` 열** — GMM 이 "steady vs non-steady" 가 아니라 **"이상치 소수 vs 나머지"** 로
+쪼개 AUROC 가 정확히 0.500, 보존률이 정확히 1.000 이 된 건수다.
+TS-TCC 4/25, SimMTM 2/25, 나머지 21종 0. 원인은 **진폭 이상 run `T3_R2_V200`** 이고
+상세는 `hyperparameters.md` §11 문제 11. **표의 값은 퇴화를 포함한 전체 평균이다**(연구자 결정) —
+퇴화 제외값만 싣는 것은 선택적 보고이므로, 각주로 병기한다
+(TS-TCC AUROC 0.906 / AUPRC 0.328, SimMTM 0.922 / 0.412).
+
+---
+
+# 17. 방법별 추가 설명이 필요한 4종
+
+`06_cost_ablation/`, `07_tstcc/`, `08_simmtm/`, 그리고 `01_stat_ssd/` 의 R-test 보정판은
+§11(방법별 로직)이 다루지 않는다. 각 방법이 **무엇이고 왜 돌렸는지**는
+**`docs/baseline_cases.md`** 에 23종 전부 정리돼 있다 (무엇인가 / 왜 돌렸나 / 설정 출처 /
+결과와 해석 / 주의사항). 설정값 자체는 `hyperparameters.md` §3.1(R-test 보정판)·§8.1(SoftCLT
+rule1b)·`tstcc_config_choice.md`(TS-TCC) 에 있다.
+
+여기서는 **산출물을 읽는 데 필요한 것만** 적는다.
+
+| 폴더 | 산출물에서 특별히 볼 것 |
+|---|---|
+| `06_cost_ablation/` | `ablation_comparison.csv`(4종 나란히), `ablation_metrics.png`(**점 그림** — 값이 0.82~0.99 에 몰려 막대로는 차이가 안 보인다), `ablation_entry_error.png`(부호가 있어 막대가 맞다). `trend`/`season` 은 **재학습 없이** baseline 체크포인트를 슬라이스만 달리해 쓴 것이라 `_loss.csv` 가 없다 |
+| `07_tstcc/` | `_loss.csv` 의 x축이 **`epoch`** 이다 (TS-TCC 는 iteration 훅이 없다). iteration 축으로 환산하려면 `_fold_metrics.csv` 의 `iters_per_epoch`(=10) 를 쓴다. 표현이 **2,560차원**이고 이 방법만 **float64** 로 후단에 들어간다 |
+| `08_simmtm/` | `_loss.csv` 에 **`loss_cl`(대조)·`loss_rb`(복원)** 가 분리돼 있다. x축은 `epoch`, `iters_per_epoch`=42. `CosineAnnealingLR` 이라 **손실 곡선이 끝에서 평탄해지는 것은 수렴의 증거가 아니다**(§9 와 같은 함정) |
+| `01_stat_ssd/` 보정판 2종 | `_config.csv` 의 `R_CRIT_TS`·`R_CRIT_SS` 가 **`None`** 이다 — 원 논문 임계값을 쓰지 않는다. `threshold_source` 열에 그 사실이 적혀 있다. 점수가 R 통계량이 아니라 **GMM 사후확률**이므로 AUROC·AUPRC 를 원 논문판과 직접 비교할 때 주의한다 |

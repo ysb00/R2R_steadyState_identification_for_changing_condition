@@ -1,0 +1,104 @@
+[Step 1] rows = 268933, runs = 210, run 길이 1275~1300 (0.1 s)
+[Step 2] 창 144 samples (15.7 s) | 특징맵 길이 20 -> 표현 2560 차원 | 학습 창 총 1681개 (run 당 8~9개)
+[Step 2] 증강 (Epilepsy config): weak = scaling(loc=2.0, sigma=0.001), strong = jitter(permutation(max_seg=5), sigma=0.001)
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 1 seed 0: 학습 17 s, 전체 291 s, epoch 40 손실 13.3780 -> 10.2070, 군집별 e 평균 [-0.035 -0.001] -> steady = 군집 1, steady 판정 비율 0.747, 오염률 0.005, 보존률 0.829
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 1 seed 1: 학습 15 s, 전체 216 s, epoch 40 손실 13.3986 -> 9.7273, 군집별 e 평균 [-0.042 -0.001] -> steady = 군집 1, steady 판정 비율 0.800, 오염률 0.004, 보존률 0.876
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 1 seed 2: 학습 15 s, 전체 205 s, epoch 40 손실 13.4401 -> 9.9362, 군집별 e 평균 [-0.    -0.037] -> steady = 군집 0, steady 판정 비율 0.743, 오염률 0.001, 보존률 0.829
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 1 seed 3: 학습 13 s, 전체 265 s, epoch 40 손실 13.4108 -> 10.1971, 군집별 e 평균 [-0.001 -0.038] -> steady = 군집 0, steady 판정 비율 0.796, 오염률 0.002, 보존률 0.877
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 1 seed 4: 학습 15 s, 전체 209 s, epoch 40 손실 13.5566 -> 10.2165, 군집별 e 평균 [-0.001 -0.039] -> steady = 군집 0, steady 판정 비율 0.804, 오염률 0.002, 보존률 0.881
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 2 seed 0: 학습 13 s, 전체 189 s, epoch 40 손실 13.3344 -> 10.1190, 군집별 e 평균 [-0.032 -0.   ] -> steady = 군집 1, steady 판정 비율 0.739, 오염률 0.000, 보존률 0.857
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 2 seed 1: 학습 15 s, 전체 188 s, epoch 40 손실 13.4175 -> 9.8818, 군집별 e 평균 [-0.034 -0.002] -> steady = 군집 1, steady 판정 비율 0.778, 오염률 0.000, 보존률 0.892
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 2 seed 2: 학습 15 s, 전체 52 s, epoch 40 손실 13.4412 -> 9.9289, 군집별 e 평균 [-0.011  0.431] -> steady = 군집 0, steady 판정 비율 1.000, 오염률 0.066, 보존률 1.000
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 2 seed 3: 학습 14 s, 전체 151 s, epoch 40 손실 13.3902 -> 10.2260, 군집별 e 평균 [-0.002 -0.035] -> steady = 군집 0, steady 판정 비율 0.785, 오염률 0.000, 보존률 0.896
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 2 seed 4: 학습 15 s, 전체 230 s, epoch 40 손실 13.4859 -> 10.2641, 군집별 e 평균 [-0.002 -0.031] -> steady = 군집 0, steady 판정 비율 0.774, 오염률 0.000, 보존률 0.884
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 3 seed 0: 학습 14 s, 전체 151 s, epoch 40 손실 13.3739 -> 10.3401, 군집별 e 평균 [-0.031 -0.   ] -> steady = 군집 1, steady 판정 비율 0.711, 오염률 0.000, 보존률 0.837
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 3 seed 1: 학습 14 s, 전체 254 s, epoch 40 손실 13.4296 -> 9.8547, 군집별 e 평균 [-0.029 -0.003] -> steady = 군집 1, steady 판정 비율 0.720, 오염률 0.001, 보존률 0.843
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 3 seed 2: 학습 14 s, 전체 50 s, epoch 40 손실 13.4428 -> 10.0016, 군집별 e 평균 [-0.01   0.431] -> steady = 군집 0, steady 판정 비율 1.000, 오염률 0.100, 보존률 1.000
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 3 seed 3: 학습 14 s, 전체 156 s, epoch 40 손실 13.4176 -> 10.3131, 군집별 e 평균 [-0.002 -0.033] -> steady = 군집 0, steady 판정 비율 0.744, 오염률 0.000, 보존률 0.873
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 3 seed 4: 학습 14 s, 전체 163 s, epoch 40 손실 13.6417 -> 10.3880, 군집별 e 평균 [-0.002 -0.03 ] -> steady = 군집 0, steady 판정 비율 0.713, 오염률 0.001, 보존률 0.836
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 4 seed 0: 학습 14 s, 전체 152 s, epoch 40 손실 13.3905 -> 10.4557, 군집별 e 평균 [-0.033 -0.   ] -> steady = 군집 1, steady 판정 비율 0.624, 오염률 0.000, 보존률 0.737
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 4 seed 1: 학습 14 s, 전체 159 s, epoch 40 손실 13.4524 -> 9.9991, 군집별 e 평균 [-0.034 -0.002] -> steady = 군집 1, steady 판정 비율 0.646, 오염률 0.000, 보존률 0.759
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 4 seed 2: 학습 14 s, 전체 54 s, epoch 40 손실 13.4632 -> 10.1064, 군집별 e 평균 [-0.011  0.431] -> steady = 군집 0, steady 판정 비율 1.000, 오염률 0.097, 보존률 1.000
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 4 seed 3: 학습 14 s, 전체 165 s, epoch 40 손실 13.4556 -> 10.3777, 군집별 e 평균 [-0.002 -0.035] -> steady = 군집 0, steady 판정 비율 0.667, 오염률 0.000, 보존률 0.785
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 4 seed 4: 학습 14 s, 전체 135 s, epoch 40 손실 13.6508 -> 10.5103, 군집별 e 평균 [-0.038 -0.001] -> steady = 군집 1, steady 판정 비율 0.697, 오염률 0.000, 보존률 0.823
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 5 seed 0: 학습 15 s, 전체 270 s, epoch 40 손실 13.3763 -> 10.5016, 군집별 e 평균 [-0.033 -0.   ] -> steady = 군집 1, steady 판정 비율 0.640, 오염률 0.000, 보존률 0.760
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 5 seed 1: 학습 14 s, 전체 157 s, epoch 40 손실 13.4739 -> 9.9231, 군집별 e 평균 [-0.033 -0.002] -> steady = 군집 1, steady 판정 비율 0.653, 오염률 0.000, 보존률 0.770
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 5 seed 2: 학습 14 s, 전체 49 s, epoch 40 손실 13.4853 -> 10.1228, 군집별 e 평균 [-0.01   0.431] -> steady = 군집 0, steady 판정 비율 1.000, 오염률 0.100, 보존률 1.000
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 5 seed 3: 학습 14 s, 전체 192 s, epoch 40 손실 13.4395 -> 10.2436, 군집별 e 평균 [-0.002 -0.031] -> steady = 군집 0, steady 판정 비율 0.628, 오염률 0.000, 보존률 0.740
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\torch\nn\modules\module.py:1779: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return self._call_impl(*args, **kwargs)
+[Step 3] TS-TCC fold 5 seed 4: 학습 14 s, 전체 214 s, epoch 40 손실 13.6741 -> 10.5240, 군집별 e 평균 [-0.001 -0.032] -> steady = 군집 0, steady 판정 비율 0.627, 오염률 0.000, 보존률 0.742
+C:\Users\KIMM\research\informs-paper\code\03_baselines\evaluation.py:341: UserWarning: Glyph 45716 (\N{HANGUL SYLLABLE NEUN}) missing from font(s) DejaVu Sans.
+  fig.savefig(p, dpi=DPI)
+C:\Users\KIMM\research\informs-paper\code\03_baselines\evaluation.py:341: UserWarning: Glyph 49552 (\N{HANGUL SYLLABLE SON}) missing from font(s) DejaVu Sans.
+  fig.savefig(p, dpi=DPI)
+C:\Users\KIMM\research\informs-paper\code\03_baselines\evaluation.py:341: UserWarning: Glyph 49892 (\N{HANGUL SYLLABLE SIL}) missing from font(s) DejaVu Sans.
+  fig.savefig(p, dpi=DPI)
+C:\Users\KIMM\research\informs-paper\code\03_baselines\evaluation.py:341: UserWarning: Glyph 54981 (\N{HANGUL SYLLABLE HUG}) missing from font(s) DejaVu Sans.
+  fig.savefig(p, dpi=DPI)
+C:\Users\KIMM\research\informs-paper\code\03_baselines\evaluation.py:341: UserWarning: Glyph 51060 (\N{HANGUL SYLLABLE I}) missing from font(s) DejaVu Sans.
+  fig.savefig(p, dpi=DPI)
+C:\Users\KIMM\research\informs-paper\code\03_baselines\evaluation.py:341: UserWarning: Glyph 50630 (\N{HANGUL SYLLABLE EOBS}) missing from font(s) DejaVu Sans.
+  fig.savefig(p, dpi=DPI)
+C:\Users\KIMM\research\informs-paper\code\03_baselines\evaluation.py:341: UserWarning: Glyph 45796 (\N{HANGUL SYLLABLE DA}) missing from font(s) DejaVu Sans.
+  fig.savefig(p, dpi=DPI)
+C:\Users\KIMM\research\informs-paper\code\03_baselines\evaluation.py:341: UserWarning: Glyph 52280 (\N{HANGUL SYLLABLE CAM}) missing from font(s) DejaVu Sans.
+  fig.savefig(p, dpi=DPI)
+C:\Users\KIMM\research\informs-paper\code\03_baselines\evaluation.py:341: UserWarning: Glyph 51312 (\N{HANGUL SYLLABLE JO}) missing from font(s) DejaVu Sans.
+  fig.savefig(p, dpi=DPI)
+[save] loss curve -> outputs/03_baselines/07_tstcc/TS-TCC_loss.png / .pdf
+[save] run     -> outputs/03_baselines/07_tstcc/TS-TCC_run_metrics.csv
+[save] fold    -> outputs/03_baselines/07_tstcc/TS-TCC_fold_metrics.csv
+[save] summary -> outputs/03_baselines/07_tstcc/TS-TCC_summary.csv
+[save] config  -> outputs/03_baselines/07_tstcc/TS-TCC_config.csv
+[save] heatmap -> outputs/03_baselines/07_tstcc/TS-TCC_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/03_baselines/07_tstcc/TS-TCC_heatmap_retention_rate.png / .pdf
+[done] TS-TCC 평가 완료

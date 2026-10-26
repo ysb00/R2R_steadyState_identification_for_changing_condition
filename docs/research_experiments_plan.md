@@ -2,7 +2,14 @@
 
 - 작성일: 2026-10-20
 - 목적: 제안 방법 개발 전에, **코드가 공개된 비교군의 본 데이터 성능(현재 수준)을 먼저 측정**한다. 결과는 논문 실험 표에 사용한다.
-- 관련 문서: `docs/research_plan.md`(연구 전제·가정·한계), `docs/data_dictionary.md`(컬럼 설명), `docs/hyperparameters.md`(설정값), `docs/outputs_guide.md`(산출물 읽는 법), `docs/periodic_disturbance.md`(창 길이 유도)
+- 관련 문서: `docs/research_plan.md`(연구 전제·가정·한계), `docs/data_dictionary.md`(컬럼 설명), `docs/hyperparameters.md`(설정값), `docs/outputs_guide.md`(산출물 읽는 법), `docs/periodic_disturbance.md`(창 길이 유도), `docs/baseline_cases.md`(23종이 각각 무엇인가)
+
+> **진행 상태 (2026-10-26): 1차 비교군 8개 전부 실행 완료** (변형 포함 23종).
+> 결과는 `outputs/03_baselines/_paper_table.csv` 외 집계 표 4개. 각 행의 정체는 `baseline_cases.md`.
+>
+> **단, 이 문서의 실험(4절 장력 5-fold)은 "A 실험" 이고 최종 목표가 아니다.** 최종 목표는
+> **저속 학습 -> 미학습 고속 테스트**(C 실험)이며 분할이 다르다 — `hyperparameters.md` §13.0 참조.
+> 4.2 의 속도 7-fold 는 **leave-one-level-out 이라 내삽**이어서 그 목표를 달성하지 못한다.
 
 ---
 
@@ -99,9 +106,31 @@
 | F1 | non-steady = positive |
 | 조건별 heatmap | 검증 fold 내 (ReWinder × Speed) 조건별 성능 |
 
-## 6. 결과물 구성 (예정)
-- 코드: `code/03_baselines/` — 방법별 실행 코드(어댑터 포함), 공통 평가 코드
-- 결과: `outputs/03_baselines/` — fold별·방법별 결과 표(CSV), 조건별 heatmap
+## 6. 결과물 구성 (2026-10-26 실제)
+
+**코드** `code/03_baselines/`
+
+| 파일 | 내용 |
+|---|---|
+| `00_folds.py` | fold 배정 (1회 생성 후 고정) |
+| `evaluation.py` | 공통 평가 — 트랙 A 후단·채점·그림. **라벨을 읽는 유일한 지점** |
+| `01_stat_ssd.py` | R-test 4종(2x2) + 이동창 std/기울기 4종 |
+| `02_ts2vec.py` `03_moment.py` `04_cost.py` `05_softclt.py` `07_tstcc.py` `08_simmtm.py` | 외부 저장소 어댑터 6개 |
+| `06_cost_ablation.py` | CoST 성분 분해 2종 + 증강 제거 1종 |
+| `09_summary_tables.py` | 집계 표 4개 생성 |
+| `external_versions.csv` | 외부 저장소 커밋 hash·환경·shim 기록 |
+
+**결과** `outputs/03_baselines/`
+
+| 파일 | 내용 |
+|---|---|
+| `_paper_table.csv` | **논문 표에 바로 붙이는 형태** (평균±표준편차 + fold별 값) |
+| `_all_methods_full_table.csv` | 전 지표 (`__mean`/`__std`/`__foldstd`/`__seedstd`) + 설정값 |
+| `_all_methods_by_fold.csv` | 방법 x fold — 4.1 이 요구한 fold별 값 |
+| `_all_methods_by_fold_seed.csv` | 방법 x fold x seed (원자료) |
+| `01_stat_ssd/` ~ `08_simmtm/` | 방법별 run/fold/summary/config CSV + 조건별 heatmap + 손실 곡선 |
+
+읽는 법은 `outputs_guide.md` §16·§17.
 
 ## 7. 실행 전제와 위험
 | 항목 | 내용 |
@@ -154,8 +183,9 @@
 | **왜 하나** | **입력 구간의 수렴 순서를 보존하는 것이 중요한지** 검토하기 위해서다. 본 데이터는 **과도 → 정상으로 한 방향 수렴**하는 구조이고(`research_plan.md` 3.1 (2)), steady 가 86% 다. 구간을 섞으면 그 수렴 순서가 파괴되는데, 이는 상태를 정의하는 구조 자체를 지우는 것일 수 있다 |
 | **무엇을 알 수 있나** | permutation 을 뺐을 때 **좋아지면** → 순서 불변성 가정이 본 데이터에서 해롭다는 증거이고, 시간 순서를 보존하는 증강 설계가 필요하다는 근거가 된다. **차이가 없으면** → 상태 판별이 구간 순서와 무관한 국소 통계(진폭·분산)로 결정된다는 뜻이다 |
 | **연결** | `research_plan.md` 3.1 **D2**(증강 설계), **(2) 상태 구조**(한 방향 수렴) |
-| **선행 조건** | **TS-TCC 어댑터가 먼저 있어야 한다** (`hyperparameters.md` §13.1 A1). baseline 과 비교하는 실험이므로 baseline 이 없으면 의미가 없다 |
-| **비용** | 재학습 필요. 어댑터 작성 후 |
+| **선행 조건** | ~~TS-TCC 어댑터~~ -> **해소 (2026-10-26).** 어댑터·baseline 실행 완료 (`code/03_baselines/07_tstcc.py`, AUPRC 0.290) |
+| **비용** | 재학습 필요. baseline 과 같은 25회 (약 1.5시간) |
+| **착수 전 확인 사항** | Epilepsy config 에서는 **두 view 차이가 거의 전부 permutation 에서 온다** (weak = 원본 x 2.0 거의 고정, jitter sigma=0.001 은 무시 가능 — `tstcc_config_choice.md` §4). 그래서 permutation 을 **완전히 제거하면 두 view 가 "2배 vs 원본" 이 되어 §8.4 가 경고한 자명화에 해당**한다. **A6 을 돌리기 전에 손실 곡선으로 자명화 여부를 먼저 확인할 것** |
 
 ### 8.4 공통 설계 원칙
 

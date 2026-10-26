@@ -1,0 +1,37 @@
+[Step 1] rows = 268933, runs = 210, run 길이 1275~1300 (0.1 s)
+[Step 2] 창 144 samples (15.7 s) | conv 출력 길이 8 (config 원래값 10) -> 표현 1024 차원 | 학습 창 총 1681개 (run 당 8~9개)
+[Step 2] 사전학습: 마스킹 전용 (masking_ratio=0.5, lm=3, positive_nums=3) -> 실효 배치 128 (원본 32 + 마스킹 96)
+[Step 2] 학습량: pretrain_epoch=10, pretrain_lr=0.0001 (config.lr=3e-08 은 사전학습에 쓰이지 않는다), CosineAnnealingLR(T_max=10)
+[Step 3] SimMTM fold 1 seed 0: 학습 5 s, 전체 38 s, epoch 10 손실 6.5358 -> 4.4928 (대조 6.4670 / 복원 0.0060), 군집별 e 평균 [-0.064  0.   ] -> steady = 군집 1, steady 판정 비율 0.848, 오염률 0.016, 보존률 0.923
+[Step 3] SimMTM fold 1 seed 1: 학습 3 s, 전체 61 s, epoch 10 손실 6.2975 -> 4.4831 (대조 6.4484 / 복원 0.0063), 군집별 e 평균 [-0.048 -0.   ] -> steady = 군집 1, steady 판정 비율 0.802, 오염률 0.001, 보존률 0.894
+[Step 3] SimMTM fold 1 seed 2: 학습 3 s, 전체 78 s, epoch 10 손실 6.5374 -> 4.5168 (대조 6.5176 / 복원 0.0059), 군집별 e 평균 [-0.   -0.05] -> steady = 군집 0, steady 판정 비율 0.809, 오염률 0.003, 보존률 0.899
+[Step 3] SimMTM fold 1 seed 3: 학습 3 s, 전체 36 s, epoch 10 손실 6.5212 -> 4.4988 (대조 6.4796 / 복원 0.0060), 군집별 e 평균 [-0.    -0.065] -> steady = 군집 0, steady 판정 비율 0.860, 오염률 0.016, 보존률 0.932
+[Step 3] SimMTM fold 1 seed 4: 학습 3 s, 전체 54 s, epoch 10 손실 6.4413 -> 4.4510 (대조 6.3786 / 복원 0.0069), 군집별 e 평균 [-0.049 -0.   ] -> steady = 군집 1, steady 판정 비율 0.806, 오염률 0.001, 보존률 0.898
+[Step 3] SimMTM fold 2 seed 0: 학습 3 s, 전체 54 s, epoch 10 손실 6.5622 -> 4.5329 (대조 6.5509 / 복원 0.0061), 군집별 e 평균 [-0.044 -0.   ] -> steady = 군집 1, steady 판정 비율 0.790, 오염률 0.000, 보존률 0.913
+[Step 3] SimMTM fold 2 seed 1: 학습 3 s, 전체 29 s, epoch 10 손실 6.3263 -> 4.5085 (대조 6.5017 / 복원 0.0062), 군집별 e 평균 [-0.053 -0.   ] -> steady = 군집 1, steady 판정 비율 0.821, 오염률 0.004, 보존률 0.940
+[Step 3] SimMTM fold 2 seed 2: 학습 3 s, 전체 28 s, epoch 10 손실 6.5905 -> 4.5583 (대조 6.6036 / 복원 0.0065), 군집별 e 평균 [-0.011  0.43 ] -> steady = 군집 0, steady 판정 비율 1.000, 오염률 0.066, 보존률 1.000
+[Step 3] SimMTM fold 2 seed 3: 학습 3 s, 전체 57 s, epoch 10 손실 6.4702 -> 4.5253 (대조 6.5357 / 복원 0.0062), 군집별 e 평균 [-0.    -0.043] -> steady = 군집 0, steady 판정 비율 0.790, 오염률 0.003, 보존률 0.912
+[Step 3] SimMTM fold 2 seed 4: 학습 4 s, 전체 48 s, epoch 10 손실 6.4797 -> 4.4773 (대조 6.4335 / 복원 0.0069), 군집별 e 평균 [-0.051 -0.   ] -> steady = 군집 1, steady 판정 비율 0.819, 오염률 0.004, 보존률 0.939
+[Step 3] SimMTM fold 3 seed 0: 학습 3 s, 전체 43 s, epoch 10 손실 6.5599 -> 4.5089 (대조 6.4997 / 복원 0.0069), 군집별 e 평균 [-0.042 -0.   ] -> steady = 군집 1, steady 판정 비율 0.763, 오염률 0.000, 보존률 0.896
+[Step 3] SimMTM fold 3 seed 1: 학습 4 s, 전체 64 s, epoch 10 손실 6.3261 -> 4.4865 (대조 6.4548 / 복원 0.0071), 군집별 e 평균 [-0.037 -0.   ] -> steady = 군집 1, steady 판정 비율 0.729, 오염률 0.000, 보존률 0.859
+[Step 3] SimMTM fold 3 seed 2: 학습 3 s, 전체 18 s, epoch 10 손실 6.5647 -> 4.5360 (대조 6.5569 / 복원 0.0069), 군집별 e 평균 [-0.01   0.429] -> steady = 군집 0, steady 판정 비율 1.000, 오염률 0.100, 보존률 1.000
+[Step 3] SimMTM fold 3 seed 3: 학습 3 s, 전체 47 s, epoch 10 손실 6.4851 -> 4.4952 (대조 6.4721 / 복원 0.0068), 군집별 e 평균 [-0.    -0.041] -> steady = 군집 0, steady 판정 비율 0.754, 오염률 0.000, 보존률 0.886
+[Step 3] SimMTM fold 3 seed 4: 학습 4 s, 전체 60 s, epoch 10 손실 6.4550 -> 4.4819 (대조 6.4424 / 복원 0.0077), 군집별 e 평균 [-0.    -0.043] -> steady = 군집 0, steady 판정 비율 0.765, 오염률 0.000, 보존률 0.898
+[Step 3] SimMTM fold 4 seed 0: 학습 3 s, 전체 37 s, epoch 10 손실 6.5725 -> 4.5132 (대조 6.5086 / 복원 0.0067), 군집별 e 평균 [-0.043 -0.   ] -> steady = 군집 1, steady 판정 비율 0.735, 오염률 0.000, 보존률 0.869
+[Step 3] SimMTM fold 4 seed 1: 학습 3 s, 전체 55 s, epoch 10 손실 6.3450 -> 4.4879 (대조 6.4573 / 복원 0.0070), 군집별 e 평균 [-0.039 -0.   ] -> steady = 군집 1, steady 판정 비율 0.703, 오염률 0.000, 보존률 0.831
+[Step 3] SimMTM fold 4 seed 2: 학습 3 s, 전체 41 s, epoch 10 손실 6.5699 -> 4.5260 (대조 6.5358 / 복원 0.0067), 군집별 e 평균 [-0.    -0.043] -> steady = 군집 0, steady 판정 비율 0.727, 오염률 0.001, 보존률 0.855
+[Step 3] SimMTM fold 4 seed 3: 학습 3 s, 전체 62 s, epoch 10 손실 6.5036 -> 4.5052 (대조 6.4927 / 복원 0.0066), 군집별 e 평균 [-0.042 -0.   ] -> steady = 군집 1, steady 판정 비율 0.726, 오염률 0.000, 보존률 0.858
+[Step 3] SimMTM fold 4 seed 4: 학습 3 s, 전체 57 s, epoch 10 손실 6.4375 -> 4.4844 (대조 6.4478 / 복원 0.0075), 군집별 e 평균 [-0.044 -0.   ] -> steady = 군집 1, steady 판정 비율 0.735, 오염률 0.000, 보존률 0.868
+[Step 3] SimMTM fold 5 seed 0: 학습 3 s, 전체 38 s, epoch 10 손실 6.5882 -> 4.5443 (대조 6.5740 / 복원 0.0068), 군집별 e 평균 [-0.041 -0.   ] -> steady = 군집 1, steady 판정 비율 0.721, 오염률 0.000, 보존률 0.855
+[Step 3] SimMTM fold 5 seed 1: 학습 3 s, 전체 51 s, epoch 10 손실 6.3465 -> 4.5130 (대조 6.5102 / 복원 0.0070), 군집별 e 평균 [-0.038 -0.   ] -> steady = 군집 1, steady 판정 비율 0.700, 오염률 0.000, 보존률 0.833
+[Step 3] SimMTM fold 5 seed 2: 학습 3 s, 전체 61 s, epoch 10 손실 6.5683 -> 4.5543 (대조 6.5952 / 복원 0.0069), 군집별 e 평균 [-0.    -0.041] -> steady = 군집 0, steady 판정 비율 0.718, 오염률 0.000, 보존률 0.852
+[Step 3] SimMTM fold 5 seed 3: 학습 3 s, 전체 80 s, epoch 10 손실 6.4956 -> 4.5197 (대조 6.5235 / 복원 0.0067), 군집별 e 평균 [-0.039 -0.   ] -> steady = 군집 1, steady 판정 비율 0.717, 오염률 0.000, 보존률 0.850
+[Step 3] SimMTM fold 5 seed 4: 학습 3 s, 전체 54 s, epoch 10 손실 6.4619 -> 4.5206 (대조 6.5237 / 복원 0.0077), 군집별 e 평균 [-0.    -0.042] -> steady = 군집 0, steady 판정 비율 0.737, 오염률 0.000, 보존률 0.874
+[save] loss curve -> outputs/03_baselines/08_simmtm/SimMTM_loss.png / .pdf
+[save] run     -> outputs/03_baselines/08_simmtm/SimMTM_run_metrics.csv
+[save] fold    -> outputs/03_baselines/08_simmtm/SimMTM_fold_metrics.csv
+[save] summary -> outputs/03_baselines/08_simmtm/SimMTM_summary.csv
+[save] config  -> outputs/03_baselines/08_simmtm/SimMTM_config.csv
+[save] heatmap -> outputs/03_baselines/08_simmtm/SimMTM_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/03_baselines/08_simmtm/SimMTM_heatmap_retention_rate.png / .pdf
+[done] SimMTM 평가 완료
