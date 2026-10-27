@@ -4,12 +4,19 @@
 - 목적: 제안 방법 개발 전에, **코드가 공개된 비교군의 본 데이터 성능(현재 수준)을 먼저 측정**한다. 결과는 논문 실험 표에 사용한다.
 - 관련 문서: `docs/research_plan.md`(연구 전제·가정·한계), `docs/data_dictionary.md`(컬럼 설명), `docs/hyperparameters.md`(설정값), `docs/outputs_guide.md`(산출물 읽는 법), `docs/periodic_disturbance.md`(창 길이 유도), `docs/baseline_cases.md`(23종이 각각 무엇인가)
 
-> **진행 상태 (2026-10-26): 1차 비교군 8개 전부 실행 완료** (변형 포함 23종).
-> 결과는 `outputs/03_baselines/_paper_table.csv` 외 집계 표 4개. 각 행의 정체는 `baseline_cases.md`.
+> **진행 상태 (2026-10-27): A·C 두 실험 모두 실행 완료.**
 >
-> **단, 이 문서의 실험(4절 장력 5-fold)은 "A 실험" 이고 최종 목표가 아니다.** 최종 목표는
-> **저속 학습 -> 미학습 고속 테스트**(C 실험)이며 분할이 다르다 — `hyperparameters.md` §13.0 참조.
-> 4.2 의 속도 7-fold 는 **leave-one-level-out 이라 내삽**이어서 그 목표를 달성하지 못한다.
+> - **A 실험** (4.1 장력 5-fold): 비교군 8개 / 변형 23종.
+>   결과는 `outputs/03_baselines/_paper_table.csv` 외 집계 표 4개.
+> - **C 실험** (4.4 저속 학습 -> 미학습 고속, 8 fold): **같은 23종**.
+>   결과는 `outputs/04_speed_extrap/_paper_table_c.csv` 외 집계 표 5종 + 속도별 곡선 + 임베딩 14장.
+>   **최종 목표는 성립한다** — `final_test` 에서 CoST-W144 가 AUPRC(ns) 0.907 / 오염률 0.001.
+>
+> 각 행의 정체는 `baseline_cases.md`, 결과 해석은 `hyperparameters.md` §13.0 과
+> `worklog.md` 2026-10-27.
+>
+> 4.2 의 속도 7-fold 는 **leave-one-level-out 이라 내삽**이어서 최종 목표를 달성하지 못한다 —
+> 실행하지 않았고, 대신 4.4 (C 실험)를 수행했다.
 
 ---
 

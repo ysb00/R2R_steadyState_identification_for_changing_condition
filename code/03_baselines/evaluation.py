@@ -32,6 +32,7 @@ from sklearn.mixture import GaussianMixture
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import roc_auc_score, average_precision_score, f1_score
+import splits                     # fold 묶음 이름 (A 는 묶음 하나, C 는 cv_T* / cv_S* / final_test)
 
 # =============================================================================
 # hyperparameter (평가 쪽 설정 — 모든 방법에 동일하게 적용된다)
@@ -48,6 +49,11 @@ LABEL_COL = 'Trigger 4'         # 원본 컬럼명 (변경하지 않음). 이 �
 TS = 'Film-Tension Setting Value (kg)'
 RS = 'ReWinder-Tension Setting Value (kg)'
 VS = 'Web Speed setting value (mm/sec)'
+
+# 설정값의 영문 이름 — heatmap 의 축 이름(그림 전체)과 subplot 제목(고정된 설정값, 이름 + 단위)에 쓴다
+_AXIS_LABEL = {TS: 'Film tension setting (kg)', RS: 'ReWinder tension setting (kg)',
+               VS: 'Web speed setting (mm/s)'}
+_SETTING_LABEL = {TS: ('film tension', 'kg'), RS: ('rewinder tension', 'kg'), VS: ('web speed', 'mm/s')}
 
 # 평가 쪽 hyperparameter 기록용 (각 방법 스크립트가 자기 설정과 합쳐 config csv 로 저장한다)
 EVAL_CONFIG = {'DT': DT, 'ENTRY_MIN_CONSEC': ENTRY_MIN_CONSEC,
@@ -329,7 +335,7 @@ def plot_loss_curves(loss_df, out_dir, prefix, ylabel='Training loss', x_col='it
             ax.plot(s[x_col], s.loss, color='#2a78d6', linewidth=1.0, alpha=0.35)
         m = g.groupby(x_col).loss.mean()
         ax.plot(m.index, m.to_numpy(), color='#2a78d6', linewidth=2.0)       # seed 평균
-        ax.set_title(f'Fold {int(f)}')
+        ax.set_title(f'Fold {f}' if str(f).isdigit() else f'{f}')    # A 는 fold 번호, C 는 fold 이름
     for ax in axes.ravel()[len(folds):]:
         ax.axis('off')
     fig.supxlabel(xlabel or ('Iteration' if x_col == 'iter' else x_col.capitalize()), fontsize=FONT_SIZE)
@@ -343,45 +349,84 @@ def plot_loss_curves(loss_df, out_dir, prefix, ylabel='Training loss', x_col='it
     print(f'[save] loss curve -> {out_dir}/{prefix}_loss.png / .pdf')
 
 
-def plot_condition_heatmap(run_metrics, metric, out_dir, prefix, label, row_col=RS, col_col=VS, fold_setting=TS):
-    # 역할 : 검증 fold 안의 운전조건 격자에 run별 성능을 깔아 heatmap 으로 그린다 (fold 하나 = subplot 하나).
-    #        seed 반복이 있으면 run별로 평균한 값을 쓴다.
-    # 입력 : run_metrics save 대상 run별 지표 / metric 그릴 지표 컬럼명 / out_dir 저장 폴더 / prefix 파일 이름 앞부분
-    #        label colorbar 에 쓸 영문 지표 이름(단위 포함) / row_col, col_col heatmap 축이 될 설정값 컬럼
-    #        fold_setting subplot 제목에 쓸 fold 구분 설정값 컬럼
-    # 출력 : 없음 (PNG 300 dpi + PDF 저장)
-    m = run_metrics.groupby(['fold', row_col, col_col, fold_setting], as_index=False)[metric].mean()
-    folds = sorted(m.fold.unique())
-    vmin, vmax = np.nanmin(m[metric]), np.nanmax(m[metric])
-    ncols = min(HEATMAP_NCOLS, len(folds))
-    nrows = int(np.ceil(len(folds) / ncols))
-    n_row_cells, n_col_cells = m[row_col].nunique(), m[col_col].nunique()
-    cell = (PAGE_WIDTH / ncols - 0.55) / n_col_cells                  # 셀 한 칸의 폭 (in) — 축 라벨 자리를 뺀 나머지
-    fig, axes = plt.subplots(nrows, ncols, squeeze=False, layout='constrained',
-                             figsize=(PAGE_WIDTH, nrows * (cell * n_row_cells + 0.95) + 0.3))
-    for ax, f in zip(axes.ravel(), folds):
+def _heatmap_panels(m, metric):
+    # 역할 : fold 별 검증 조건 구성을 보고 heatmap panel(= subplot 하나)의 축과 제목을 정한다.
+    #        A 실험은 fold 안에서 장력이 고정이라 (ReWinder x 속도) 격자가 유일했지만,
+    #        C 실험은 fold 마다 고정되는 설정값이 다르다 — 그래서 '고정된 설정값은 제목으로 빼고
+    #        나머지 두 축으로 그린다' 는 규칙 하나로 통일한다. ReWinder 는 항상 행으로 둔다.
+    #          cv_T*      : 장력 고정  -> (ReWinder x 속도),  제목 = 장력
+    #          cv_S*      : 속도 고정  -> (ReWinder x 장력),  제목 = 속도
+    #          final_test : 고정 없음  -> 속도로 쪼개 panel 3개, 각 (ReWinder x 장력), 제목 = 속도
+    # 입력 : m run별 지표를 [fold, TS, RS, VS] 로 평균낸 표 / metric 그릴 지표 컬럼명
+    # 출력 : panel dict 리스트 [{group, fold, head, sub, col_col, data}]. group 이 같은 panel 들이 그림 하나가 된다.
+    #        제목은 head(fold 이름) + sub(고정된 설정값)로 나눠 두고, 그릴 때 합친다 — 묶음 안에 fold 가
+    #        하나뿐이면(final_test) head 가 모든 subplot 에 반복돼 제목이 겹치므로 그때는 sub 만 쓴다
+    panels = []
+    for f in m.fold.unique():
         g = m[m.fold == f]
-        grid = g.pivot(index=row_col, columns=col_col, values=metric)
-        im = ax.imshow(grid.to_numpy(), cmap=SEQ_CMAP, vmin=vmin, vmax=vmax, aspect='auto')
-        ax.set_xticks(range(grid.shape[1]), [f'{int(v)}' for v in grid.columns], fontsize=FONT_SIZE - 2)
-        ax.set_yticks(range(grid.shape[0]), [f'{int(v)}' for v in grid.index], fontsize=FONT_SIZE - 2)
-        ax.set_title(f'Fold {int(f)}: film tension {int(g[fold_setting].iloc[0])} kg')
-        ax.grid(False)
-        for i in range(grid.shape[0]):                                # 셀 값 직접 표기 (대비 보완 · 수치 확인용)
-            for j in range(grid.shape[1]):
-                v = grid.to_numpy()[i, j]
-                if np.isfinite(v):
-                    ax.text(j, i, f'{v:.2f}'.lstrip('0'), ha='center', va='center', fontsize=FONT_SIZE - 3,
-                            color='#ffffff' if v > (vmin + vmax) / 2 else '#0b0b0b')
-    for ax in axes.ravel()[len(folds):]:                              # 남는 칸은 비운다
-        ax.axis('off')
-    fig.supxlabel('Web speed setting (mm/s)', fontsize=FONT_SIZE)     # 축 이름은 그림 전체에 하나씩만
-    fig.supylabel('ReWinder tension setting (kg)', fontsize=FONT_SIZE)
-    fig.colorbar(im, ax=axes, label=label, fraction=0.03, pad=0.02)
-    os.makedirs(out_dir, exist_ok=True)
-    for ext in ['png', 'pdf']:
-        p = f'{out_dir}/{prefix}_heatmap_{metric}.{ext}'
-        assert not os.path.exists(p), f'이미 그림 파일이 있다 (덮어쓰기 금지): {p}'
-        fig.savefig(p, dpi=DPI)
-    plt.close(fig)
-    print(f'[save] heatmap -> {out_dir}/{prefix}_heatmap_{metric}.png / .pdf')
+        assert g[RS].nunique() > 1, f'fold {f}: ReWinder 가 고정이다 — 행 축으로 쓸 수 없다'
+        fixed = [c for c in [TS, VS] if g[c].nunique() == 1]
+        head = f'Fold {f}' if str(f).isdigit() else f'{f}'            # A 는 fold 번호, C 는 fold 이름
+        base = {'group': splits.fold_group(f), 'fold': f, 'head': head}
+        if len(fixed) == 1:                                           # 장력 또는 속도 하나가 고정 -> panel 1개
+            c = fixed[0]
+            nm, unit = _SETTING_LABEL[c]
+            panels.append({**base, 'col_col': VS if c == TS else TS,
+                           'sub': f'{nm} {int(g[c].iloc[0])} {unit}', 'data': g})
+        else:                                                         # 고정 없음 (final_test) -> 속도별로 쪼갠다
+            nm, unit = _SETTING_LABEL[VS]
+            for v in sorted(g[VS].unique()):
+                panels.append({**base, 'col_col': TS,
+                               'sub': f'{nm} {int(v)} {unit}', 'data': g[g[VS] == v]})
+    return panels
+
+
+def plot_condition_heatmap(run_metrics, metric, out_dir, prefix, label):
+    # 역할 : 검증 fold 안의 운전조건 격자에 run별 성능을 깔아 heatmap 으로 그린다 (panel 하나 = subplot 하나).
+    #        seed 반복이 있으면 run별로 평균한 값을 쓴다. 축 결정은 _heatmap_panels 가 한다.
+    #        C 실험은 fold 묶음(cv_T* / cv_S* / final_test)이 묻는 질문이 달라 그림 파일을 분리 저장한다.
+    #        색 범위(vmin, vmax)는 방법 전체에서 하나로 공유한다 (panel 간 비교 가능하게).
+    # 입력 : run_metrics save 대상 run별 지표 / metric 그릴 지표 컬럼명 / out_dir 저장 폴더 / prefix 파일 이름 앞부분
+    #        label colorbar 에 쓸 영문 지표 이름(단위 포함)
+    # 출력 : 없음 (PNG 300 dpi + PDF 저장)
+    m = run_metrics.groupby(['fold', TS, RS, VS], as_index=False)[metric].mean()
+    vmin, vmax = np.nanmin(m[metric]), np.nanmax(m[metric])
+    panels = _heatmap_panels(m, metric)
+    for group in dict.fromkeys(p['group'] for p in panels):           # 묶음별로 그림 하나 (등장 순서 유지)
+        ps = [p for p in panels if p['group'] == group]
+        col_col = ps[0]['col_col']
+        assert all(p['col_col'] == col_col for p in ps), f'묶음 {group!r} 안에서 heatmap 축이 다르다'
+        ncols = min(HEATMAP_NCOLS, len(ps))
+        nrows = int(np.ceil(len(ps) / ncols))
+        n_row_cells = m[RS].nunique()
+        n_col_cells = max(p['data'][col_col].nunique() for p in ps)
+        cell = (PAGE_WIDTH / ncols - 0.55) / n_col_cells              # 셀 한 칸의 폭 (in) — 축 라벨 자리를 뺀 나머지
+        one_fold = len({p['fold'] for p in ps}) == 1                  # 묶음에 fold 가 하나면 제목에서 fold 이름을 뺀다
+        fig, axes = plt.subplots(nrows, ncols, squeeze=False, layout='constrained',
+                                 figsize=(PAGE_WIDTH, nrows * (cell * n_row_cells + 0.95) + 0.3))
+        for ax, p in zip(axes.ravel(), ps):
+            grid = p['data'].pivot(index=RS, columns=col_col, values=metric)
+            im = ax.imshow(grid.to_numpy(), cmap=SEQ_CMAP, vmin=vmin, vmax=vmax, aspect='auto')
+            ax.set_xticks(range(grid.shape[1]), [f'{int(v)}' for v in grid.columns], fontsize=FONT_SIZE - 2)
+            ax.set_yticks(range(grid.shape[0]), [f'{int(v)}' for v in grid.index], fontsize=FONT_SIZE - 2)
+            ax.set_title(p['sub'] if one_fold else f'{p["head"]}: {p["sub"]}')
+            ax.grid(False)
+            for i in range(grid.shape[0]):                            # 셀 값 직접 표기 (대비 보완 · 수치 확인용)
+                for j in range(grid.shape[1]):
+                    v = grid.to_numpy()[i, j]
+                    if np.isfinite(v):
+                        ax.text(j, i, f'{v:.2f}'.lstrip('0'), ha='center', va='center', fontsize=FONT_SIZE - 3,
+                                color='#ffffff' if v > (vmin + vmax) / 2 else '#0b0b0b')
+        for ax in axes.ravel()[len(ps):]:                             # 남는 칸은 비운다
+            ax.axis('off')
+        fig.supxlabel(_AXIS_LABEL[col_col], fontsize=FONT_SIZE)       # 축 이름은 그림 전체에 하나씩만
+        fig.supylabel(_AXIS_LABEL[RS], fontsize=FONT_SIZE)
+        fig.colorbar(im, ax=axes, label=label, fraction=0.03, pad=0.02)
+        os.makedirs(out_dir, exist_ok=True)
+        stem = f'{out_dir}/{prefix}_heatmap_{metric}' + (f'_{group}' if group else '')
+        for ext in ['png', 'pdf']:
+            path = f'{stem}.{ext}'
+            assert not os.path.exists(path), f'이미 그림 파일이 있다 (덮어쓰기 금지): {path}'
+            fig.savefig(path, dpi=DPI)
+        plt.close(fig)
+        print(f'[save] heatmap -> {stem}.png / .pdf')

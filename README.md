@@ -46,7 +46,7 @@ run 길이 1,275~1,300 샘플 (약 140 s, 9.174 Hz). 입력은 단일 채널
 | 실험 | 질문 | 분할 | 상태 |
 |---|---|---|---|
 | **A** | 새 **장력** 설정값에 일반화되는가 | 210 run, 장력 leave-one-level-out 5-fold x seed 5 | ✅ **완료** (비교군 8개 / 변형 23종) |
-| **C** | **저속만 학습**해도 **미학습 고속**에 되는가 | 저속 50~125 학습+CV / 고속 150~200 test | ⬜ 설계 확정, 미실행 (`hyperparameters.md` §13.0) |
+| **C** | **저속만 학습**해도 **미학습 고속**에 되는가 | 저속 50~125 학습+CV(7 fold) / 고속 150~200 **final test** | ✅ **완료** (같은 23종, 8 fold x seed 5) |
 
 ## 코드
 
@@ -59,8 +59,13 @@ code/03_baselines/
   01_stat_ssd.py       R-test 4종 + 이동창 std/기울기 4종
   02_ts2vec.py  03_moment.py  04_cost.py  05_softclt.py  07_tstcc.py  08_simmtm.py
   06_cost_ablation.py  CoST 성분 분해 2종 + 증강 제거 1종
-  09_summary_tables.py 집계 표 4개 생성
+  09_summary_tables.py 집계 표 4개 생성 (A 전용)
+  12_summary_tables_c.py  C 전용 집계 — 묶음을 가로질러 평균하지 않는다
+  10_embeddings.py / 11_embedding_plots.py   임베딩 좌표 -> 그림
 ```
+
+**실험은 인자로 고른다** — `python code/03_baselines/04_cost.py` (A, 기본값) /
+`python code/03_baselines/04_cost.py c` (C). 분할 해석은 `splits.py` 한 곳에 모여 있다.
 
 ## 결과
 
@@ -70,16 +75,42 @@ outputs/03_baselines/_all_methods_full_table.csv   전 지표 + 설정값
 outputs/03_baselines/_all_methods_by_fold.csv      방법 x fold
 outputs/03_baselines/_all_methods_by_fold_seed.csv 방법 x fold x seed
 outputs/03_baselines/<단계>/<방법>_*.csv|png|pdf   방법별 run/fold/summary/config + heatmap + 손실곡선
+
+outputs/04_speed_extrap/_paper_table_c.csv         C 논문 표 — 지표마다 cv_T / cv_S1 / cv_S2 / final_test 4열
+outputs/04_speed_extrap/_all_methods_by_group.csv  방법 x 묶음 (묶음 안에서만 평균)
+outputs/04_speed_extrap/_final_test_by_speed.csv   최종 test 를 속도 150/175/200 으로 쪼갠 표
+outputs/04_speed_extrap/_final_test_by_speed.png   같은 것의 성능 곡선
+outputs/04_speed_extrap/<단계>/<방법>_embedding_*.png  seen/unseen + 테스트 속도별 임베딩
 ```
+
+**C 는 네 단위를 가로질러 평균하지 않는다** — `cv_T`(저속 안 새 장력) / `cv_S1`·`cv_S2`(1수준 속도
+외삽, 학습량이 다름) / `final_test`(최종 목표)는 **묻는 질문이 서로 다르다.**
 
 읽는 법은 `docs/outputs_guide.md`, 각 행이 무엇인지는 `docs/baseline_cases.md`.
 
-## 현재 결론 (A 실험)
+## 현재 결론
+
+### A 실험 (장력 축)
 
 **가장 강한 비교군은 CoST (창 144)** 이고 AUPRC(ns) 0.832±0.147 이다. 그 다음이
 **2차원 통계 기준선(이동창 std+기울기)** 으로 0.718±0.049 — 표현학습 7종 중 CoST·SimMTM 을 뺀
 나머지는 이 단순 기준선보다 못하다. Ablation 에서 **CoST 의 scaling/shift 증강을 제거하면
 전 종합 지표가 개선**된다(0.853±0.157).
+
+### C 실험 (속도 축) — **최종 목표는 성립한다**
+
+저속만 학습하고 미학습 고속에서 평가한 `final_test` 에서 **CoST-W144 가 AUPRC(ns) 0.907,
+오염률 0.001, 진입 오차 4.2 s** 다. **순위 구조는 A 와 같다** — CoST 1위, 2차원 통계 기준선이
+2위(0.847)로 표현학습 5종을 이긴다. 조건 축을 바꿔도 같은 관찰이 재현된다.
+
+예상과 달랐던 것 2가지:
+
+- **미학습 고속이 저속 CV 보다 오히려 쉽다** (23종 중 18종, 평균 +0.079). 미안정 구간 처짐이
+  속도에 비례해 커져 non-steady 가 뚜렷해지는 것으로 보인다. 단 학습량도 96 -> 120 run 으로 달라
+  교란이 섞여 있다.
+- **어려운 조건은 속도 150 이었다.** `MovStd-Slope-fixed` 보존률이 150 에서 0.710, 175·200 에서
+  0.971·0.984 인 반면 **CoST·SimMTM 은 세 속도 모두 0.98 이상**이다. 속도를 뭉뚱그려 보고했으면
+  보이지 않았을 차이다.
 
 **알려진 한계**: 저장소 기본값을 그대로 쓰는 As-published 방침 때문에 **데이터 통과 횟수가
 방법마다 3.17~38.1회로 다르고, 통과 횟수와 AUPRC 가 거의 역순**이다 — 방법 간 성능차에 학습량

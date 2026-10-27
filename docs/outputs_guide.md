@@ -964,3 +964,80 @@ rule1b)·`tstcc_config_choice.md`(TS-TCC) 에 있다.
 | `07_tstcc/` | `_loss.csv` 의 x축이 **`epoch`** 이다 (TS-TCC 는 iteration 훅이 없다). iteration 축으로 환산하려면 `_fold_metrics.csv` 의 `iters_per_epoch`(=10) 를 쓴다. 표현이 **2,560차원**이고 이 방법만 **float64** 로 후단에 들어간다 |
 | `08_simmtm/` | `_loss.csv` 에 **`loss_cl`(대조)·`loss_rb`(복원)** 가 분리돼 있다. x축은 `epoch`, `iters_per_epoch`=42. `CosineAnnealingLR` 이라 **손실 곡선이 끝에서 평탄해지는 것은 수렴의 증거가 아니다**(§9 와 같은 함정) |
 | `01_stat_ssd/` 보정판 2종 | `_config.csv` 의 `R_CRIT_TS`·`R_CRIT_SS` 가 **`None`** 이다 — 원 논문 임계값을 쓰지 않는다. `threshold_source` 열에 그 사실이 적혀 있다. 점수가 R 통계량이 아니라 **GMM 사후확률**이므로 AUROC·AUPRC 를 원 논문판과 직접 비교할 때 주의한다 |
+
+---
+
+# 18. C 실험 산출물 (`outputs/04_speed_extrap/`) — 2026-10-27
+
+A 실험과 **폴더가 분리**돼 있다. 방법·후단·채점은 완전히 같고 **분할만 다르다**
+(저속 50~125 학습 / 미학습 고속 150~200 최종 테스트). 분할 정의는 `hyperparameters.md` §13.0.
+
+## 18.1 가장 큰 차이 — **네 단위를 가로질러 평균하면 안 된다**
+
+A 는 fold 5개가 전부 같은 질문("새 장력 설정값에 일반화되는가")이라 25회를 한 덩어리로 평균해도
+됐다. **C 는 fold 묶음마다 묻는 질문이 다르다.**
+
+| 단위 | fold | 학습 / 검증 | 묻는 것 |
+|---|---|---|---|
+| `cv_T` | `cv_T1`~`cv_T5` | 96 / 24 (둘 다 저속) | 저속 안에서 **새 장력** 에 되는가 (A 와 같은 질문) |
+| `cv_S1` | `cv_S1` | 60 (50,75) / 30 (100) | **1수준 속도 외삽** |
+| `cv_S2` | `cv_S2` | 90 (50,75,100) / 30 (125) | **1수준 속도 외삽** (학습량 증가) |
+| `final_test` | `final_test` | 120 / 90 | **최종 목표. 한 번만 쓴다** |
+
+`cv_S1` 과 `cv_S2` 는 같은 종류의 질문이지만 **학습량이 60 vs 90 run 으로 달라** 묶지 않는다.
+`_paper_table_c.csv` 는 지표마다 이 네 단위를 **별도 열**로 싣는다 (`AUPRC (ns) | final_test` 처럼).
+
+## 18.2 파일
+
+| 파일 | 내용 |
+|---|---|
+| `_paper_table_c.csv` | 방법당 1행. 지표 6종 x 단위 4종 = 24열 + 퇴화 건수 |
+| `_all_methods_by_group.csv` | 방법 x 묶음(`cv_T`/`cv_S`/`final_test`). `__mean`/`__std`/`__foldstd`/`__seedstd` (A 의 §16.1 과 같은 뜻) |
+| `_all_methods_by_fold.csv` | 방법 x fold (seed 평균) |
+| `_all_methods_by_fold_seed.csv` | 방법 x fold x seed — 원자료 |
+| `_final_test_by_speed.csv` | 방법 x 속도(150/175/200). **최종 test 를 속도별로 쪼갠 것** |
+| `_final_test_by_speed.png\|pdf` | 같은 것의 성능 곡선 (본문 표 후보 8종) |
+| `<단계>/<방법>_heatmap_<지표>_<묶음>.png` | 조건별 heatmap. **묶음마다 파일이 따로**다 (아래) |
+| `<단계>/<방법>_embedding_seen_unseen.png` | 학습(저속) vs 미학습(고속) 임베딩 |
+| `<단계>/<방법>_embedding_test_speed.png` | **테스트 속도 150/175/200 을 각각 다른 색**으로 |
+
+## 18.3 `_final_test_by_speed.csv` 의 집계 2종 — 섞어 읽지 않는다
+
+`*_fold_metrics.csv` 의 `pooled_` 는 fold 전체를 한 덩어리로 계산한 값이라 `final_test` 는
+속도 3수준이 **이미 뭉쳐 있다.** 속도별로 쪼개려면 `*_run_metrics.csv` 에서 다시 집계해야 하는데,
+지표에 따라 가능한 것이 다르다.
+
+| 접두사 | 지표 | 뜻 |
+|---|---|---|
+| `pooled_` | 오염률·보존률·precision·recall·F1 | run 별 혼동행렬을 복원해 속도 안에서 **합산**. 본문 표·`cv_*` 와 **같은 의미** |
+| `runmean_` | AUROC·AUPRC·진입 시점 | run 별 값을 **평균**. 점수 분포를 저장하지 않아 pooled 로 복원할 수 없다 (§13.4 A7 과 같은 제약) |
+
+**`runmean_auprc` 를 본문 표의 `pooled_auprc` 와 같은 잣대로 비교하지 않는다.**
+복원식은 `evaluation.derive_precision_recall` 과 같고, 맞는지는 스크립트가 실행할 때마다
+fold 전체로 다시 합산해 저장값과 대조한다 (A 23종 535건 실측 최대 오차 9e-13).
+
+## 18.4 heatmap 축이 묶음마다 다르다
+
+A 는 검증 fold 가 항상 "장력 1수준 x 리와인더 6 x 속도 7" 이라 `(ReWinder x 속도)` 격자가
+유일했다. C 는 fold 마다 고정되는 설정값이 달라, **고정된 설정값은 제목으로 빼고 나머지 두 축으로**
+그린다. ReWinder 는 항상 행이다.
+
+| 묶음 | 축 | subplot |
+|---|---|---|
+| `cv_T` | ReWinder(6) x **속도**(4) | fold 5개 |
+| `cv_S` | ReWinder(6) x **장력**(5) | fold 2개 |
+| `final_test` | ReWinder(6) x **장력**(5) | **속도 3개** (고정된 설정값이 없어 속도로 쪼갠다) |
+
+색 범위(`vmin`/`vmax`)는 **방법 전체에서 하나로 공유**하므로 묶음 간 칸 색을 비교해도 된다.
+
+## 18.5 읽을 때 주의
+
+- **`final_test` 는 한 번만 쓰는 값이다.** 이 값을 보고 설정을 고치면 테스트셋이 오염된다.
+  설정 판단은 `cv_*` 로만 한다.
+- **학습량이 단위마다 다르다** (`cv_S1` 60 / `cv_T` 96 / `cv_S2` 90 / `final_test` 120 run).
+  단위 간 성능 차이에는 **외삽 난이도와 학습량이 섞여 있다.**
+- TS2Vec 계열 4종은 C 에서 `n_iters` 를 **600 으로 고정**했다 (A 는 저장소 자동 규칙).
+  **As-published 에서 벗어난 유일한 지점**이고 이유는 §13.0 에 있다.
+- 임베딩 그림의 `PC1+2` 설명력이 낮으면(예 CoST 43.6%) **그림에 안 보여도 고차원에서 분리돼
+  있을 수 있다.** 2D 진단값은 `_embedding_diagnostics_foldfinal_test_seed0.csv` 에 따로 있고
+  정식 점수가 아니다.

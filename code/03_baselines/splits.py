@@ -97,6 +97,22 @@ def load(name):
     return Split(name)
 
 
+def fold_group(fold):
+    # 역할 : fold 이름을 '같은 질문을 묻는 묶음' 이름으로 바꾼다.
+    #        C 는 cv_T* / cv_S* / final_test 가 서로 다른 질문이라 평균내거나 한 그림에 섞지 않는다
+    #        (hyperparameters.md §13.0 F6). A 는 fold 가 전부 같은 질문이라 묶음이 하나다.
+    # 입력 : fold  분할의 fold 이름 (A 는 정수, C 는 문자열)
+    # 출력 : 묶음 이름 문자열. A 는 빈 문자열 (묶음 구분 없음 — 파일 이름에 접미사가 붙지 않는다)
+    s = str(fold)
+    if s.startswith('cv_T'):
+        return 'cv_T'
+    if s.startswith('cv_S'):
+        return 'cv_S'
+    if s == 'final_test':
+        return 'final_test'
+    return ''
+
+
 def resolve(name, stage):
     # 역할 : 분할 이름과 단계 폴더 이름으로 출력 경로를 만든다. A 와 C 결과가 섞이지 않게 하는 지점이다.
     # 입력 : name 분할 이름 / stage 어댑터별 폴더 이름 (예: '02_ts2vec')

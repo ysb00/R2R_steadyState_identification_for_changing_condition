@@ -1,0 +1,14 @@
+name,value
+DT,0.109
+ENTRY_MIN_CONSEC,10
+N_GMM_COMPONENTS,2
+GMM_COVARIANCE_TYPE,diag
+SPLIT,c
+SEED,0
+N_SEEDS,5
+WINDOW,64
+SPEED_REF,125
+window_mode,speed-rule1b
+ROLL_CIRCUMFERENCE_MM,783.5
+W_RULE,144
+window_used,"{50: np.int64(144), 75: np.int64(96), 100: np.int64(72), 125: np.int64(58), 150: np.int64(48), 175: np.int64(42), 200: np.int64(36)}"

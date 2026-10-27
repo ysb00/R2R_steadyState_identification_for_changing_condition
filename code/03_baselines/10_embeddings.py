@@ -8,9 +8,13 @@
 #        (TS-TCC 2,560차원 x 27만 시점 = 2.8 GB). 체크포인트 300개가 보존돼 있으므로
 #        **학습 없이 encode 만** 다시 한다.
 #
-# 고정 조건 : **fold 1 · seed 0** (연구자 결정). fold 1 은 장력 3 kg 검증 = 외삽이고
-#        전 방법에서 가장 어려운 fold 다 (`_all_methods_by_fold.csv`).
-#        퇴화 사례(§11 문제 11)를 보려면 fold 2 seed 2 를 따로 돌려야 한다 — FOLD/SEED 상수 참조.
+# 고정 조건 : **seed 0**, fold 는 분할마다 다르다 (연구자 결정)
+#        A('tension') : **fold 1** — 장력 3 kg 검증 = 외삽이고 전 방법에서 가장 어려운 fold 다
+#                       (`_all_methods_by_fold.csv`). 퇴화 사례(§11 문제 11)를 보려면
+#                       fold 2 seed 2 를 따로 돌려야 한다 — FOLD/SEED 상수 참조.
+#        C('c')       : **final_test** — 저속 4수준(120 run) 학습 -> 미학습 고속 3수준(90 run) 검증.
+#                       최종 목표와 같은 조건이라 '학습 조건 vs 미학습 조건' 그림이
+#                       그대로 **저속 학습 vs 미학습 고속**이 된다 (2026-10-27 연구자 결정).
 #
 # 투영 : **PCA** (연구자 결정). UMAP/t-SNE 는 하이퍼파라미터가 새 임의값이 되고 군집이
 #        인공물일 수 있다. 그리고 본 후단이 **축정렬 가우시안**(diag GMM)을 가정하므로
@@ -28,10 +32,13 @@
 #   `R-test-calibrated` 는 1차원(PC2 가 없다), `MovStd-Slope-fixed` 는 2차원이라 PCA 가
 #   거의 무손실이다. 원 축을 그대로 저장하고 그림에서 따로 다룬다 (plot 스크립트 참조).
 #
-# 입력 : outputs/merged_data.csv, outputs/03_baselines/folds.csv,
-#        outputs/03_baselines/*/checkpoints/*.pt
-# 출력 : outputs/03_baselines/_embeddings_fold{FOLD}_seed{SEED}.npz
-# 실행 : python code/03_baselines/10_embeddings.py   (repo 루트에서)
+# 입력 : outputs/merged_data.csv, splits.py 가 읽는 fold 파일, <분할 폴더>/*/checkpoints/*.pt
+# 출력 : <분할 폴더>/_embeddings_fold{FOLD}_seed{SEED}.npz
+#        (A -> outputs/03_baselines/ , C -> outputs/04_speed_extrap/)
+# 실험 : 인자로 고른다 — 'tension' (A) / 'c' (C). 어댑터 8개와 같은 규약이다
+# 실행 : python code/03_baselines/10_embeddings.py        (A 실험, 기본값)
+#        python code/03_baselines/10_embeddings.py c      (C 실험)
+#        C 는 **F6(12_summary_tables_c.py) 이후**에 돌린다 — 정식 AUPRC 를 그 표에서 읽는다
 # =============================================================================
 import os, sys, time
 import numpy as np
@@ -43,11 +50,15 @@ from sklearn.preprocessing import StandardScaler
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import evaluation as ev
+import splits
+
+SPLIT = sys.argv[1] if len(sys.argv) > 1 else 'tension'                # 'tension' (A) | 'c' (C)
 
 # =============================================================================
 # hyperparameter
 # =============================================================================
-FOLD, SEED = 1, 0               # [사용자] fold 1 = 장력 3 kg 검증(외삽), seed 0
+FOLD = 1 if SPLIT == 'tension' else 'final_test'    # [사용자] A: 장력 3 kg 검증(외삽) / C: 미학습 고속 검증
+SEED = 0                        # [사용자] seed 0
 STRIDE = 10                     # 시점 추출 간격. **[임의]** — 그림·PCA 용 서브샘플.
                                 # 27만 시점을 다 쓰면 TS-TCC 2,560차원에서 2.8 GB 다.
                                 # 10 이면 2.7만 시점(276 MB)이고 2D PCA·산점도에 충분하다.
@@ -56,8 +67,9 @@ WINDOW = 144                    # 규칙 1b (docs/periodic_disturbance.md §7)
 ENCODE_BATCH = 512              # **[임의]** — 결과에 영향 없음
 DEVICE = 'cuda'
 
-IN_PATH, FOLD_PATH = 'outputs/merged_data.csv', 'outputs/03_baselines/folds.csv'
-OUT = f'outputs/03_baselines/_embeddings_fold{FOLD}_seed{SEED}.npz'
+IN_PATH = 'outputs/merged_data.csv'
+OUT_ROOT = splits.SPEC[SPLIT]['out_dir']
+OUT = f'{OUT_ROOT}/_embeddings_fold{FOLD}_seed{SEED}.npz'
 T1 = 'Film Tension #1 (kg)'
 TS, RS, VS = ev.TS, ev.RS, ev.VS
 
@@ -81,27 +93,32 @@ METHODS = [
 t0 = time.time()
 df = pd.read_csv(IN_PATH, usecols=['run_id', 'k', T1, TS, RS, VS, 'Trigger 4'])
 df['e'] = df[T1] - df[TS]
-folds = pd.read_csv(FOLD_PATH)
+sp = splits.load(SPLIT)
 df = df.sort_values(['run_id', 'k']).reset_index(drop=True)
-run_ids = folds.run_id.tolist()
+run_ids = sp.run_ids
 by_run = {r: g for r, g in df.groupby('run_id', sort=False)}
 e_by_run = {r: by_run[r].e.to_numpy() for r in run_ids}
 lengths = np.array([len(e_by_run[r]) for r in run_ids])
-row_fold = folds.set_index('run_id').loc[run_ids, 'fold_tension'].to_numpy()
+# run 역할을 분할에서 그대로 받는다. C 의 CV fold 는 '학습도 검증도 아닌' run 이 있으므로
+# '학습 = 검증 아닌 전부' 로 두면 안 된다 (어댑터 8개와 같은 규약).
+tr_run, va_run = sp.run_role(FOLD)
+role_of_run = np.where(tr_run, 'train', np.where(va_run, 'val', 'unused'))
 
 # 시점 메타 (서브샘플 후)
 meta = []
-for r, f in zip(run_ids, row_fold):
+for r, role in zip(run_ids, role_of_run):
     g = by_run[r]
     idx = np.arange(0, len(g), STRIDE)
-    meta.append(pd.DataFrame({'run_id': r, 'k': g.k.to_numpy()[idx], 'fold': f,
+    meta.append(pd.DataFrame({'run_id': r, 'k': g.k.to_numpy()[idx], 'role': role,
                               'label': g['Trigger 4'].to_numpy()[idx],
                               'e': g.e.to_numpy()[idx],
                               'tension': g[TS].to_numpy()[idx], 'rewinder': g[RS].to_numpy()[idx],
                               'speed': g[VS].to_numpy()[idx], 'pos': idx}))
 meta = pd.concat(meta, ignore_index=True)
-is_val = (meta.fold == FOLD).to_numpy()
-print(f'[Step 1] 서브샘플 {len(meta)} 시점 (stride {STRIDE}) | 학습 {int((~is_val).sum())} / 검증 {int(is_val.sum())} '
+is_val = (meta.role == 'val').to_numpy()
+is_train = (meta.role == 'train').to_numpy()
+print(f'[Step 1] 분할 {SPLIT} fold {FOLD} seed {SEED} | 서브샘플 {len(meta)} 시점 (stride {STRIDE}) '
+      f'| 학습 {int(is_train.sum())} / 검증 {int(is_val.sum())} / 미사용 {int((~is_train & ~is_val).sum())} '
       f'| 라벨 분포 {dict(meta.label.value_counts().sort_index())} ({time.time()-t0:.1f}s)')
 
 
@@ -147,7 +164,7 @@ def isolate(*subpath):
 def build(kind, method, stage):
     # 역할 : 방법별로 서브샘플 시점의 표현을 만든다. 학습은 하지 않고 체크포인트만 쓴다.
     # 출력 : (n_sub, d) float32
-    ck = f'outputs/03_baselines/{stage}/checkpoints/{method}_fold{FOLD}_seed{SEED}.pt'
+    ck = f'{splits.resolve(SPLIT, stage)}/checkpoints/{method}_fold{FOLD}_seed{SEED}.pt'
 
     if kind == 'rtest':                                     # 1차원 — R 통계량 (학습 없음)
         sys.path.insert(0, HERE)
@@ -292,12 +309,12 @@ for method, stage, kind in METHODS:
     d = z.shape[1]
 
     # 표준화·PCA 는 **학습 fold 로만** 적합한다 (GMM 과 같은 규약)
-    sc = StandardScaler().fit(z[~is_val])
+    sc = StandardScaler().fit(z[is_train])
     zs = sc.transform(z)
     if d >= 2:
         # 전 성분을 적합해 **설명력 곡선** 전체를 기록한다 — PC1+2 만 보면 "나머지가 얼마나
         # 남았는지" 를 알 수 없다. 2D 가 부족한지 판단하려면 50/80/90% 에 몇 개가 필요한지가 필요하다.
-        pf = PCA(n_components=min(d, len(zs[~is_val])), random_state=SEED).fit(zs[~is_val])
+        pf = PCA(n_components=min(d, len(zs[is_train])), random_state=SEED).fit(zs[is_train])
         evr = pf.explained_variance_ratio_
         cum = np.cumsum(evr)
         z2 = pf.transform(zs)[:, :3]                        # PC3 까지 저장 (3D 그림 선택지용)
@@ -321,7 +338,7 @@ for method, stage, kind in METHODS:
         # float64 로 넘긴다 — 고차원에서 float32 는 diag GMM 적합을 깨뜨린다
         # (E[X^2]-E[X]^2 의 자리수 소실. docs/tstcc_config_choice.md §7.5 와 같은 원인)
         zin = np.asarray(zin, dtype=np.float64)
-        g, si, _ = ev.fit_steady_gmm(zin[~is_val], meta.e.to_numpy()[~is_val], SEED)
+        g, si, _ = ev.fit_steady_gmm(zin[is_train], meta.e.to_numpy()[is_train], SEED)
         _, sc = ev.predict_steady(g, si, zin[is_val])
         return float(average_precision_score(y, sc[keep]))
 
@@ -340,22 +357,31 @@ for method, stage, kind in METHODS:
           f'PC1~3 {ev3:5.1%}  50/80/90%% 에 필요한 PC {n50}/{n80}/{n90}개  '
           f'AUPRC(동일 서브샘플) 원차원 {auprc_sub_full:.3f} / 2D {auprc2:.3f} / 3D {auprc3:.3f}  ({time.time()-t0:.0f}s)', flush=True)
 
-# A 실험의 **정식 점수**를 참조용으로 붙인다 (이름에 official 을 박아 진단값과 구분한다)
-full = pd.read_csv('outputs/03_baselines/_all_methods_full_table.csv')[['method', 'pooled_auprc__mean']]
+# 그 분할의 **정식 점수**를 참조용으로 붙인다 (이름에 official 을 박아 진단값과 구분한다)
+#   A : 5 fold x 5 seed 전체 평균 (`_all_methods_full_table.csv`)
+#   C : **그 fold(final_test) 의 seed 평균** (`_all_methods_by_fold.csv`) — 묶음을 가로질러
+#       평균하면 안 되므로(§13.0 F6) fold 단위 값을 쓴다
+if SPLIT == 'tension':
+    full = pd.read_csv(f'{OUT_ROOT}/_all_methods_full_table.csv')[['method', 'pooled_auprc__mean']]
+else:
+    full = pd.read_csv(f'{OUT_ROOT}/_all_methods_by_fold.csv')
+    full = (full[full.fold == FOLD][['method', 'pooled_auprc']]
+            .rename(columns={'pooled_auprc': 'pooled_auprc__mean'}))
 info = (pd.DataFrame(rows).merge(full, on='method', how='left')
         .rename(columns={'pooled_auprc__mean': 'official_auprc_fold_mean'}))
 # 진단값은 **별도 CSV** 로도 저장한다 — 정식 결과 표(_paper_table.csv 등)와 섞지 않는다
-info.assign(caveat=f'diagnostic only: stride {STRIDE} subsample, fold {FOLD} seed {SEED}, single run'
-            ).to_csv(f'outputs/03_baselines/_embedding_diagnostics_fold{FOLD}_seed{SEED}.csv', index=False)
+info.assign(caveat=f'diagnostic only: stride {STRIDE} subsample, split {SPLIT} fold {FOLD} seed {SEED}, single run'
+            ).to_csv(f'{OUT_ROOT}/_embedding_diagnostics_fold{FOLD}_seed{SEED}.csv', index=False)
 
 # =============================================================================
 # Step 3. 저장
 # =============================================================================
 np.savez_compressed(OUT, info=info.to_records(index=False),
-                    label=meta.label.to_numpy(), is_val=is_val, e=meta.e.to_numpy(),
+                    label=meta.label.to_numpy(), is_val=is_val, is_train=is_train, e=meta.e.to_numpy(),
                     speed=meta.speed.to_numpy(), tension=meta.tension.to_numpy(),
                     rewinder=meta.rewinder.to_numpy(), pos=meta.pos.to_numpy(),
-                    run_id=meta.run_id.to_numpy().astype('U16'), fold=meta.fold.to_numpy(),
+                    run_id=meta.run_id.to_numpy().astype('U16'),
+                    role=meta.role.to_numpy().astype('U8'), split=np.array(SPLIT),
                     **store)
 print()
 print(info.to_string(index=False, float_format=lambda x: f'{x:.3f}'))
