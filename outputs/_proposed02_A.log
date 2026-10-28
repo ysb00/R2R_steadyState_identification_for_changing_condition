@@ -1,0 +1,39 @@
+C:\Users\KIMM\research\informs-paper\code\04_proposed\02_cost_dirgate.py:238: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:837.)
+  fr['film_weight_absmean'] = float(model.net.film.weight.abs().mean())
+[Step 1] runs = 210, 입력 (210, 1300, 2) (1.8 s)
+[Step 2] 창 144 (baseline 과 동일) | 평활 = 1회전 P(V): V50:144, V75:96, V100:72, V125:58, V150:48, V175:41, V200:36
+[Step 2] 게이트 분포: 평균 0.491, 5~95% [0.118, 0.707]  (0.5 = 방향 없음)
+[Step 3] CoST-W144-dirgate fold 1 seed 0: 34 s, 손실 0.038 -> 3.116, FiLM |w| 0.0012, steady 판정 비율 0.886, 오염률 0.003, 보존률 0.971
+[Step 3] CoST-W144-dirgate fold 1 seed 1: 27 s, 손실 0.049 -> 3.539, FiLM |w| 0.0010, steady 판정 비율 0.884, 오염률 0.003, 보존률 0.970
+[Step 3] CoST-W144-dirgate fold 1 seed 2: 27 s, 손실 0.035 -> 3.274, FiLM |w| 0.0014, steady 판정 비율 0.886, 오염률 0.003, 보존률 0.971
+[Step 3] CoST-W144-dirgate fold 1 seed 3: 28 s, 손실 0.041 -> 2.899, FiLM |w| 0.0014, steady 판정 비율 0.885, 오염률 0.003, 보존률 0.971
+[Step 3] CoST-W144-dirgate fold 1 seed 4: 28 s, 손실 0.060 -> 3.442, FiLM |w| 0.0016, steady 판정 비율 0.886, 오염률 0.003, 보존률 0.971
+[Step 3] CoST-W144-dirgate fold 2 seed 0: 27 s, 손실 0.037 -> 3.100, FiLM |w| 0.0012, steady 판정 비율 0.882, 오염률 0.003, 보존률 0.992
+[Step 3] CoST-W144-dirgate fold 2 seed 1: 29 s, 손실 0.050 -> 3.534, FiLM |w| 0.0010, steady 판정 비율 0.880, 오염률 0.003, 보존률 0.991
+[Step 3] CoST-W144-dirgate fold 2 seed 2: 28 s, 손실 0.035 -> 3.277, FiLM |w| 0.0015, steady 판정 비율 0.883, 오염률 0.004, 보존률 0.992
+[Step 3] CoST-W144-dirgate fold 2 seed 3: 29 s, 손실 0.041 -> 2.908, FiLM |w| 0.0014, steady 판정 비율 0.881, 오염률 0.003, 보존률 0.992
+[Step 3] CoST-W144-dirgate fold 2 seed 4: 30 s, 손실 0.060 -> 3.433, FiLM |w| 0.0015, steady 판정 비율 0.881, 오염률 0.003, 보존률 0.992
+[Step 3] CoST-W144-dirgate fold 3 seed 0: 33 s, 손실 0.037 -> 3.103, FiLM |w| 0.0012, steady 판정 비율 0.878, 오염률 0.002, 보존률 0.997
+[Step 3] CoST-W144-dirgate fold 3 seed 1: 31 s, 손실 0.050 -> 3.539, FiLM |w| 0.0010, steady 판정 비율 0.873, 오염률 0.001, 보존률 0.996
+[Step 3] CoST-W144-dirgate fold 3 seed 2: 28 s, 손실 0.035 -> 3.249, FiLM |w| 0.0015, steady 판정 비율 0.881, 오염률 0.003, 보존률 0.997
+[Step 3] CoST-W144-dirgate fold 3 seed 3: 27 s, 손실 0.041 -> 2.893, FiLM |w| 0.0014, steady 판정 비율 0.880, 오염률 0.003, 보존률 0.997
+[Step 3] CoST-W144-dirgate fold 3 seed 4: 28 s, 손실 0.060 -> 3.444, FiLM |w| 0.0015, steady 판정 비율 0.867, 오염률 0.001, 보존률 0.994
+[Step 3] CoST-W144-dirgate fold 4 seed 0: 28 s, 손실 0.037 -> 3.095, FiLM |w| 0.0012, steady 판정 비율 0.876, 오염률 0.000, 보존률 0.997
+[Step 3] CoST-W144-dirgate fold 4 seed 1: 28 s, 손실 0.050 -> 3.538, FiLM |w| 0.0010, steady 판정 비율 0.870, 오염률 0.001, 보존률 0.995
+[Step 3] CoST-W144-dirgate fold 4 seed 2: 28 s, 손실 0.035 -> 3.263, FiLM |w| 0.0014, steady 판정 비율 0.879, 오염률 0.002, 보존률 0.997
+[Step 3] CoST-W144-dirgate fold 4 seed 3: 30 s, 손실 0.042 -> 2.917, FiLM |w| 0.0014, steady 판정 비율 0.879, 오염률 0.002, 보존률 0.998
+[Step 3] CoST-W144-dirgate fold 4 seed 4: 28 s, 손실 0.060 -> 3.443, FiLM |w| 0.0015, steady 판정 비율 0.864, 오염률 0.000, 보존률 0.994
+[Step 3] CoST-W144-dirgate fold 5 seed 0: 29 s, 손실 0.037 -> 3.088, FiLM |w| 0.0012, steady 판정 비율 0.874, 오염률 0.002, 보존률 0.998
+[Step 3] CoST-W144-dirgate fold 5 seed 1: 28 s, 손실 0.050 -> 3.540, FiLM |w| 0.0010, steady 판정 비율 0.867, 오염률 0.001, 보존률 0.996
+[Step 3] CoST-W144-dirgate fold 5 seed 2: 29 s, 손실 0.035 -> 3.251, FiLM |w| 0.0014, steady 판정 비율 0.879, 오염률 0.006, 보존률 0.998
+[Step 3] CoST-W144-dirgate fold 5 seed 3: 27 s, 손실 0.042 -> 2.903, FiLM |w| 0.0014, steady 판정 비율 0.881, 오염률 0.007, 보존률 0.998
+[Step 3] CoST-W144-dirgate fold 5 seed 4: 28 s, 손실 0.060 -> 3.444, FiLM |w| 0.0015, steady 판정 비율 0.862, 오염률 0.000, 보존률 0.994
+[save] loss curve -> outputs/03_baselines/10_proposed_cost_setpoint_direction_gate/CoST-W144-dirgate_loss.png / .pdf
+[save] run     -> outputs/03_baselines/10_proposed_cost_setpoint_direction_gate/CoST-W144-dirgate_run_metrics.csv
+[save] fold    -> outputs/03_baselines/10_proposed_cost_setpoint_direction_gate/CoST-W144-dirgate_fold_metrics.csv
+[save] summary -> outputs/03_baselines/10_proposed_cost_setpoint_direction_gate/CoST-W144-dirgate_summary.csv
+[save] config  -> outputs/03_baselines/10_proposed_cost_setpoint_direction_gate/CoST-W144-dirgate_config.csv
+[save] heatmap -> outputs/03_baselines/10_proposed_cost_setpoint_direction_gate/CoST-W144-dirgate_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/03_baselines/10_proposed_cost_setpoint_direction_gate/CoST-W144-dirgate_heatmap_retention_rate.png / .pdf
+[done] CoST-W144-dirgate -> outputs/03_baselines/10_proposed_cost_setpoint_direction_gate

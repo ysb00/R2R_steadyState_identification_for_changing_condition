@@ -16,6 +16,8 @@ Roll-to-Roll 웹 공정에서 **운전 조건이 바뀔 때** 필름 장력의 �
 |---|---|
 | **`docs/research_plan.md`** | 연구 전제·가정·한계, 진행 현황(9절), 결정이 필요한 사항 |
 | **`docs/hyperparameters.md`** | **설정값 전체 + 열려 있는 문제(§11) + 앞으로 할 일(§13)**. §13.0 이 최종 목표 |
+| **`docs/split_description.md`** | **fold 가 어떤 설정값 조건으로 나뉘는가** — A·C 전 fold 의 학습/검증 조건 + 라벨 개수 |
+| **`docs/idea/proposed_ideas_already_implemented.md`** | **제안 방법 아이디어 전체 개요** — 검토·기각·구현 내역과 측정 근거. 개별 설계는 `docs/idea/0*.md` |
 | `docs/research_experiments_plan.md` | 비교군 실험 설계, ablation 설계 |
 | **`docs/baseline_cases.md`** | **비교군 23종이 각각 무엇인가** — 무엇/왜/설정 출처/주의사항 |
 | `docs/outputs_guide.md` | 지표 정의, CSV 컬럼, 그림 읽는 법, 방법별 로직 |

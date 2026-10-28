@@ -1,0 +1,70 @@
+[Step 1] runs = 210, 입력 (210, 1300, 1) / (210, 1300, 2) (0.1 s)
+[Step 2] 창 288 samples (31.4 s) = V50 의 2 회전 | 차수영역 길이 72 = V200 의 2 회전 | 차수 해상도 0.50 차수/bin
+[Step 2] 속도별 seasonal 창: V50:288, V75:192, V100:144, V125:116, V150:96, V175:83, V200:72
+[Step 3] CoST-W288-noscaleshift fold 1 seed 0: 43 s, 손실 0.046 -> 3.965, steady 판정 비율 0.777, 오염률 0.002, 보존률 0.865
+[Step 3] CoST-W288-noscaleshift fold 1 seed 1: 35 s, 손실 0.058 -> 3.905, steady 판정 비율 0.776, 오염률 0.002, 보존률 0.865
+[Step 3] CoST-W288-noscaleshift fold 1 seed 2: 35 s, 손실 0.051 -> 3.992, steady 판정 비율 0.777, 오염률 0.002, 보존률 0.865
+[Step 3] CoST-W288-noscaleshift fold 1 seed 3: 37 s, 손실 0.071 -> 3.614, steady 판정 비율 0.776, 오염률 0.002, 보존률 0.865
+[Step 3] CoST-W288-noscaleshift fold 1 seed 4: 36 s, 손실 0.066 -> 3.619, steady 판정 비율 0.777, 오염률 0.002, 보존률 0.865
+[Step 3] CoST-W288-noscaleshift fold 2 seed 0: 38 s, 손실 0.046 -> 3.965, steady 판정 비율 0.775, 오염률 0.000, 보존률 0.898
+[Step 3] CoST-W288-noscaleshift fold 2 seed 1: 37 s, 손실 0.058 -> 3.908, steady 판정 비율 0.775, 오염률 0.000, 보존률 0.899
+[Step 3] CoST-W288-noscaleshift fold 2 seed 2: 35 s, 손실 0.051 -> 3.997, steady 판정 비율 0.776, 오염률 0.000, 보존률 0.899
+[Step 3] CoST-W288-noscaleshift fold 2 seed 3: 35 s, 손실 0.071 -> 3.626, steady 판정 비율 0.775, 오염률 0.000, 보존률 0.899
+[Step 3] CoST-W288-noscaleshift fold 2 seed 4: 36 s, 손실 0.066 -> 3.628, steady 판정 비율 0.776, 오염률 0.000, 보존률 0.899
+[Step 3] CoST-W288-noscaleshift fold 3 seed 0: 37 s, 손실 0.046 -> 3.955, steady 판정 비율 0.776, 오염률 0.001, 보존률 0.910
+[Step 3] CoST-W288-noscaleshift fold 3 seed 1: 37 s, 손실 0.058 -> 3.915, steady 판정 비율 0.778, 오염률 0.001, 보존률 0.910
+[Step 3] CoST-W288-noscaleshift fold 3 seed 2: 36 s, 손실 0.050 -> 4.004, steady 판정 비율 0.778, 오염률 0.001, 보존률 0.911
+[Step 3] CoST-W288-noscaleshift fold 3 seed 3: 36 s, 손실 0.071 -> 3.610, steady 판정 비율 0.778, 오염률 0.001, 보존률 0.910
+[Step 3] CoST-W288-noscaleshift fold 3 seed 4: 36 s, 손실 0.066 -> 3.623, steady 판정 비율 0.778, 오염률 0.001, 보존률 0.910
+[Step 3] CoST-W288-noscaleshift fold 4 seed 0: 41 s, 손실 0.046 -> 3.951, steady 판정 비율 0.774, 오염률 0.000, 보존률 0.910
+[Step 3] CoST-W288-noscaleshift fold 4 seed 1: 35 s, 손실 0.058 -> 3.903, steady 판정 비율 0.775, 오염률 0.000, 보존률 0.910
+[Step 3] CoST-W288-noscaleshift fold 4 seed 2: 35 s, 손실 0.050 -> 4.001, steady 판정 비율 0.775, 오염률 0.000, 보존률 0.910
+[Step 3] CoST-W288-noscaleshift fold 4 seed 3: 35 s, 손실 0.071 -> 3.616, steady 판정 비율 0.774, 오염률 0.000, 보존률 0.910
+[Step 3] CoST-W288-noscaleshift fold 4 seed 4: 36 s, 손실 0.066 -> 3.620, steady 판정 비율 0.776, 오염률 0.000, 보존률 0.910
+[Step 3] CoST-W288-noscaleshift fold 5 seed 0: 35 s, 손실 0.046 -> 3.953, steady 판정 비율 0.777, 오염률 0.000, 보존률 0.917
+[Step 3] CoST-W288-noscaleshift fold 5 seed 1: 36 s, 손실 0.058 -> 3.904, steady 판정 비율 0.778, 오염률 0.000, 보존률 0.917
+[Step 3] CoST-W288-noscaleshift fold 5 seed 2: 36 s, 손실 0.051 -> 4.008, steady 판정 비율 0.778, 오염률 0.000, 보존률 0.917
+[Step 3] CoST-W288-noscaleshift fold 5 seed 3: 35 s, 손실 0.071 -> 3.635, steady 판정 비율 0.777, 오염률 0.000, 보존률 0.917
+[Step 3] CoST-W288-noscaleshift fold 5 seed 4: 37 s, 손실 0.066 -> 3.626, steady 판정 비율 0.778, 오염률 0.000, 보존률 0.917
+[save] loss curve -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W288-noscaleshift_loss.png / .pdf
+[save] run     -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W288-noscaleshift_run_metrics.csv
+[save] fold    -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W288-noscaleshift_fold_metrics.csv
+[save] summary -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W288-noscaleshift_summary.csv
+[save] config  -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W288-noscaleshift_config.csv
+[save] heatmap -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W288-noscaleshift_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W288-noscaleshift_heatmap_retention_rate.png / .pdf
+[done] CoST-W288-noscaleshift
+[Step 3] CoST-W288-order fold 1 seed 0: 62 s, 손실 0.029 -> 3.886, steady 판정 비율 0.835, 오염률 0.002, 보존률 0.925
+[Step 3] CoST-W288-order fold 1 seed 1: 62 s, 손실 0.040 -> 3.796, steady 판정 비율 0.850, 오염률 0.003, 보존률 0.940
+[Step 3] CoST-W288-order fold 1 seed 2: 64 s, 손실 0.028 -> 4.037, steady 판정 비율 0.869, 오염률 0.003, 보존률 0.953
+[Step 3] CoST-W288-order fold 1 seed 3: 58 s, 손실 0.031 -> 3.264, steady 판정 비율 0.794, 오염률 0.003, 보존률 0.883
+[Step 3] CoST-W288-order fold 1 seed 4: 60 s, 손실 0.037 -> 3.711, steady 판정 비율 0.841, 오염률 0.003, 보존률 0.931
+[Step 3] CoST-W288-order fold 2 seed 0: 58 s, 손실 0.029 -> 3.889, steady 판정 비율 0.833, 오염률 0.000, 보존률 0.960
+[Step 3] CoST-W288-order fold 2 seed 1: 59 s, 손실 0.040 -> 3.792, steady 판정 비율 0.846, 오염률 0.001, 보존률 0.971
+[Step 3] CoST-W288-order fold 2 seed 2: 58 s, 손실 0.027 -> 4.045, steady 판정 비율 0.866, 오염률 0.003, 보존률 0.982
+[Step 3] CoST-W288-order fold 2 seed 3: 59 s, 손실 0.031 -> 3.278, steady 판정 비율 0.793, 오염률 0.000, 보존률 0.917
+[Step 3] CoST-W288-order fold 2 seed 4: 67 s, 손실 0.037 -> 3.716, steady 판정 비율 0.841, 오염률 0.001, 보존률 0.965
+[Step 3] CoST-W288-order fold 3 seed 0: 60 s, 손실 0.029 -> 3.884, steady 판정 비율 0.830, 오염률 0.001, 보존률 0.968
+[Step 3] CoST-W288-order fold 3 seed 1: 59 s, 손실 0.040 -> 3.820, steady 판정 비율 0.846, 오염률 0.001, 보존률 0.982
+[Step 3] CoST-W288-order fold 3 seed 2: 58 s, 손실 0.028 -> 4.041, steady 판정 비율 0.861, 오염률 0.001, 보존률 0.988
+[Step 3] CoST-W288-order fold 3 seed 3: 59 s, 손실 0.032 -> 3.298, steady 판정 비율 0.793, 오염률 0.001, 보존률 0.929
+[Step 3] CoST-W288-order fold 3 seed 4: 58 s, 손실 0.037 -> 3.700, steady 판정 비율 0.842, 오염률 0.001, 보존률 0.979
+[Step 3] CoST-W288-order fold 4 seed 0: 58 s, 손실 0.029 -> 3.890, steady 판정 비율 0.831, 오염률 0.000, 보존률 0.973
+[Step 3] CoST-W288-order fold 4 seed 1: 59 s, 손실 0.040 -> 3.824, steady 판정 비율 0.843, 오염률 0.000, 보존률 0.985
+[Step 3] CoST-W288-order fold 4 seed 2: 58 s, 손실 0.028 -> 4.040, steady 판정 비율 0.860, 오염률 0.000, 보존률 0.994
+[Step 3] CoST-W288-order fold 4 seed 3: 60 s, 손실 0.032 -> 3.283, steady 판정 비율 0.791, 오염률 0.000, 보존률 0.928
+[Step 3] CoST-W288-order fold 4 seed 4: 58 s, 손실 0.036 -> 3.689, steady 판정 비율 0.839, 오염률 0.000, 보존률 0.981
+[Step 3] CoST-W288-order fold 5 seed 0: 58 s, 손실 0.029 -> 3.885, steady 판정 비율 0.831, 오염률 0.000, 보존률 0.973
+[Step 3] CoST-W288-order fold 5 seed 1: 62 s, 손실 0.040 -> 3.811, steady 판정 비율 0.843, 오염률 0.000, 보존률 0.984
+[Step 3] CoST-W288-order fold 5 seed 2: 59 s, 손실 0.028 -> 4.027, steady 판정 비율 0.860, 오염률 0.001, 보존률 0.993
+[Step 3] CoST-W288-order fold 5 seed 3: 59 s, 손실 0.033 -> 3.301, steady 판정 비율 0.793, 오염률 0.000, 보존률 0.935
+[Step 3] CoST-W288-order fold 5 seed 4: 60 s, 손실 0.037 -> 3.687, steady 판정 비율 0.841, 오염률 0.000, 보존률 0.983
+[save] loss curve -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W288-order_loss.png / .pdf
+[save] run     -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W288-order_run_metrics.csv
+[save] fold    -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W288-order_fold_metrics.csv
+[save] summary -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W288-order_summary.csv
+[save] config  -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W288-order_config.csv
+[save] heatmap -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W288-order_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W288-order_heatmap_retention_rate.png / .pdf
+[done] CoST-W288-order
+[done] 제안 아이디어 01 완료 -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal
