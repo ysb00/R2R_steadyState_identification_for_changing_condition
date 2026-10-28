@@ -95,7 +95,7 @@ MovStd-Slope 의 2차원(std, |기울기|)보다도 적다. 결과가 나쁠 것
 | 입력 | 단일 채널 e = `Film Tension #1 (kg)` − `Film-Tension Setting Value (kg)` |
 | 표현 → 시점별 판정 | 시점 단위 표현 방법(TS2Vec, SoftCLT)은 그대로; 나머지는 방법별로 변환 — MOMENT 는 patch(8 샘플) 표현을 해당 시점에 복제, CoST 는 마지막 시점만 내놓으므로 이동창(`sliding_length=1`, causal), TS-TCC·SimMTM 은 이동창 |
 | 평가 방식 | **트랙 A만 사용 (라벨 없음)**: 표현 → 2-군집 GMM → 정의 규칙(e 평균 ≈ 0, 기울기 ≈ 0)으로 steady 군집 지정 → 판정 |
-| 채점 | `Trigger 4` (0 = non-steady, 1 = steady); ambiguous(2)는 채점에서 제외 |
+| 채점 | `Trigger 4` (0 = non-steady, 1 = steady); ambiguous(2)는 채점에서 제외. **보조로** ambiguous 를 가장 가까운 라벨로 흡수한 2클래스 채점도 병행한다 (재학습 없음 — `hyperparameters.md` §13.9) |
 | 하이퍼파라미터 | 각 저장소 기본값 (라벨로 조정하지 않음) |
 | 별도 검증 세트 | 두지 않음 (하이퍼파라미터 조정이 없으므로 학습/평가 2분할) |
 
@@ -152,7 +152,7 @@ MovStd-Slope 의 2차원(std, |기울기|)보다도 적다. 결과가 나쁠 것
 | 2-군집 GMM 학습 | 학습 fold 표현으로 학습 | – |
 | steady 군집 지정 규칙 | 학습 fold에서 결정 | – |
 | 판정 | – | 학습된 인코더·GMM을 그대로 적용 |
-| 채점 | – | `Trigger 4`로 채점 (ambiguous 제외) |
+| 채점 | – | `Trigger 4`로 채점 (ambiguous 제외; 보조 모드는 흡수 — §13.9) |
 
 - 통계 SSD: 학습 불필요, 원 논문·기본 임계값 사용, 동일 검증 fold에서 평가.
 - MOMENT: 추가 학습 없음, GMM과 steady 군집 지정만 학습 fold에서 수행.

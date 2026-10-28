@@ -131,6 +131,7 @@ tstcc_aug.permutation = _permutation_numpy_compat                    # DataTrans
 
 
 SPLIT = sys.argv[1] if len(sys.argv) > 1 else 'tension'   # 'tension' (A) | 'c' (C)
+INFER = splits.set_amb_mode(sys.argv[2:])   # 2번째 인자 'amb' -> ambiguous 포함 채점 + 재학습 없이 추론만
 # =============================================================================
 # hyperparameter
 # =============================================================================
@@ -149,6 +150,7 @@ DEVICE = 'cuda'                 # 저장소 기본값 (main.py --device)
 
 IN_PATH = 'outputs/merged_data.csv'
 OUT_DIR = splits.resolve(SPLIT, '07_tstcc')
+CKPT_DIR = splits.ckpt_dir(SPLIT, '07_tstcc')   # 인코더를 읽는 곳 (추론 모드에서도 기존 실험 것을 쓴다)
 METHOD = 'TS-TCC'
 
 T1 = 'Film Tension #1 (kg)'     # 원본 컬럼명 (변경하지 않음)
@@ -268,7 +270,8 @@ print(f'[Step 2] 증강 (Epilepsy config): weak = scaling(loc=2.0, sigma={config
 #         학습 fold 표현으로 트랙 A 후단(GMM)을 적합한 뒤 검증 fold 에 적용한다
 # =============================================================================
 os.makedirs(OUT_DIR, exist_ok=True)
-os.makedirs(f'{OUT_DIR}/checkpoints', exist_ok=True)
+if not INFER:                                                       # 추론 모드는 체크포인트를 쓰지 않는다
+    os.makedirs(f'{OUT_DIR}/checkpoints', exist_ok=True)
 if os.path.exists(f'{OUT_DIR}/{METHOD}_fold_metrics.csv'):
     print(f'[Step 3] {METHOD}: 이미 결과가 있어 건너뛴다 (다시 돌리려면 해당 파일들을 먼저 지울 것)')
     sys.exit(0)
@@ -278,7 +281,9 @@ for f in sp.folds:
     # C 실험에서는 '학습 = 검증 아닌 전부' 가 아니다 (고속 run 은 CV fold 에서 미사용)
     is_train_run, is_val_run = sp.run_role(f)
     is_train_pt, is_val_pt = sp.point_role(f, lengths)
-    x_train = np.concatenate([win_by_run[r] for r, v in zip(run_ids, is_val_run) if not v])
+    # 추론 모드에서는 학습 샘플이 필요 없다 (증강 계산이 비싸므로 건너뛴다)
+    x_train = None if INFER else np.concatenate([win_by_run[r]
+                                                 for r, v in zip(run_ids, is_val_run) if not v])
     for seed in range(SEED, SEED + N_SEEDS):
         t0 = time.time()
         # 시드 초기화 — main.py:52-58 과 동일하게 둔다 (저장소 방식)
@@ -286,6 +291,30 @@ for f in sp.folds:
         torch.backends.cudnn.deterministic = False
         torch.backends.cudnn.benchmark = False
         np.random.seed(seed)
+
+        if INFER:                                                   # 재학습 없이 저장된 인코더만 불러온다
+            ck = f'{CKPT_DIR}/{METHOD}_fold{f}_seed{seed}.pt'
+            assert os.path.exists(ck), f'체크포인트가 없다: {ck} (먼저 같은 분할로 학습을 돌릴 것)'
+            model = base_Model(configs).to(DEVICE)
+            model.load_state_dict(torch.load(ck, map_location=DEVICE)['model_state_dict'])
+            # tc_model 은 표현 추출에 쓰이지 않는다 (encode_windows 는 base_Model 만 쓴다)
+            z = np.concatenate([encode_windows(model, e_by_run[r], WINDOW, ENCODE_BATCH) for r in run_ids])
+            gmm, sidx, emeans = ev.fit_steady_gmm(z[is_train_pt], e_flat[is_train_pt], seed)
+            pred, score = ev.predict_steady(gmm, sidx, z[is_val_pt])
+            r, fr = ev.score_fold(id_flat[is_val_pt], pred, score, METHOD, f, seed)
+            del z
+            fr['window'], fr['features_len'], fr['repr_dims'] = WINDOW, FEATURES_LEN, REPR_DIMS
+            fr['total_sec'] = time.time() - t0
+            fr['steady_cluster'], fr['e_mean_c0'], fr['e_mean_c1'] = sidx, emeans[0], emeans[1]
+            run_m.append(r), fold_m.append(fr)
+            ev.append_progress(OUT_DIR, METHOD, 'progress_fold', fr)
+            ev.append_progress(OUT_DIR, METHOD, 'progress_run', r)
+            print(f'[Step 3] {METHOD} fold {f} seed {seed}: 체크포인트 재사용 (학습 생략), '
+                  f'전체 {time.time() - t0:.0f} s, '
+                  f'군집별 e 평균 {np.round(emeans, 3)} -> steady = 군집 {sidx}, '
+                  f'steady 판정 비율 {pred.mean():.3f}, 오염률 {fr.pooled_contamination_rate.iloc[0]:.3f}, '
+                  f'보존률 {fr.pooled_retention_rate.iloc[0]:.3f}', flush=True)
+            continue
 
         # 저장소 원본 Dataset 에 넣는다. 증강은 여기서 한 번 계산되어 전 epoch 재사용된다.
         # 라벨은 자기지도 모드에서 쓰이지 않으므로 0 으로 채운다 (Dataset 이 요구하는 형식).
@@ -349,9 +378,10 @@ for f in sp.folds:
 # Step 4. 산출물 저장
 # =============================================================================
 run_m, fold_m = pd.concat(run_m, ignore_index=True), pd.concat(fold_m, ignore_index=True)
-ev.plot_loss_curves(pd.concat(loss_m, ignore_index=True), OUT_DIR, METHOD,
-                    'TC + contextual contrasting loss', x_col='epoch',
-                    xlabel='Epoch (TS-TCC 는 iteration 손실 훅이 없다 — iters_per_epoch 는 fold_metrics 참조)')
+if not INFER:                                                       # 추론 모드는 학습하지 않아 손실 곡선이 없다
+    ev.plot_loss_curves(pd.concat(loss_m, ignore_index=True), OUT_DIR, METHOD,
+                        'TC + contextual contrasting loss', x_col='epoch',
+                        xlabel='Epoch (TS-TCC 는 iteration 손실 훅이 없다 — iters_per_epoch 는 fold_metrics 참조)')
 ev.save_results(OUT_DIR, METHOD, run_m, fold_m,
                 {**ev.EVAL_CONFIG, 'SPLIT': SPLIT, 'SEED': SEED, 'N_SEEDS': N_SEEDS,
                  'WINDOW': WINDOW, 'ROLL_CIRCUMFERENCE_MM': ROLL_CIRCUMFERENCE_MM,

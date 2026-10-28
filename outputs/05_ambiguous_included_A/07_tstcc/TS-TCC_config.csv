@@ -1,0 +1,39 @@
+name,value
+DT,0.109
+ENTRY_MIN_CONSEC,10
+N_GMM_COMPONENTS,2
+GMM_COVARIANCE_TYPE,diag
+SPLIT,tension
+SEED,0
+N_SEEDS,5
+WINDOW,144
+ROLL_CIRCUMFERENCE_MM,783.5
+config_base,Epilepsy (단일 채널·길이 178·kernel 8/stride 1 — docs/tstcc_config_choice.md)
+FEATURES_LEN,20
+REPR_DIMS,2560
+repr_form,특징맵 평탄화 (TS-TCC 자신의 분류 헤드와 같은 형태)
+repr_dtype,"float64 — float32 로는 GMM 적합이 실패한다(퇴화 차원 + 2,560 차원에서의 자리수 소실). 다른 비교군은 float32. 모델 선택이 아니라 수치 정밀도 보정"
+NUM_EPOCH,40
+BATCH_SIZE,128
+LR,0.0003
+BETAS,"(0.9, 0.99)"
+WEIGHT_DECAY,0.0003
+DROP_LAST,True
+DROPOUT,0.35
+KERNEL_SIZE,8
+STRIDE,1
+FINAL_OUT_CHANNELS,128
+TC_HIDDEN_DIM,100
+TC_TIMESTEPS,10
+NTXENT_TEMPERATURE,0.2
+AUG_jitter_scale_ratio,0.001
+AUG_jitter_ratio,0.001
+AUG_max_seg,5
+AUG_note,"scaling() 의 곱셈 인자는 N(loc=2.0, sigma) 다 — weak view 는 신호를 약 2배로 키운다"
+LAMBDA_TC,1
+LAMBDA_NTXENT,0.7
+ENCODE_BATCH,512
+DEVICE,cuda
+repo,emadeldeen24/TS-TCC
+commit,15bdfd6eced6aeb6c638839828effe1b4b2ea391
+LABEL_MODE,ambiguous(2) 를 시간상 가장 가까운 라벨로 흡수해 2클래스로 채점 (동점은 transient). 재학습 없이 저장된 체크포인트로 추론만 함

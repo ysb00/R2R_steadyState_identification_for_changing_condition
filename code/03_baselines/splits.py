@@ -18,6 +18,15 @@
 # 결과 저장 위치가 분할마다 다르다 — A 는 outputs/03_baselines/, C 는 outputs/04_speed_extrap/.
 # 연구자 지시: C 결과가 A 결과와 섞이지 않게 별도 폴더에 둔다.
 #
+# ambiguous 포함 모드 ('amb') — 2026-10-28 연구자 결정. **기존 동작에 덧붙인 것이고 바꾸지 않는다**
+#   기본 채점은 `Trigger 4 == 2` (ambiguous) 를 뺀다. 이 모드를 켜면 ambiguous 를 시간상
+#   **가장 가까운 라벨**로 흡수해 2클래스로 채점한다 (규칙은 evaluation._nearest_label).
+#   **재학습하지 않는다** — 저장된 인코더로 추론만 다시 한다. 그래서 플래그 하나가 세 가지를 한다:
+#     ① 라벨 해석      evaluation._labels() 가 AMB_INCLUDED 를 보고 흡수본을 돌려준다
+#     ② 결과 저장 위치  resolve() 가 AMB_OUT_DIR 로 간다 — 기존 결과와 섞이지 않게 루트를 분리
+#     ③ 체크포인트 출처 ckpt_dir() 은 **항상 기존 루트**를 가리킨다 (새로 만들지 않는다)
+#   이전 결정 C5("ambiguous 보조 평가 불필요", docs/hyperparameters.md §13.3)를 뒤집은 것이다.
+#
 # 사용법 (어댑터 공통)
 #   import splits
 #   sp = splits.load(SPLIT)                       # SPLIT = 'tension' | 'c'
@@ -25,6 +34,7 @@
 #   for f in sp.folds:
 #       tr_run, va_run = sp.run_role(f)           # (n_run,) bool 2개
 #       tr_pt,  va_pt  = sp.point_role(f, lengths)  # 시점 단위로 펼친 것
+#   INFER = splits.set_amb_mode(sys.argv[2:])     # 2번째 인자가 'amb' 면 ambiguous 포함 추론
 # =============================================================================
 import os
 import numpy as np
@@ -115,6 +125,45 @@ def fold_group(fold):
 
 def resolve(name, stage):
     # 역할 : 분할 이름과 단계 폴더 이름으로 출력 경로를 만든다. A 와 C 결과가 섞이지 않게 하는 지점이다.
+    #        ambiguous 포함 모드(set_amb_mode)에서는 **별도 루트**로 간다 — 기존 결과를 덮지 않는다.
     # 입력 : name 분할 이름 / stage 어댑터별 폴더 이름 (예: '02_ts2vec')
     # 출력 : 출력 디렉터리 경로 (예: 'outputs/04_speed_extrap/02_ts2vec')
-    return f'{SPEC[name]["out_dir"]}/{stage}'
+    return f'{out_root(name)}/{stage}'
+
+
+# =============================================================================
+# ambiguous 포함 모드 (2026-10-28 추가) — 위 헤더의 설명 참조
+# =============================================================================
+AMB_INCLUDED = False              # set_amb_mode() 만 이 값을 바꾼다. 기본값 False = 기존 동작 그대로
+AMB_OUT_DIR = {'tension': 'outputs/05_ambiguous_included_A',    # A 실험 재추론 결과
+               'c':       'outputs/06_ambiguous_included_C'}    # C 실험 재추론 결과
+AMB_TOKEN = 'amb'                 # CLI 에서 모드를 켜는 토큰 (분할 이름 **뒤에** 온다)
+
+
+def set_amb_mode(argv_rest):
+    # 역할 : 어댑터·집계 스크립트 공통 — 분할 이름 뒤에 'amb' 가 붙었는지 보고 전역 모드를 켠다.
+    #        분할 이름은 기존대로 `sys.argv[1]` 이 읽으므로 **기존 호출 방식이 그대로 동작한다**
+    #        (`python ... 04_cost.py c` 는 argv_rest 가 비어 있어 False).
+    # 입력 : argv_rest  sys.argv[2:] (분할 이름을 뺀 나머지)
+    # 출력 : True 면 ambiguous 포함 + 재학습 없이 추론만. 전역 AMB_INCLUDED 도 함께 선다
+    global AMB_INCLUDED
+    unknown = [t for t in argv_rest if t not in (AMB_TOKEN, f'--{AMB_TOKEN}')]
+    if unknown:
+        raise ValueError(f'알 수 없는 인자 {unknown}. 쓸 수 있는 것: {AMB_TOKEN!r}')
+    AMB_INCLUDED = len(argv_rest) > 0
+    return AMB_INCLUDED
+
+
+def out_root(name):
+    # 역할 : 분할의 결과 루트. ambiguous 포함 모드면 별도 루트를 돌려준다.
+    # 입력 : name 분할 이름 ('tension' | 'c')
+    # 출력 : 루트 경로 문자열
+    return AMB_OUT_DIR[name] if AMB_INCLUDED else SPEC[name]['out_dir']
+
+
+def ckpt_dir(name, stage):
+    # 역할 : 학습된 인코더를 **읽는** 곳. ambiguous 포함 모드에서도 **기존 실험의 체크포인트**를 쓴다
+    #        — 재학습하지 않는 것이 이 모드의 전제이므로 out_root 를 따라가면 안 된다.
+    # 입력 : name 분할 이름 / stage 단계 폴더 이름 (예: '04_cost')
+    # 출력 : 체크포인트 폴더 경로 (예: 'outputs/04_speed_extrap/04_cost/checkpoints')
+    return f'{SPEC[name]["out_dir"]}/{stage}/checkpoints'

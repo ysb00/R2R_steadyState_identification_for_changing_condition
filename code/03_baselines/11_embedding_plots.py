@@ -81,9 +81,10 @@ import evaluation as ev                      # rcParams(논문 스타일) · SEQ
 import splits
 
 SPLIT = sys.argv[1] if len(sys.argv) > 1 else 'tension'                # 'tension' (A) | 'c' (C)
+INFER = splits.set_amb_mode(sys.argv[2:])   # 2번째 인자 'amb' -> ambiguous 포함 모드의 npz 를 읽고 같은 루트에 그린다
 FOLD = 1 if SPLIT == 'tension' else 'final_test'                       # 10_embeddings.py 와 같은 값
 SEED = 0
-OUT_ROOT = splits.SPEC[SPLIT]['out_dir']
+OUT_ROOT = splits.out_root(SPLIT)
 NPZ = f'{OUT_ROOT}/_embeddings_fold{FOLD}_seed{SEED}.npz'
 
 # 그림 A 에서 '학습 조건 vs 미학습 조건' 을 가르는 설정값 — 분할마다 다르다
@@ -110,6 +111,8 @@ label, is_val = d['label'], d['is_val']
 # 학습 = '검증이 아닌 전부' 가 아니다 (C 의 CV fold 에는 미사용 run 이 있다). 분할이 준 역할을 쓴다.
 is_train = d['is_train'] if 'is_train' in d else ~is_val
 speed, tension, run_id, pos = d['speed'], d['tension'], d['run_id'], d['pos']
+# ambiguous 포함 모드의 npz 에는 라벨 2 가 없다 (전부 0/1 로 흡수됨) -> 범례에서 그 항목을 뺀다
+HAS_AMB = bool((label == 2).any())
 CONTRAST_VALS = {'tension': tension, 'speed': speed}[CONTRAST[0]]      # 그림 A 의 seen/unseen 목록용
 OFFICIAL = ('official_auprc_fold_mean' if 'official_auprc_fold_mean' in info.columns else 'auprc_full')
 
@@ -188,8 +191,9 @@ for _, r in info.iterrows():
         Line2D([], [], color=C_TRANS, marker='o', ls='', ms=4, alpha=0.5, label='seen . transient'),
         Line2D([], [], color=C_STEADY, marker='x', ls='', ms=5, mew=1.2, label='unseen . steady'),
         Line2D([], [], color=C_TRANS, marker='x', ls='', ms=5, mew=1.2, label='unseen . transient'),
-        Line2D([], [], color=C_AMB, marker='o', ls='', ms=4, alpha=0.5, label='ambiguous (excluded)'),
-    ], loc='outside lower center', ncol=5, frameon=False,
+    ] + ([Line2D([], [], color=C_AMB, marker='o', ls='', ms=4, alpha=0.5, label='ambiguous (excluded)')]
+         if HAS_AMB else []),                       # ambiguous 포함 모드에서는 이 범주가 존재하지 않는다
+        loc='outside lower center', ncol=5 if HAS_AMB else 4, frameon=False,
         fontsize=ev.FONT_SIZE - 1, handletextpad=0.4, borderpad=0.2, columnspacing=1.2)
     base = f'{OUT_ROOT}/{stage}/{method}_embedding_seen_unseen'
     fig.savefig(f'{base}.png', dpi=ev.DPI); fig.savefig(f'{base}.pdf'); plt.close(fig)

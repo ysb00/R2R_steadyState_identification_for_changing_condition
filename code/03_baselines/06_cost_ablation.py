@@ -55,6 +55,9 @@ from utils import init_dl_program                                       # 외부
 
 
 SPLIT = sys.argv[1] if len(sys.argv) > 1 else 'tension'   # 'tension' (A) | 'c' (C)
+INFER = splits.set_amb_mode(sys.argv[2:])   # 2번째 인자 'amb' -> ambiguous 포함 채점 + 재학습 없이 추론만
+# Ablation A 는 원래부터 재학습이 없다. Ablation B 도 추론 모드에서는 기존 noscaleshift 체크포인트를
+# 불러 쓴다 — 즉 **같은 분할로 06_cost_ablation.py 를 먼저 돌려 두어야** 한다.
 # =============================================================================
 # hyperparameter — 창 길이와 증강을 뺀 나머지는 04_cost.py 와 완전히 동일하다
 # =============================================================================
@@ -75,7 +78,9 @@ COMPONENT_DIMS = REPR_DIMS // 2  # = 160. 앞 160 = 추세, 뒤 160 = 계절
 
 IN_PATH = 'outputs/merged_data.csv'
 
-COST_DIR = splits.resolve(SPLIT, '04_cost')       # 체크포인트 출처도 같은 분할이어야 한다
+COST_DIR = splits.resolve(SPLIT, '04_cost')       # Step 5 가 읽는 CoST-W144 **결과** 폴더
+COST_CKPT = splits.ckpt_dir(SPLIT, '04_cost')     # CoST-W144 **체크포인트** 출처. 같은 분할이어야 한다
+CKPT_DIR = splits.ckpt_dir(SPLIT, '06_cost_ablation')   # noscaleshift 체크포인트 출처 (추론 모드)
 OUT_DIR = splits.resolve(SPLIT, '06_cost_ablation')
 BASE_METHOD = f'CoST-W{WINDOW}'                                         # 비교 기준 (이미 실행됨)
 
@@ -152,7 +157,7 @@ if todo_a:
         is_train_pt, is_val_pt = sp.point_role(f, lengths)
         for seed in range(SEED, SEED + N_SEEDS):
             t0 = time.time()
-            ckpt = f'{COST_DIR}/checkpoints/{BASE_METHOD}_fold{f}_seed{seed}.pt'
+            ckpt = f'{COST_CKPT}/{BASE_METHOD}_fold{f}_seed{seed}.pt'
             assert os.path.exists(ckpt), f'체크포인트가 없다: {ckpt} (04_cost.py 를 먼저 실행할 것)'
             init_dl_program(0 if DEVICE == 'cuda' else 'cpu', seed=seed)
             model = new_model()
@@ -191,9 +196,10 @@ else:
 # =============================================================================
 method_b = f'{BASE_METHOD}-noscaleshift'
 if not os.path.exists(f'{OUT_DIR}/{method_b}_fold_metrics.csv'):
-    cost_module.PretrainDataset = NoScaleShiftDataset                   # shim 적용 (원본 미수정)
-    print(f'[Step 4] shim 적용: PretrainDataset.transform = jitter only (scale·shift 제거)')
-    os.makedirs(f'{OUT_DIR}/checkpoints', exist_ok=True)
+    if not INFER:                                                       # 추론 모드는 학습하지 않으므로 shim 도 불필요
+        cost_module.PretrainDataset = NoScaleShiftDataset               # shim 적용 (원본 미수정)
+        print(f'[Step 4] shim 적용: PretrainDataset.transform = jitter only (scale·shift 제거)')
+        os.makedirs(f'{OUT_DIR}/checkpoints', exist_ok=True)
     run_m, fold_m, loss_m = [], [], []
     for f in sp.folds:
         is_train_run, is_val_run = sp.run_role(f)
@@ -206,6 +212,20 @@ if not os.path.exists(f'{OUT_DIR}/{method_b}_fold_metrics.csv'):
                          output_dims=REPR_DIMS, device=DEVICE, lr=LR, batch_size=BATCH_SIZE,
                          after_iter_callback=lambda _m, l: iter_loss.append(l),
                          after_epoch_callback=lambda m, _l: epoch_iters.append(m.n_iters))
+            if INFER:                                       # 재학습 없이 저장된 인코더만 불러온다
+                ck = f'{CKPT_DIR}/{method_b}_fold{f}_seed{seed}.pt'
+                assert os.path.exists(ck), f'체크포인트가 없다: {ck} (먼저 같은 분할로 학습을 돌릴 것)'
+                model.load(ck)
+                z = encode_all(model)
+                r, fr = evaluate(z, method_b, f, seed, is_train_pt, is_val_pt,
+                                 {'window': WINDOW, 'ablation': 'no scale/shift aug', 'retrained': True,
+                                  'total_sec': time.time() - t0})
+                run_m.append(r), fold_m.append(fr)
+                ev.append_progress(OUT_DIR, method_b, 'progress_fold', fr)
+                print(f'[Step 4] fold {f} seed {seed}: 체크포인트 재사용 (학습 생략), '
+                      f'전체 {time.time() - t0:.0f} s, 오염률 {fr.pooled_contamination_rate.iloc[0]:.3f}, '
+                      f'보존률 {fr.pooled_retention_rate.iloc[0]:.3f}', flush=True)
+                continue
             loss_log = model.fit(x[is_train_run], n_iters=N_ITERS, verbose=False)
             t_fit = time.time() - t0
             model.save(f'{OUT_DIR}/checkpoints/{method_b}_fold{f}_seed{seed}.pt')
@@ -225,7 +245,8 @@ if not os.path.exists(f'{OUT_DIR}/{method_b}_fold_metrics.csv'):
                   f'{np.mean(iter_loss[-20:]):.3f}, 오염률 {fr.pooled_contamination_rate.iloc[0]:.3f}, '
                   f'보존률 {fr.pooled_retention_rate.iloc[0]:.3f}', flush=True)
     run_m, fold_m = pd.concat(run_m, ignore_index=True), pd.concat(fold_m, ignore_index=True)
-    ev.plot_loss_curves(pd.concat(loss_m, ignore_index=True), OUT_DIR, method_b, 'CoST contrastive loss')
+    if not INFER:                                           # 추론 모드는 학습하지 않아 손실 곡선이 없다
+        ev.plot_loss_curves(pd.concat(loss_m, ignore_index=True), OUT_DIR, method_b, 'CoST contrastive loss')
     ev.save_results(OUT_DIR, method_b, run_m, fold_m,
                     {**ev.EVAL_CONFIG, 'SPLIT': SPLIT, 'SEED': SEED, 'N_SEEDS': N_SEEDS, 'WINDOW': WINDOW,
                      'N_ITERS': N_ITERS, 'BATCH_SIZE': BATCH_SIZE, 'LR': LR, 'REPR_DIMS': REPR_DIMS,

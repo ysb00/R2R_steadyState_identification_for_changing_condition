@@ -40,8 +40,12 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import evaluation as ev
 import splits
 
-OUT_DIR = 'outputs/04_speed_extrap'
-A_TABLE = 'outputs/03_baselines/_all_methods_full_table.csv'   # 방법 분류(category·table_role)의 출처
+# 'amb' 를 붙이면 ambiguous 포함 재추론 결과(outputs/06_ambiguous_included_C)를 집계한다.
+# 인자가 없으면 **기존 그대로** outputs/04_speed_extrap 을 집계한다 (C 전용 스크립트라 분할은 고정).
+splits.set_amb_mode(sys.argv[1:])
+OUT_DIR = splits.out_root('c')
+# 방법 분류(category·table_role)의 출처 — 같은 모드의 A 집계 표를 읽는다
+A_TABLE = f"{splits.out_root('tension')}/_all_methods_full_table.csv"
 GROUP_ORDER = ['cv_T', 'cv_S', 'final_test']                   # 묶음을 싣는 순서
 PAPER_UNITS = ['cv_T', 'cv_S1', 'cv_S2', 'final_test']         # ④ 의 열 단위 — cv_S 는 두 fold 를 나눠 싣는다
                                                                # (학습량이 달라 평균내면 둘이 섞인다)

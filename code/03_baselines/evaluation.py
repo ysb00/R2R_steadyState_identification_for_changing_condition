@@ -103,16 +103,72 @@ METHOD_STYLE = {
 # 함수
 # =============================================================================
 _LABEL_CACHE = None
+_LABEL_CACHE_AMB = None           # ambiguous 포함 모드용 (2026-10-28 추가). 모드마다 따로 캐시한다
+
+
+def _nearest_label(v):
+    # 역할 : ambiguous(2) 를 **시간상 가장 가까운 비-ambiguous 시점의 라벨**로 바꾼다
+    #        (ambiguous 포함 모드 전용. 2026-10-28 연구자 결정).
+    #        이 규칙 하나가 "transient 에 가까우면 transient, steady 에 가까우면 steady" 를 모두 덮는다:
+    #          0 ... [2 2 2 2 2 2] ... 1   -> 앞 절반 0 / 뒤 절반 1  (구간 179개, 정확히 1/2 분할)
+    #          run 시작 [2 2 2 2] 0 ...    -> 전부 0   (구간 84개. 한쪽에만 이웃이 있으면 그 라벨)
+    #          run 시작 [2 2 2 2] 1 ...    -> 전부 1   (구간 20개. transient 가 아예 없는 run)
+    #          그 밖 (0-0 / 1-1 / 1-0 이웃) -> 같은 규칙으로 자동 처리  (구간 5개)
+    #        **동점 처리** — 길이가 홀수인 구간(288개 중 133개)은 한가운데 1개 시점이 양쪽에서
+    #        거리가 같다. 이때는 **transient(0)** 로 보낸다. 오염률(= steady 로 판정한 시점 중 실제
+    #        non-steady)이 본 연구의 최우선 지표라, 모호한 시점을 steady 쪽에 얹지 않는 쪽을 택한다.
+    # 입력 : v (n,) k 순서로 정렬된 한 run 의 라벨 (0/1/2)
+    # 출력 : (n,) 0/1 만 남은 라벨. 입력에 2 가 없으면 그대로다
+    idx = np.flatnonzero(v != 2)
+    if len(idx) == 0 or len(idx) == len(v):
+        return v.copy()                                  # 전부 ambiguous 이거나 ambiguous 가 없는 run
+    pos = np.arange(len(v))
+    j = np.searchsorted(idx, pos)                        # pos 이상인 첫 비-ambiguous 의 idx 내 위치
+    jl, jr = np.clip(j - 1, 0, len(idx) - 1), np.clip(j, 0, len(idx) - 1)
+    dl = np.where(j == 0, np.inf, pos - idx[jl])         # 왼쪽 이웃까지 거리 (없으면 inf)
+    dr = np.where(j >= len(idx), np.inf, idx[jr] - pos)  # 오른쪽 이웃까지 거리 (없으면 inf)
+    ll, rl = v[idx[jl]], v[idx[jr]]
+    out = np.where(dl < dr, ll, np.where(dr < dl, rl, np.minimum(ll, rl)))   # 동점 -> 작은 쪽 = 0
+    return out.astype(v.dtype)
 
 
 def _labels():
     # 역할 : `Trigger 4` 라벨 표를 읽어 캐시한다. 라벨을 읽는 유일한 지점 (라벨 누출 차단)
-    # 입력 : 없음 (MERGED_PATH 를 읽는다)
+    #        ambiguous 포함 모드(splits.AMB_INCLUDED)에서는 2 를 _nearest_label 로 흡수한 표를 준다.
+    #        **읽는 지점이 여기 하나뿐이므로, 모드 전환도 여기 한 줄로 끝난다** — 채점·그림·진단이
+    #        전부 이 함수를 거치므로 라벨 해석이 갈라지지 않는다.
+    # 입력 : 없음 (MERGED_PATH 와 splits.AMB_INCLUDED 를 읽는다)
     # 출력 : DataFrame [run_id, k, `Trigger 4`]
-    global _LABEL_CACHE
-    if _LABEL_CACHE is None:
-        _LABEL_CACHE = pd.read_csv(MERGED_PATH, usecols=['run_id', 'k', LABEL_COL])
-    return _LABEL_CACHE
+    global _LABEL_CACHE, _LABEL_CACHE_AMB
+    if not splits.AMB_INCLUDED:
+        if _LABEL_CACHE is None:
+            _LABEL_CACHE = pd.read_csv(MERGED_PATH, usecols=['run_id', 'k', LABEL_COL])
+        return _LABEL_CACHE
+    if _LABEL_CACHE_AMB is None:
+        d = pd.read_csv(MERGED_PATH, usecols=['run_id', 'k', LABEL_COL]).sort_values(['run_id', 'k'])
+        d[LABEL_COL] = np.concatenate([_nearest_label(g.to_numpy())
+                                       for _, g in d.groupby('run_id', sort=False)[LABEL_COL]])
+        assert not (d[LABEL_COL] == 2).any(), 'ambiguous 흡수 후에도 라벨 2 가 남았다'
+        _LABEL_CACHE_AMB = d.reset_index(drop=True)
+    return _LABEL_CACHE_AMB
+
+
+def label_mode():
+    # 역할 : 지금 쓰고 있는 라벨 해석을 한 줄 문자열로 돌려준다 (config csv 기록용).
+    # 입력 : 없음
+    # 출력 : 설명 문자열
+    return ('ambiguous(2) 를 시간상 가장 가까운 라벨로 흡수해 2클래스로 채점 (동점은 transient). '
+            '재학습 없이 저장된 체크포인트로 추론만 함' if splits.AMB_INCLUDED
+            else 'ambiguous(2) 를 채점에서 제외 (기본값)')
+
+
+def label_series(df_rk):
+    # 역할 : [run_id, k] 짝에 대응하는 **채점용 라벨**을 돌려준다 (현재 라벨 모드 반영).
+    #        그림·진단 스크립트가 merged_data.csv 에서 `Trigger 4` 를 직접 읽지 않게 하는 통로다
+    #        — 라벨 해석의 단일 출처를 유지하기 위함이다 (헤더의 라벨 누출 차단 구조).
+    # 입력 : df_rk  [run_id, k] 를 가진 DataFrame (순서 보존)
+    # 출력 : (len(df_rk),) 라벨 배열
+    return df_rk[['run_id', 'k']].merge(_labels(), on=['run_id', 'k'], how='left')[LABEL_COL].to_numpy()
 
 
 def fit_steady_gmm(z_train, e_train, seed):
@@ -153,6 +209,8 @@ def steady_entry_k(pred, min_consec=ENTRY_MIN_CONSEC):
 
 def score_fold(df_val, pred, score, method, fold, seed):
     # 역할 : 검증 fold 의 판정을 `Trigger 4` 로 채점한다. ambiguous(2) 는 채점에서 제외한다.
+    #        (ambiguous 포함 모드에서는 _labels() 가 2 를 미리 0/1 로 흡수해 주므로, 아래의
+    #         `!= 2` 필터가 저절로 무해해지고 전 시점이 채점 대상이 된다 — 코드는 그대로다)
     #        지표는 pooled(fold 전체 시점을 한 덩어리로) 와 run 평균(run별 계산 후 평균) 두 가지로 모두 기록한다.
     #
     #        positive 클래스 규약 — 지표마다 다르므로 이름에 클래스를 명시한다:
@@ -293,6 +351,9 @@ def save_results(out_dir, prefix, run_metrics, fold_metrics, config):
     summary = fold_metrics.groupby('fold')[num].agg(['mean', 'std'])  # seed 반복에 대한 평균 ± 표준편차
     summary.loc['all_folds'] = fold_metrics[num].agg(['mean', 'std']).T.stack()
     summary.to_csv(paths['summary'])
+    # 라벨 해석은 **항상** 기록한다 (어댑터가 넘기지 않아도). 같은 방법·같은 체크포인트라도
+    # ambiguous 처리가 다르면 다른 결과이므로, config 만 보고 구분할 수 있어야 한다
+    config = {**config, 'LABEL_MODE': label_mode()}
     pd.DataFrame({'name': list(config), 'value': [str(v) for v in config.values()]}).to_csv(paths['config'], index=False)
     for k, p in paths.items():
         print(f'[save] {k:7s} -> {p}')
@@ -300,6 +361,22 @@ def save_results(out_dir, prefix, run_metrics, fold_metrics, config):
 
 PAGE_WIDTH = 6.5                # 논문 지면 폭 (in). 그림 폭을 여기에 맞춘다. 임의의 값
 HEATMAP_NCOLS = 3               # heatmap subplot 을 한 줄에 몇 개 놓을지. 임의의 값
+
+# heatmap 색 범위 — **방법·실험을 가로질러 고정한다** (사용자 결정, 2026-10-28)
+#   이전에는 그림마다 그 방법의 min~max 로 범위를 잡아서, 같은 색이 방법마다 다른 값을 뜻했다.
+#   (예: 보존률 0.95 가 어떤 방법에서는 가장 어두운 색, 다른 방법에서는 중간 색)
+#   범위를 고정하면 **A / C / ambiguous 포함 A / ambiguous 포함 C 의 모든 그림에서 색이 같은 뜻**이 된다.
+#   범위를 벗어나는 셀은 색이 포화되지만 **셀 안에 수치를 직접 찍으므로 값은 잃지 않는다.**
+#   포화가 일어나는 것은 colorbar 양끝 화살표(extend)로 표시한다.
+#
+#   범위 선정 (사용자 결정):
+#     보존률  0.0-1.0  비율의 전 범위다 — **포화가 없다.** 잘라내는 값이 하나도 없다
+#     오염률  0.0-0.3  셀의 **99%** 를 담는다 (중앙값 0.000, 90분위 0.04-0.05).
+#                      0-1 로 두면 거의 모든 칸이 같은 색이 되어 방법 간 비교가 불가능해진다.
+#                      넘는 1% 는 R-test 2종과 MOMENT 에 몰려 있다 (A 40/4,519 · C 58/5,799)
+HEATMAP_RANGE = {'contamination_rate': (0.0, 0.3),      # 낮을수록 좋다
+                 'retention_rate':     (0.0, 1.0)}      # 높을수록 좋다
+# 등록되지 않은 지표는 예전처럼 그 그림의 데이터 범위를 쓴다 (고정값을 임의로 만들지 않는다)
 
 
 def append_progress(out_dir, prefix, name, frame):
@@ -390,7 +467,16 @@ def plot_condition_heatmap(run_metrics, metric, out_dir, prefix, label):
     #        label colorbar 에 쓸 영문 지표 이름(단위 포함)
     # 출력 : 없음 (PNG 300 dpi + PDF 저장)
     m = run_metrics.groupby(['fold', TS, RS, VS], as_index=False)[metric].mean()
-    vmin, vmax = np.nanmin(m[metric]), np.nanmax(m[metric])
+    if metric in HEATMAP_RANGE:                                       # 방법·실험을 가로질러 고정 (위 주석)
+        vmin, vmax = HEATMAP_RANGE[metric]
+        below = int((m[metric] < vmin).sum())
+        above = int((m[metric] > vmax).sum())
+        cbar_extend = ('both' if below and above else
+                       'min' if below else 'max' if above else 'neither')
+    else:                                                             # 등록되지 않은 지표는 예전 동작
+        vmin, vmax = np.nanmin(m[metric]), np.nanmax(m[metric])
+        below = above = 0
+        cbar_extend = 'neither'
     panels = _heatmap_panels(m, metric)
     for group in dict.fromkeys(p['group'] for p in panels):           # 묶음별로 그림 하나 (등장 순서 유지)
         ps = [p for p in panels if p['group'] == group]
@@ -421,7 +507,8 @@ def plot_condition_heatmap(run_metrics, metric, out_dir, prefix, label):
             ax.axis('off')
         fig.supxlabel(_AXIS_LABEL[col_col], fontsize=FONT_SIZE)       # 축 이름은 그림 전체에 하나씩만
         fig.supylabel(_AXIS_LABEL[RS], fontsize=FONT_SIZE)
-        fig.colorbar(im, ax=axes, label=label, fraction=0.03, pad=0.02)
+        # 색 범위가 고정이라 포화가 생길 수 있다 -> colorbar 끝에 화살표로 표시한다 (값은 셀에 찍혀 있다)
+        fig.colorbar(im, ax=axes, label=label, fraction=0.03, pad=0.02, extend=cbar_extend)
         os.makedirs(out_dir, exist_ok=True)
         stem = f'{out_dir}/{prefix}_heatmap_{metric}' + (f'_{group}' if group else '')
         for ext in ['png', 'pdf']:

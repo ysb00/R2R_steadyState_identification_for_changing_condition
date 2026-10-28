@@ -44,6 +44,9 @@ from momentfm import MOMENTPipeline                                    # 외부 
 
 
 SPLIT = sys.argv[1] if len(sys.argv) > 1 else 'tension'   # 'tension' (A) | 'c' (C)
+INFER = splits.set_amb_mode(sys.argv[2:])   # 2번째 인자 'amb' -> ambiguous 포함 채점 + 별도 폴더에 저장.
+# MOMENT 는 zero-shot 이라 애초에 학습하지 않는다 (사전학습 가중치로 표현만 뽑는다). 그래서 추론
+# 모드에서도 하는 일이 완전히 같고, 바뀌는 것은 **채점 라벨과 저장 위치**뿐이다 — 아래는 손대지 않는다.
 # =============================================================================
 # hyperparameter
 # =============================================================================

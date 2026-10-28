@@ -53,6 +53,9 @@ import evaluation as ev
 import splits
 
 SPLIT = sys.argv[1] if len(sys.argv) > 1 else 'tension'                # 'tension' (A) | 'c' (C)
+INFER = splits.set_amb_mode(sys.argv[2:])   # 2번째 인자 'amb' -> ambiguous 를 흡수한 라벨 + 별도 폴더.
+# 이 스크립트는 원래부터 학습하지 않는다(체크포인트로 encode 만). 바뀌는 것은 색칠·진단에 쓰는
+# **라벨 해석**과 **저장 위치**뿐이고, 체크포인트는 기존 실험 것을 그대로 읽는다.
 
 # =============================================================================
 # hyperparameter
@@ -68,7 +71,7 @@ ENCODE_BATCH = 512              # **[임의]** — 결과에 영향 없음
 DEVICE = 'cuda'
 
 IN_PATH = 'outputs/merged_data.csv'
-OUT_ROOT = splits.SPEC[SPLIT]['out_dir']
+OUT_ROOT = splits.out_root(SPLIT)
 OUT = f'{OUT_ROOT}/_embeddings_fold{FOLD}_seed{SEED}.npz'
 T1 = 'Film Tension #1 (kg)'
 TS, RS, VS = ev.TS, ev.RS, ev.VS
@@ -115,6 +118,9 @@ for r, role in zip(run_ids, role_of_run):
                               'tension': g[TS].to_numpy()[idx], 'rewinder': g[RS].to_numpy()[idx],
                               'speed': g[VS].to_numpy()[idx], 'pos': idx}))
 meta = pd.concat(meta, ignore_index=True)
+# 라벨 해석은 evaluation 한 곳에서만 한다 — ambiguous 포함 모드면 2 가 흡수된 라벨이 돌아온다.
+# 기본 모드에서는 위에서 읽은 `Trigger 4` 와 같은 값이므로 기존 결과가 바뀌지 않는다.
+meta['label'] = ev.label_series(meta)
 is_val = (meta.role == 'val').to_numpy()
 is_train = (meta.role == 'train').to_numpy()
 print(f'[Step 1] 분할 {SPLIT} fold {FOLD} seed {SEED} | 서브샘플 {len(meta)} 시점 (stride {STRIDE}) '
@@ -164,7 +170,7 @@ def isolate(*subpath):
 def build(kind, method, stage):
     # 역할 : 방법별로 서브샘플 시점의 표현을 만든다. 학습은 하지 않고 체크포인트만 쓴다.
     # 출력 : (n_sub, d) float32
-    ck = f'{splits.resolve(SPLIT, stage)}/checkpoints/{method}_fold{FOLD}_seed{SEED}.pt'
+    ck = f'{splits.ckpt_dir(SPLIT, stage)}/{method}_fold{FOLD}_seed{SEED}.pt'   # 항상 기존 실험 체크포인트
 
     if kind == 'rtest':                                     # 1차원 — R 통계량 (학습 없음)
         sys.path.insert(0, HERE)
@@ -376,6 +382,7 @@ info.assign(caveat=f'diagnostic only: stride {STRIDE} subsample, split {SPLIT} f
 # =============================================================================
 # Step 3. 저장
 # =============================================================================
+os.makedirs(OUT_ROOT, exist_ok=True)
 np.savez_compressed(OUT, info=info.to_records(index=False),
                     label=meta.label.to_numpy(), is_val=is_val, is_train=is_train, e=meta.e.to_numpy(),
                     speed=meta.speed.to_numpy(), tension=meta.tension.to_numpy(),

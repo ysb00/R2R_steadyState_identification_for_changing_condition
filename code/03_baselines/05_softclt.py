@@ -72,6 +72,9 @@ from utils_distance_matrix import densify                               # 외부
 
 
 SPLIT = sys.argv[1] if len(sys.argv) > 1 else 'tension'   # 'tension' (A) | 'c' (C)
+INFER = splits.set_amb_mode(sys.argv[2:])   # 2번째 인자 'amb' -> ambiguous 포함 채점 + 재학습 없이 추론만
+# 추론 모드에서도 tau_inst 수치해는 그대로 구한다 — 체크포인트를 만든 설정을 config 에 남기기 위해서다
+# (DTW 행렬은 캐시되어 있어 비용이 작고, tau 는 학습에만 쓰이므로 결과를 바꾸지 않는다).
 # =============================================================================
 # hyperparameter
 # =============================================================================
@@ -108,6 +111,7 @@ MAX_TRAIN_LENGTH = 3000         # 저장소 기본값 (train.py --max-train-leng
 
 IN_PATH = 'outputs/merged_data.csv'
 OUT_DIR = splits.resolve(SPLIT, '05_softclt')
+CKPT_DIR = splits.ckpt_dir(SPLIT, '05_softclt')   # 인코더를 읽는 곳 (추론 모드에서도 기존 실험 것을 쓴다)
 DTW_PATH = 'outputs/03_baselines/05_softclt/dtw_dist.npy'   # run 쌍 거리는 분할과 무관하므로 A 캐시를 재사용한다
 
 T1 = 'Film Tension #1 (kg)'     # 원본 컬럼명 (변경하지 않음)
@@ -201,7 +205,8 @@ def soft_labels_for(d, tau_inst):
 #         학습 fold 표현으로 트랙 A 후단(GMM)을 적합한 뒤 검증 fold 에 적용한다
 # =============================================================================
 #         중간 결과(fold×seed 지표, 학습 손실, 인코더 가중치)는 하나 끝날 때마다 바로 저장한다
-os.makedirs(f'{OUT_DIR}/checkpoints', exist_ok=True)
+if not INFER:                                                       # 추론 모드는 체크포인트를 쓰지 않는다
+    os.makedirs(f'{OUT_DIR}/checkpoints', exist_ok=True)
 for v in VARIANTS:
     method, tau_temp = v['name'], v['tau_temp']
     if os.path.exists(f'{OUT_DIR}/{method}_fold_metrics.csv'):          # 이미 돌린 변형은 건너뛴다
@@ -237,18 +242,45 @@ for v in VARIANTS:
                                soft_instance=True, soft_temporal=True,
                                after_iter_callback=lambda _m, l: iter_loss.append(l),
                                after_epoch_callback=lambda m, _l: epoch_iters.append(m.n_iters))
-            loss_log = model.fit(x[is_train_run], 0, 0, 0, sl,           # 학습 fold 신호 + soft label, 라벨 없음
-                                 run_dir=f'{OUT_DIR}/_result_tmp', n_iters=N_ITERS, verbose=False)
-            t_fit = time.time() - t0
-            model.save(f'{OUT_DIR}/checkpoints/{method}_fold{f}_seed{seed}.pt')   # 학습된 인코더 (재현·재분석용)
+            if INFER:                                                   # 재학습 없이 저장된 인코더만 불러온다
+                ck = f'{CKPT_DIR}/{method}_fold{f}_seed{seed}.pt'
+                assert os.path.exists(ck), f'체크포인트가 없다: {ck} (먼저 같은 분할로 학습을 돌릴 것)'
+                model.load(ck)
+                loss_log = []
+                t_fit = time.time() - t0
+            else:
+                loss_log = model.fit(x[is_train_run], 0, 0, 0, sl,       # 학습 fold 신호 + soft label, 라벨 없음
+                                     run_dir=f'{OUT_DIR}/_result_tmp', n_iters=N_ITERS, verbose=False)
+                t_fit = time.time() - t0
+                model.save(f'{OUT_DIR}/checkpoints/{method}_fold{f}_seed{seed}.pt')   # 학습된 인코더 (재현·재분석용)
 
-            z = np.concatenate([model.encode(x)[i, :lengths[i]] for i in range(len(lengths))])
+            if INFER:
+                # 아래 줄(학습 경로)은 `model.encode(x)` 를 **리스트 컴프리헨션 안에서** 부르기 때문에
+                # run 1개를 꺼낼 때마다 210 run 전체를 다시 인코딩한다 — 210번 중복이다.
+                # 결과는 같고 속도만 다르므로 추론 경로에서는 encode 를 1번만 부른다.
+                # 실측(SoftCLT-fs fold1 seed0): 74.9 s -> 0.9 s, 두 배열 **완전 일치**(최대 차이 0.0).
+                # 학습 경로는 손대지 않는다 — 기존 A·C 결과의 재현 경로를 그대로 보존하기 위함이다.
+                z = np.concatenate([zz[:n] for zz, n in zip(model.encode(x), lengths)])
+            else:
+                z = np.concatenate([model.encode(x)[i, :lengths[i]] for i in range(len(lengths))])
             gmm, sidx, emeans = ev.fit_steady_gmm(z[is_train_pt], e_flat[is_train_pt], seed)
             pred, score = ev.predict_steady(gmm, sidx, z[is_val_pt])
             r, fr = ev.score_fold(id_flat[is_val_pt], pred, score, method, f, seed)
             fr['tau_inst'], fr['tau_temp'] = tau_inst, tau_temp
             fr['n_eff_median'], fr['n_eff_min'], fr['n_eff_max'] = np.median(n_eff), n_eff.min(), n_eff.max()
-            fr['fit_sec'], fr['total_sec'] = t_fit, time.time() - t0
+            fr['total_sec'] = time.time() - t0
+            if INFER:                                       # 학습량 기록은 학습했을 때만 의미가 있다
+                fr['steady_cluster'], fr['e_mean_c0'], fr['e_mean_c1'] = sidx, emeans[0], emeans[1]
+                run_m.append(r), fold_m.append(fr)
+                ev.append_progress(OUT_DIR, method, 'progress_fold', fr)
+                ev.append_progress(OUT_DIR, method, 'progress_run', r)
+                print(f'[Step 4] {method} fold {f} seed {seed}: 체크포인트 재사용 (학습 생략), '
+                      f'전체 {time.time() - t0:.0f} s, n_eff 중앙값 {np.median(n_eff):.2f}, '
+                      f'군집별 e 평균 {np.round(emeans, 3)} -> steady = 군집 {sidx}, '
+                      f'steady 판정 비율 {pred.mean():.3f}, 오염률 {fr.pooled_contamination_rate.iloc[0]:.3f}, '
+                      f'보존률 {fr.pooled_retention_rate.iloc[0]:.3f}', flush=True)
+                continue
+            fr['fit_sec'] = t_fit
             fr['n_epochs'], fr['n_iters'] = model.n_epochs, model.n_iters
             # 1 epoch 의 iteration 수. n_iters // n_epochs 는 마지막 epoch 이 끊겨 참값보다 크게 나온다.
             # 첫 epoch 끝의 누적 iter 가 참값이다. (SoftCLT 는 run 1300 < 3000 이라 분할 없음 -> 21)
@@ -274,7 +306,9 @@ for v in VARIANTS:
 
     # ---- 변형 하나가 끝날 때마다 최종 산출물을 저장한다 ----
     run_m, fold_m = pd.concat(run_m, ignore_index=True), pd.concat(fold_m, ignore_index=True)
-    ev.plot_loss_curves(pd.concat(loss_m, ignore_index=True), OUT_DIR, method, 'Soft hierarchical contrastive loss')
+    if not INFER:                                           # 추론 모드는 학습하지 않아 손실 곡선이 없다
+        ev.plot_loss_curves(pd.concat(loss_m, ignore_index=True), OUT_DIR, method,
+                            'Soft hierarchical contrastive loss')
     ev.save_results(OUT_DIR, method, run_m, fold_m,
                     {**ev.EVAL_CONFIG, 'SPLIT': SPLIT, 'SEED': SEED, 'N_SEEDS': N_SEEDS, 'N_ITERS': N_ITERS,
                      'TAU_INST_SPEC': v['tau_inst'] if v['tau_inst'] is not None

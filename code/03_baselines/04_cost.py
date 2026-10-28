@@ -60,6 +60,8 @@ from utils import init_dl_program                                       # 외부
 
 
 SPLIT = sys.argv[1] if len(sys.argv) > 1 else 'tension'   # 'tension' (A) | 'c' (C)
+INFER = splits.set_amb_mode(sys.argv[2:])   # 2번째 인자 'amb' -> ambiguous 포함 채점 + 재학습 없이 추론만
+# 예: python code/03_baselines/04_cost.py tension amb  /  ... 04_cost.py c amb
 # =============================================================================
 # hyperparameter
 # =============================================================================
@@ -90,6 +92,7 @@ ALPHA = 0.0005                  # 저장소 기본값 (train.py --alpha, 손실 
 
 IN_PATH = 'outputs/merged_data.csv'
 OUT_DIR = splits.resolve(SPLIT, '04_cost')
+CKPT_DIR = splits.ckpt_dir(SPLIT, '04_cost')   # 인코더를 읽는 곳 (추론 모드에서도 기존 실험 것을 쓴다)
 
 T1 = 'Film Tension #1 (kg)'     # 원본 컬럼명 (변경하지 않음)
 TS, RS, VS = ev.TS, ev.RS, ev.VS
@@ -134,7 +137,8 @@ def unpad(z):
 #         학습 fold 표현으로 트랙 A 후단(GMM)을 적합한 뒤 검증 fold 에 적용한다
 # =============================================================================
 #         중간 결과(fold×seed 지표, 학습 손실, 인코더 가중치)는 하나 끝날 때마다 바로 저장한다
-os.makedirs(f'{OUT_DIR}/checkpoints', exist_ok=True)
+if not INFER:                                                   # 추론 모드는 체크포인트를 쓰지 않는다
+    os.makedirs(f'{OUT_DIR}/checkpoints', exist_ok=True)
 for W in WINDOWS:
     method = f'CoST-W{W}'
     if os.path.exists(f'{OUT_DIR}/{method}_fold_metrics.csv'):      # 이미 돌린 창은 건너뛴다
@@ -158,9 +162,16 @@ for W in WINDOWS:
                          output_dims=REPR_DIMS, device=DEVICE, lr=LR, batch_size=BATCH_SIZE,
                          after_iter_callback=lambda _m, l: iter_loss.append(l),
                          after_epoch_callback=lambda m, _l: epoch_iters.append(m.n_iters))
-            loss_log = model.fit(x[is_train_run], n_iters=N_ITERS, verbose=False)   # 학습 fold 신호만, 라벨 없음
-            t_fit = time.time() - t0
-            model.save(f'{OUT_DIR}/checkpoints/{method}_fold{f}_seed{seed}.pt')    # 학습된 인코더 (재현·재분석용)
+            if INFER:                                                   # 재학습 없이 저장된 인코더만 불러온다
+                ck = f'{CKPT_DIR}/{method}_fold{f}_seed{seed}.pt'
+                assert os.path.exists(ck), f'체크포인트가 없다: {ck} (먼저 같은 분할로 학습을 돌릴 것)'
+                model.load(ck)
+                loss_log = []
+                t_fit = time.time() - t0
+            else:
+                loss_log = model.fit(x[is_train_run], n_iters=N_ITERS, verbose=False)   # 학습 fold 신호만, 라벨 없음
+                t_fit = time.time() - t0
+                model.save(f'{OUT_DIR}/checkpoints/{method}_fold{f}_seed{seed}.pt')    # 학습된 인코더 (재현·재분석용)
 
             # 이동창 encode : 창 길이 = sliding_padding + 1 이어야 BandedFourierLayer 의 길이와 맞는다.
             # casual=True 로 창을 [i-W+1, i] 로 두어 미래 시점을 보지 않게 한다 (인과).
@@ -170,7 +181,19 @@ for W in WINDOWS:
             pred, score = ev.predict_steady(gmm, sidx, z[is_val_pt])
             r, fr = ev.score_fold(id_flat[is_val_pt], pred, score, method, f, seed)
             fr['window'] = W
-            fr['fit_sec'], fr['total_sec'] = t_fit, time.time() - t0
+            fr['total_sec'] = time.time() - t0
+            if INFER:                                       # 학습량 기록은 학습했을 때만 의미가 있다
+                fr['steady_cluster'], fr['e_mean_c0'], fr['e_mean_c1'] = sidx, emeans[0], emeans[1]
+                run_m.append(r), fold_m.append(fr)
+                ev.append_progress(OUT_DIR, method, 'progress_fold', fr)
+                ev.append_progress(OUT_DIR, method, 'progress_run', r)
+                print(f'[Step 3] W {W} fold {f} seed {seed}: 체크포인트 재사용 (학습 생략), '
+                      f'전체 {time.time() - t0:.0f} s, '
+                      f'군집별 e 평균 {np.round(emeans, 3)} -> steady = 군집 {sidx}, '
+                      f'steady 판정 비율 {pred.mean():.3f}, 오염률 {fr.pooled_contamination_rate.iloc[0]:.3f}, '
+                      f'보존률 {fr.pooled_retention_rate.iloc[0]:.3f}', flush=True)
+                continue
+            fr['fit_sec'] = t_fit
             fr['n_epochs'], fr['n_iters'] = model.n_epochs, model.n_iters
             # 1 epoch 의 iteration 수. n_iters // n_epochs 로 구하면 마지막 epoch 이 중간에 끊겨
             # 참값보다 크게 나온다(600 iter, 3 epoch -> 200 이지만 참값은 168). 첫 epoch 끝의 누적 iter 가 참값이다.
@@ -198,7 +221,8 @@ for W in WINDOWS:
 
     # ---- 창 길이 하나가 끝날 때마다 최종 산출물을 저장한다 ----
     run_m, fold_m = pd.concat(run_m, ignore_index=True), pd.concat(fold_m, ignore_index=True)
-    ev.plot_loss_curves(pd.concat(loss_m, ignore_index=True), OUT_DIR, method, 'CoST contrastive loss')
+    if not INFER:                                               # 추론 모드는 학습하지 않아 손실 곡선이 없다
+        ev.plot_loss_curves(pd.concat(loss_m, ignore_index=True), OUT_DIR, method, 'CoST contrastive loss')
     ev.save_results(OUT_DIR, method, run_m, fold_m,
                     {**ev.EVAL_CONFIG, 'SPLIT': SPLIT, 'SEED': SEED, 'N_SEEDS': N_SEEDS, 'WINDOW': W, 'N_ITERS': N_ITERS,
                      'DEVICE': DEVICE, 'BATCH_SIZE': BATCH_SIZE, 'LR': LR, 'REPR_DIMS': REPR_DIMS,

@@ -36,6 +36,8 @@ from ts2vec import TS2Vec                                              # 외부 
 from utils import init_dl_program                                      # 외부 저장소 원본의 시드 초기화
 
 SPLIT = sys.argv[1] if len(sys.argv) > 1 else 'tension'                # 'tension' (A) | 'c' (C)
+INFER = splits.set_amb_mode(sys.argv[2:])   # 2번째 인자 'amb' -> ambiguous 포함 채점 + 재학습 없이 추론만
+# 예: python code/03_baselines/02_ts2vec.py tension amb  /  ... 02_ts2vec.py c amb
 
 # =============================================================================
 # hyperparameter
@@ -59,6 +61,7 @@ N_ITERS = None if SPLIT == 'tension' else 600
 
 IN_PATH = 'outputs/merged_data.csv'
 OUT_DIR = splits.resolve(SPLIT, '02_ts2vec')
+CKPT_DIR = splits.ckpt_dir(SPLIT, '02_ts2vec')   # 인코더를 읽는 곳 (추론 모드에서도 기존 실험 것을 쓴다)
 METHOD = 'TS2Vec'
 
 T1 = 'Film Tension #1 (kg)'     # 원본 컬럼명 (변경하지 않음)
@@ -108,7 +111,8 @@ def unpad(z):
 # =============================================================================
 #         중간 결과(fold×seed 지표, 학습 손실, 인코더 가중치)는 하나 끝날 때마다 바로 저장한다
 run_m, fold_m, loss_m = [], [], []
-os.makedirs(f'{OUT_DIR}/checkpoints', exist_ok=True)
+if not INFER:                                                          # 추론 모드는 체크포인트를 쓰지 않는다
+    os.makedirs(f'{OUT_DIR}/checkpoints', exist_ok=True)
 for f in sp.folds:
     # C 실험에서는 '학습 = 검증 아닌 전부' 가 아니다 — 고속 run 은 CV fold 에서 미사용이다.
     # 그래서 학습 집합을 분할이 주는 대로 명시적으로 받는다.
@@ -119,25 +123,36 @@ for f in sp.folds:
         init_dl_program(0 if DEVICE == 'cuda' else 'cpu', seed=seed)   # 저장소 원본의 시드 초기화
         model = TS2Vec(input_dims=1, output_dims=REPR_DIMS, device=DEVICE,
                        lr=LR, batch_size=BATCH_SIZE, max_train_length=MAX_TRAIN_LENGTH)
-        loss_log = model.fit(x[is_train_run], n_iters=N_ITERS, verbose=False)  # 학습 fold 신호만, 라벨 없음
-        t_fit = time.time() - t0
-        model.save(f'{OUT_DIR}/checkpoints/{METHOD}_fold{f}_seed{seed}.pt')    # 학습된 인코더 (재현·재분석용)
+        if INFER:                                                      # 재학습 없이 저장된 인코더만 불러온다
+            ck = f'{CKPT_DIR}/{METHOD}_fold{f}_seed{seed}.pt'
+            assert os.path.exists(ck), f'체크포인트가 없다: {ck} (먼저 같은 분할로 학습을 돌릴 것)'
+            model.load(ck)
+            loss_log = []
+            t_fit = time.time() - t0
+        else:
+            loss_log = model.fit(x[is_train_run], n_iters=N_ITERS, verbose=False)  # 학습 fold 신호만, 라벨 없음
+            t_fit = time.time() - t0
+            model.save(f'{OUT_DIR}/checkpoints/{METHOD}_fold{f}_seed{seed}.pt')    # 학습된 인코더 (재현·재분석용)
 
         z = unpad(model.encode(x))                                     # 전체 run 을 인코딩 후 fold 로 나눈다
         gmm, sidx, emeans = ev.fit_steady_gmm(z[is_train_pt], e_flat[is_train_pt], seed)
         pred, score = ev.predict_steady(gmm, sidx, z[is_val_pt])
         r, fr = ev.score_fold(id_flat[is_val_pt], pred, score, METHOD, f, seed)
-        fr['fit_sec'], fr['total_sec'] = t_fit, time.time() - t0
-        fr['n_epochs'], fr['n_iters'], fr['final_loss'] = model.n_epochs, model.n_iters, loss_log[-1]
+        fr['total_sec'] = time.time() - t0
+        if not INFER:                                                  # 학습량 기록은 학습했을 때만 의미가 있다
+            fr['fit_sec'] = t_fit
+            fr['n_epochs'], fr['n_iters'], fr['final_loss'] = model.n_epochs, model.n_iters, loss_log[-1]
         fr['steady_cluster'], fr['e_mean_c0'], fr['e_mean_c1'] = sidx, emeans[0], emeans[1]
         lo = pd.DataFrame({'fold': f, 'seed': seed, 'epoch': np.arange(len(loss_log)), 'loss': loss_log})
         run_m.append(r), fold_m.append(fr), loss_m.append(lo)
 
         ev.append_progress(OUT_DIR, METHOD, 'progress_fold', fr)       # 중간 저장 (끊겨도 여기까지 남는다)
         ev.append_progress(OUT_DIR, METHOD, 'progress_run', r)
-        ev.append_progress(OUT_DIR, METHOD, 'loss', lo)
+        if not INFER:
+            ev.append_progress(OUT_DIR, METHOD, 'loss', lo)
+        loss_txt = f'{loss_log[0]:.3f} -> {loss_log[-1]:.3f}' if loss_log else '학습 생략 (체크포인트 재사용)'
         print(f'[Step 3] fold {f} seed {seed}: 학습 {t_fit:.0f} s, 전체 {time.time() - t0:.0f} s, '
-              f'epoch {model.n_epochs} 손실 {loss_log[0]:.3f} -> {loss_log[-1]:.3f}, '
+              f'epoch {model.n_epochs} 손실 {loss_txt}, '
               f'군집별 e 평균 {np.round(emeans, 3)} -> steady = 군집 {sidx}, '
               f'steady 판정 비율 {pred.mean():.3f}, 오염률 {fr.pooled_contamination_rate.iloc[0]:.3f}, '
               f'보존률 {fr.pooled_retention_rate.iloc[0]:.3f}', flush=True)
@@ -150,8 +165,9 @@ run_m, fold_m = pd.concat(run_m, ignore_index=True), pd.concat(fold_m, ignore_in
 # 이 저장소도 after_iter_callback 을 제공하므로 iteration 단위로 바꿀 수 있지만, 그러면 재실행이 필요하고
 # 재실행은 학습량 결정(worklog 2026-10-23 §2)과 함께 하기로 보류했다.
 # TS2Vec 은 run 이 분할되지 않아 1 epoch = 21 iteration 으로 일정하므로, 축 환산은 epoch × iters_per_epoch 다.
-ev.plot_loss_curves(pd.concat(loss_m, ignore_index=True), OUT_DIR, METHOD, 'Hierarchical contrastive loss',
-                    x_col='epoch')
+if not INFER:                                                          # 추론 모드는 학습하지 않아 손실 곡선이 없다
+    ev.plot_loss_curves(pd.concat(loss_m, ignore_index=True), OUT_DIR, METHOD, 'Hierarchical contrastive loss',
+                        x_col='epoch')
 ev.save_results(OUT_DIR, METHOD, run_m, fold_m,
                 {**ev.EVAL_CONFIG, 'SPLIT': SPLIT, 'SEED': SEED, 'N_SEEDS': N_SEEDS, 'DEVICE': DEVICE,
                  'BATCH_SIZE': BATCH_SIZE,

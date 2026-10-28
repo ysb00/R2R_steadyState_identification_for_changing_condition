@@ -1,0 +1,16 @@
+name,value
+DT,0.109
+ENTRY_MIN_CONSEC,10
+N_GMM_COMPONENTS,2
+GMM_COVARIANCE_TYPE,diag
+SPLIT,c
+SEED,0
+N_SEEDS,5
+LAMBDA1,0.2
+LAMBDA2,0.1
+LAMBDA3,0.1
+decimate,10
+R_CRIT_TS,None
+R_CRIT_SS,None
+threshold_source,학습 fold 트랙 A 후단 (표준화 + 2-군집 GMM). 원 논문 고정 임계값 2.5/0.9 와 히스테리시스는 쓰지 않는다
+LABEL_MODE,ambiguous(2) 를 시간상 가장 가까운 라벨로 흡수해 2클래스로 채점 (동점은 transient). 재학습 없이 저장된 체크포인트로 추론만 함

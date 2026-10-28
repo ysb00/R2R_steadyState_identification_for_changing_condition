@@ -1,0 +1,18 @@
+name,value
+DT,0.109
+ENTRY_MIN_CONSEC,10
+N_GMM_COMPONENTS,2
+GMM_COVARIANCE_TYPE,diag
+SPLIT,c
+SEED,0
+N_SEEDS,5
+MODEL_NAME,AutonLab/MOMENT-1-small
+DEVICE,cuda
+ENCODE_BATCH,64
+seq_len,512
+patch_len,8
+repr_dims,512
+finetuned,no (zero-shot)
+repo,moment-timeseries-foundation-model/moment
+commit,38f7310ad594100747ca2a8357e9c7ca7d323e0e
+LABEL_MODE,ambiguous(2) 를 시간상 가장 가까운 라벨로 흡수해 2클래스로 채점 (동점은 transient). 재학습 없이 저장된 체크포인트로 추론만 함

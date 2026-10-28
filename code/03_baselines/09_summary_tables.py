@@ -36,8 +36,12 @@ import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import evaluation as ev
+import splits
 
-OUT_DIR = 'outputs/03_baselines'
+# 'amb' 를 붙이면 ambiguous 포함 재추론 결과(outputs/05_ambiguous_included_A)를 집계한다.
+# 인자가 없으면 **기존 그대로** outputs/03_baselines 를 집계한다 (A 전용 스크립트라 분할은 고정).
+splits.set_amb_mode(sys.argv[1:])
+OUT_DIR = splits.out_root('tension')
 
 # --- 방법 분류 (그림·표 묶음용). 새 방법을 추가하면 여기에 등록한다 ---
 CATEGORY = {

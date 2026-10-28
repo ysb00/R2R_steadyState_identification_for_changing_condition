@@ -48,6 +48,11 @@ run 길이 1,275~1,300 샘플 (약 140 s, 9.174 Hz). 입력은 단일 채널
 | **A** | 새 **장력** 설정값에 일반화되는가 | 210 run, 장력 leave-one-level-out 5-fold x seed 5 | ✅ **완료** (비교군 8개 / 변형 23종) |
 | **C** | **저속만 학습**해도 **미학습 고속**에 되는가 | 저속 50~125 학습+CV(7 fold) / 고속 150~200 **final test** | ✅ **완료** (같은 23종, 8 fold x seed 5) |
 
+**보조 평가 — ambiguous 포함** (2026-10-28). 위 두 실험은 `Trigger 4 == 2` (ambiguous, 6.6%)를
+채점에서 뺀다. 같은 체크포인트로 **채점만 다시 해서** ambiguous 를 포함한 2클래스 결과도 둔다 —
+ambiguous 를 **시간상 가장 가까운 라벨로 흡수**한다(앞뒤가 transient·steady 면 정확히 1/2 분할).
+**재학습하지 않는다.** 규칙·주의사항은 `docs/hyperparameters.md` §13.9.
+
 ## 코드
 
 ```
@@ -67,6 +72,23 @@ code/03_baselines/
 **실험은 인자로 고른다** — `python code/03_baselines/04_cost.py` (A, 기본값) /
 `python code/03_baselines/04_cost.py c` (C). 분할 해석은 `splits.py` 한 곳에 모여 있다.
 
+**분할 이름 뒤에 `amb` 를 붙이면** ambiguous 포함 재추론이다 — `... 04_cost.py c amb`.
+학습을 생략하고 기존 체크포인트를 불러 쓰므로 **그 분할의 학습이 이미 끝나 있어야** 한다.
+붙이지 않으면 기존 동작 그대로다 (기존 결과를 덮지 않는다).
+
+```
+# A 실험 전체 -> outputs/05_ambiguous_included_A/
+for s in 01_stat_ssd 02_ts2vec 03_moment 04_cost 05_softclt 06_cost_ablation 07_tstcc 08_simmtm; do
+  python code/03_baselines/$s.py tension amb
+done
+python code/03_baselines/09_summary_tables.py   amb      # 집계표 (방법이 전부 끝난 뒤)
+python code/03_baselines/10_embeddings.py     tension amb
+python code/03_baselines/11_embedding_plots.py tension amb
+
+# C 실험 전체 -> outputs/06_ambiguous_included_C/   (12 는 A 집계표를 읽으므로 A 를 먼저 끝낼 것)
+#   위와 같되 'tension' -> 'c', 09 대신 `python code/03_baselines/12_summary_tables_c.py amb`
+```
+
 ## 결과
 
 ```
@@ -81,7 +103,14 @@ outputs/04_speed_extrap/_all_methods_by_group.csv  방법 x 묶음 (묶음 안�
 outputs/04_speed_extrap/_final_test_by_speed.csv   최종 test 를 속도 150/175/200 으로 쪼갠 표
 outputs/04_speed_extrap/_final_test_by_speed.png   같은 것의 성능 곡선
 outputs/04_speed_extrap/<단계>/<방법>_embedding_*.png  seen/unseen + 테스트 속도별 임베딩
+
+outputs/05_ambiguous_included_A/   A 를 ambiguous 포함으로 재채점 (구조는 03_baselines 와 동일)
+outputs/06_ambiguous_included_C/   C 를 ambiguous 포함으로 재채점 (구조는 04_speed_extrap 과 동일)
 ```
+
+**ambiguous 포함 폴더의 AUPRC(ns) 는 기존 폴더와 직접 비교하면 안 된다** — 기준선이 유병률이라
+non-steady 비율이 0.081 에서 0.106 으로 올라간다. 진입 오차도 참 진입 시점이 앞당겨져 달라진다.
+학습을 하지 않으므로 그 폴더에는 손실 곡선과 학습량 컬럼이 없다.
 
 **C 는 네 단위를 가로질러 평균하지 않는다** — `cv_T`(저속 안 새 장력) / `cv_S1`·`cv_S2`(1수준 속도
 외삽, 학습량이 다름) / `final_test`(최종 목표)는 **묻는 질문이 서로 다르다.**
@@ -111,6 +140,18 @@ outputs/04_speed_extrap/<단계>/<방법>_embedding_*.png  seen/unseen + 테스�
 - **어려운 조건은 속도 150 이었다.** `MovStd-Slope-fixed` 보존률이 150 에서 0.710, 175·200 에서
   0.971·0.984 인 반면 **CoST·SimMTM 은 세 속도 모두 0.98 이상**이다. 속도를 뭉뚱그려 보고했으면
   보이지 않았을 차이다.
+
+### ambiguous 포함 재채점 — **결론이 바뀌지 않는다**
+
+ambiguous 6.6% 를 빼고 채점한 것이 결과를 만든 것 아닌가 — 이 물음에 답하기 위해 같은
+체크포인트로 ambiguous 를 포함해 다시 채점했다(2026-10-28, `hyperparameters.md` §13.9).
+
+**23종 AUPRC 순위 상관이 A 0.989 / C final_test 0.981 로 순위 구조가 그대로다.**
+CoST 계열이 상위, 2차원 통계 기준선이 그 뒤라는 관찰도 유지된다. 절대값은 채점 대상이
+6.6% 늘면서 전반적으로 조금 낮아진다 — 예: `CoST-W144` final_test 오염률 0.001 → 0.007,
+보존률 0.992 → 0.980, AUROC 0.989 → 0.964.
+
+즉 **ambiguous 제외가 유리한 쪽으로 결과를 만든 것이 아니다.**
 
 **알려진 한계**: 저장소 기본값을 그대로 쓰는 As-published 방침 때문에 **데이터 통과 횟수가
 방법마다 3.17~38.1회로 다르고, 통과 횟수와 AUPRC 가 거의 역순**이다 — 방법 간 성능차에 학습량

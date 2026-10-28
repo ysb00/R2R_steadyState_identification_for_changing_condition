@@ -1,0 +1,41 @@
+name,value
+DT,0.109
+ENTRY_MIN_CONSEC,10
+N_GMM_COMPONENTS,2
+GMM_COVARIANCE_TYPE,diag
+SPLIT,tension
+SEED,0
+N_SEEDS,5
+WINDOW,144
+ROLL_CIRCUMFERENCE_MM,783.5
+config_base,SleepEEG — **강제**. Epilepsy config 는 CNNoutput_channel 이 없어 사전학습 모델을 만들 수 없다 (model.py:35)
+branch,SimMTM_Classification/code (Forecasting 브랜치는 예측 과제용)
+CONV_OUT_LEN,8
+CNNoutput_channel_original,10
+REPR_DIMS,1024
+repr_form,h = 평탄화 conv 특징 (저장소 target_classifier 가 쓰는 형태)
+repr_dtype,float64 — 고차원 표현에서 float32 가 GMM 적합을 깨뜨린 선례가 있다 (docs/tstcc_config_choice.md §7.5). 다른 비교군은 float32
+head_override,"nn.Linear(1024, 144) — 원본은 nn.Linear(1280, 178) 로 178 을 하드코딩한다. 복원 손실이 입력 길이와 비교하므로 반드시 맞춰야 한다"
+PRETRAIN_EPOCH,10
+PRETRAIN_LR,0.0001
+config_lr_unused,3e-08
+BATCH_SIZE,32
+EFFECTIVE_BATCH,128
+BETAS,"(0.9, 0.99)"
+WEIGHT_DECAY,0
+SCHEDULER,CosineAnnealingLR(T_max=10)
+MASKING_RATIO,0.5
+LM,3
+POSITIVE_NUMS,3
+TEMPERATURE,0.2
+DROP_LAST,True
+DROPOUT,0.2
+KERNEL_SIZE,25
+STRIDE,3
+FINAL_OUT_CHANNELS,128
+aug_note,config 의 jitter/scaling/permutation 설정은 사전학습에 쓰이지 않는다 — model_pretrain 은 data_transform_masked4cl 로 마스킹만 한다 (trainer.py:122)
+ENCODE_BATCH,512
+DEVICE,cuda
+repo,thuml/SimMTM (SimMTM_Classification)
+commit,169513bef74fb676e48d98a0e30f8823793f691c
+LABEL_MODE,ambiguous(2) 를 시간상 가장 가까운 라벨로 흡수해 2클래스로 채점 (동점은 transient). 재학습 없이 저장된 체크포인트로 추론만 함
