@@ -78,10 +78,10 @@ COMPONENT_DIMS = REPR_DIMS // 2  # = 160. 앞 160 = 추세, 뒤 160 = 계절
 
 IN_PATH = 'outputs/merged_data.csv'
 
-COST_DIR = splits.resolve(SPLIT, '04_cost')       # Step 5 가 읽는 CoST-W144 **결과** 폴더
-COST_CKPT = splits.ckpt_dir(SPLIT, '04_cost')     # CoST-W144 **체크포인트** 출처. 같은 분할이어야 한다
-CKPT_DIR = splits.ckpt_dir(SPLIT, '06_cost_ablation')   # noscaleshift 체크포인트 출처 (추론 모드)
-OUT_DIR = splits.resolve(SPLIT, '06_cost_ablation')
+COST_DIR = splits.resolve(SPLIT, '04_cost (ablation)')       # Step 5 가 읽는 CoST-W144 **결과** 폴더
+COST_CKPT = splits.ckpt_dir(SPLIT, '04_cost (ablation)')     # CoST-W144 **체크포인트** 출처. 같은 분할이어야 한다
+CKPT_DIR = splits.ckpt_dir(SPLIT, '06_cost_ablation (ablation)')   # noscaleshift 체크포인트 출처 (추론 모드)
+OUT_DIR = splits.resolve(SPLIT, '06_cost_ablation (ablation)')
 BASE_METHOD = f'CoST-W{WINDOW}'                                         # 비교 기준 (이미 실행됨)
 
 T1 = 'Film Tension #1 (kg)'

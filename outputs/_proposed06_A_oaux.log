@@ -1,0 +1,71 @@
+[Step 1] runs = 210, ÀÔ·Â (210, 1300, 2) (0.2 s)
+[Step 2] Ã¢ 144 (baseline µ¿ÀÏ) | m_bar = |ÀÎ°ú ÀÌµ¿Æò±Õ(e, 144)|
+[Step 2] m_bar Æò±Õ 0.02163  ºÐ»ê 0.003364  5~95% [0.00035, 0.11816]
+[Step 2] beta = 0.33  (Å¸±êÀ» ÇÐ½À fold Åë°è·Î Ç¥ÁØÈ­ÇÏ¹Ç·Î ºÐ»ê 1 ±âÁØ, L_MoCo ¼ö·Å°ª 3.25 ´ëºñ º¸Á¶ Ç× ºñÁß 10.2%)
+[Step 3] CoST-W144-oaux-point fold 1 seed 0: 41 s, ¼Õ½Ç 0.105 -> 3.502, aux 0.3601 -> 0.6247 (R2 +0.375), ¿À¿°·ü 0.001, º¸Á¸·ü 0.963
+[Step 3] CoST-W144-oaux-point fold 1 seed 1: 28 s, ¼Õ½Ç 0.192 -> 3.562, aux 0.5869 -> 0.4130 (R2 +0.587), ¿À¿°·ü 0.001, º¸Á¸·ü 0.955
+[Step 3] CoST-W144-oaux-point fold 1 seed 2: 28 s, ¼Õ½Ç 0.307 -> 3.374, aux 0.8237 -> 0.3974 (R2 +0.603), ¿À¿°·ü 0.001, º¸Á¸·ü 0.965
+[Step 3] CoST-W144-oaux-point fold 1 seed 3: 29 s, ¼Õ½Ç 0.092 -> 3.181, aux 0.4564 -> 0.4180 (R2 +0.582), ¿À¿°·ü 0.002, º¸Á¸·ü 0.968
+[Step 3] CoST-W144-oaux-point fold 1 seed 4: 28 s, ¼Õ½Ç 0.106 -> 3.524, aux 0.4393 -> 0.5414 (R2 +0.459), ¿À¿°·ü 0.001, º¸Á¸·ü 0.964
+[Step 3] CoST-W144-oaux-point fold 2 seed 0: 27 s, ¼Õ½Ç 0.109 -> 3.545, aux 0.3886 -> 0.7449 (R2 +0.255), ¿À¿°·ü 0.002, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-oaux-point fold 2 seed 1: 28 s, ¼Õ½Ç 0.202 -> 3.680, aux 0.6137 -> 0.6570 (R2 +0.343), ¿À¿°·ü 0.002, º¸Á¸·ü 0.991
+[Step 3] CoST-W144-oaux-point fold 2 seed 2: 27 s, ¼Õ½Ç 0.286 -> 3.537, aux 0.8655 -> 0.8402 (R2 +0.160), ¿À¿°·ü 0.002, º¸Á¸·ü 0.991
+[Step 3] CoST-W144-oaux-point fold 2 seed 3: 26 s, ¼Õ½Ç 0.091 -> 3.199, aux 0.4662 -> 0.4795 (R2 +0.521), ¿À¿°·ü 0.003, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-oaux-point fold 2 seed 4: 28 s, ¼Õ½Ç 0.103 -> 3.605, aux 0.5797 -> 0.7375 (R2 +0.262), ¿À¿°·ü 0.002, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-oaux-point fold 3 seed 0: 29 s, ¼Õ½Ç 0.098 -> 3.484, aux 3.3595 -> 0.6266 (R2 +0.373), ¿À¿°·ü 0.001, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-oaux-point fold 3 seed 1: 33 s, ¼Õ½Ç 0.180 -> 3.615, aux 0.4300 -> 0.4654 (R2 +0.535), ¿À¿°·ü 0.001, º¸Á¸·ü 0.993
+[Step 3] CoST-W144-oaux-point fold 3 seed 2: 28 s, ¼Õ½Ç 0.279 -> 3.461, aux 1.6181 -> 0.6170 (R2 +0.383), ¿À¿°·ü 0.001, º¸Á¸·ü 0.996
+[Step 3] CoST-W144-oaux-point fold 3 seed 3: 27 s, ¼Õ½Ç 0.084 -> 3.159, aux 2.4797 -> 0.3562 (R2 +0.644), ¿À¿°·ü 0.002, º¸Á¸·ü 0.997
+[Step 3] CoST-W144-oaux-point fold 3 seed 4: 27 s, ¼Õ½Ç 0.094 -> 4.250, aux 0.4417 -> 2.7913 (R2 -1.791), ¿À¿°·ü 0.001, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-oaux-point fold 4 seed 0: 27 s, ¼Õ½Ç 0.081 -> 3.507, aux 3.4860 -> 0.6120 (R2 +0.388), ¿À¿°·ü 0.000, º¸Á¸·ü 0.994
+[Step 3] CoST-W144-oaux-point fold 4 seed 1: 27 s, ¼Õ½Ç 0.077 -> 3.636, aux 0.4157 -> 0.4959 (R2 +0.504), ¿À¿°·ü 0.000, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-oaux-point fold 4 seed 2: 27 s, ¼Õ½Ç 0.292 -> 3.467, aux 1.4950 -> 0.6566 (R2 +0.343), ¿À¿°·ü 0.000, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-oaux-point fold 4 seed 3: 27 s, ¼Õ½Ç 0.084 -> 3.146, aux 2.5922 -> 0.3063 (R2 +0.694), ¿À¿°·ü 0.002, º¸Á¸·ü 0.997
+[Step 3] CoST-W144-oaux-point fold 4 seed 4: 32 s, ¼Õ½Ç 0.093 -> 4.291, aux 0.4513 -> 2.9098 (R2 -1.910), ¿À¿°·ü 0.000, º¸Á¸·ü 0.994
+[Step 3] CoST-W144-oaux-point fold 5 seed 0: 26 s, ¼Õ½Ç 0.081 -> 3.497, aux 3.4390 -> 0.5708 (R2 +0.429), ¿À¿°·ü 0.001, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-oaux-point fold 5 seed 1: 27 s, ¼Õ½Ç 0.071 -> 3.626, aux 0.4136 -> 0.4567 (R2 +0.543), ¿À¿°·ü 0.000, º¸Á¸·ü 0.993
+[Step 3] CoST-W144-oaux-point fold 5 seed 2: 26 s, ¼Õ½Ç 0.271 -> 3.454, aux 1.4720 -> 0.6023 (R2 +0.398), ¿À¿°·ü 0.000, º¸Á¸·ü 0.997
+[Step 3] CoST-W144-oaux-point fold 5 seed 3: 27 s, ¼Õ½Ç 0.089 -> 3.147, aux 2.5658 -> 0.2858 (R2 +0.714), ¿À¿°·ü 0.004, º¸Á¸·ü 0.998
+[Step 3] CoST-W144-oaux-point fold 5 seed 4: 27 s, ¼Õ½Ç 0.092 -> 4.306, aux 0.4718 -> 2.9227 (R2 -1.923), ¿À¿°·ü 0.000, º¸Á¸·ü 0.995
+[save] loss curve -> outputs/03_baselines/13_proposed_cost_offset_aux_loss/CoST-W144-oaux-point_loss.png / .pdf
+[save] run     -> outputs/03_baselines/13_proposed_cost_offset_aux_loss/CoST-W144-oaux-point_run_metrics.csv
+[save] fold    -> outputs/03_baselines/13_proposed_cost_offset_aux_loss/CoST-W144-oaux-point_fold_metrics.csv
+[save] summary -> outputs/03_baselines/13_proposed_cost_offset_aux_loss/CoST-W144-oaux-point_summary.csv
+[save] config  -> outputs/03_baselines/13_proposed_cost_offset_aux_loss/CoST-W144-oaux-point_config.csv
+[save] heatmap -> outputs/03_baselines/13_proposed_cost_offset_aux_loss/CoST-W144-oaux-point_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/03_baselines/13_proposed_cost_offset_aux_loss/CoST-W144-oaux-point_heatmap_retention_rate.png / .pdf
+[done] CoST-W144-oaux-point
+[Step 3] CoST-W144-oaux-mean fold 1 seed 0: 28 s, ¼Õ½Ç 0.186 -> 3.599, aux 0.8825 -> 0.9645 (R2 +0.036), ¿À¿°·ü 0.001, º¸Á¸·ü 0.965
+[Step 3] CoST-W144-oaux-mean fold 1 seed 1: 27 s, ¼Õ½Ç 0.245 -> 3.561, aux 0.5879 -> 0.4146 (R2 +0.585), ¿À¿°·ü 0.001, º¸Á¸·ü 0.961
+[Step 3] CoST-W144-oaux-mean fold 1 seed 2: 28 s, ¼Õ½Ç 0.248 -> 3.526, aux 0.7247 -> 0.8538 (R2 +0.146), ¿À¿°·ü 0.001, º¸Á¸·ü 0.964
+[Step 3] CoST-W144-oaux-mean fold 1 seed 3: 29 s, ¼Õ½Ç 0.166 -> 3.206, aux 0.3771 -> 0.4979 (R2 +0.502), ¿À¿°·ü 0.002, º¸Á¸·ü 0.968
+[Step 3] CoST-W144-oaux-mean fold 1 seed 4: 29 s, ¼Õ½Ç 0.100 -> 3.661, aux 0.5204 -> 0.9227 (R2 +0.077), ¿À¿°·ü 0.001, º¸Á¸·ü 0.965
+[Step 3] CoST-W144-oaux-mean fold 2 seed 0: 26 s, ¼Õ½Ç 0.198 -> 3.663, aux 0.9454 -> 1.1442 (R2 -0.144), ¿À¿°·ü 0.002, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-oaux-mean fold 2 seed 1: 28 s, ¼Õ½Ç 0.260 -> 3.655, aux 0.6111 -> 0.5985 (R2 +0.401), ¿À¿°·ü 0.002, º¸Á¸·ü 0.991
+[Step 3] CoST-W144-oaux-mean fold 2 seed 2: 27 s, ¼Õ½Ç 0.245 -> 3.620, aux 0.7672 -> 1.1285 (R2 -0.129), ¿À¿°·ü 0.002, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-oaux-mean fold 2 seed 3: 27 s, ¼Õ½Ç 0.172 -> 3.228, aux 0.3952 -> 0.5666 (R2 +0.433), ¿À¿°·ü 0.002, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-oaux-mean fold 2 seed 4: 28 s, ¼Õ½Ç 0.100 -> 3.733, aux 0.5618 -> 1.1412 (R2 -0.141), ¿À¿°·ü 0.001, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-oaux-mean fold 3 seed 0: 29 s, ¼Õ½Ç 0.175 -> 3.639, aux 2.5565 -> 0.9872 (R2 +0.013), ¿À¿°·ü 0.001, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-oaux-mean fold 3 seed 1: 30 s, ¼Õ½Ç 0.228 -> 3.595, aux 0.4547 -> 0.4248 (R2 +0.575), ¿À¿°·ü 0.001, º¸Á¸·ü 0.993
+[Step 3] CoST-W144-oaux-mean fold 3 seed 2: 28 s, ¼Õ½Ç 0.253 -> 3.542, aux 2.3888 -> 0.8656 (R2 +0.134), ¿À¿°·ü 0.001, º¸Á¸·ü 0.994
+[Step 3] CoST-W144-oaux-mean fold 3 seed 3: 31 s, ¼Õ½Ç 0.151 -> 3.189, aux 2.0471 -> 0.4386 (R2 +0.561), ¿À¿°·ü 0.001, º¸Á¸·ü 0.996
+[Step 3] CoST-W144-oaux-mean fold 3 seed 4: 28 s, ¼Õ½Ç 0.091 -> 4.113, aux 0.4226 -> 2.3836 (R2 -1.384), ¿À¿°·ü 0.001, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-oaux-mean fold 4 seed 0: 29 s, ¼Õ½Ç 0.187 -> 3.642, aux 2.6540 -> 0.9766 (R2 +0.023), ¿À¿°·ü 0.000, º¸Á¸·ü 0.994
+[Step 3] CoST-W144-oaux-mean fold 4 seed 1: 28 s, ¼Õ½Ç 0.134 -> 3.614, aux 0.4394 -> 0.4512 (R2 +0.549), ¿À¿°·ü 0.000, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-oaux-mean fold 4 seed 2: 29 s, ¼Õ½Ç 0.265 -> 3.523, aux 2.3684 -> 0.8515 (R2 +0.149), ¿À¿°·ü 0.000, º¸Á¸·ü 0.994
+[Step 3] CoST-W144-oaux-mean fold 4 seed 3: 28 s, ¼Õ½Ç 0.135 -> 3.147, aux 2.1381 -> 0.3145 (R2 +0.685), ¿À¿°·ü 0.000, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-oaux-mean fold 4 seed 4: 30 s, ¼Õ½Ç 0.090 -> 4.156, aux 0.4320 -> 2.4805 (R2 -1.480), ¿À¿°·ü 0.000, º¸Á¸·ü 0.991
+[Step 3] CoST-W144-oaux-mean fold 5 seed 0: 28 s, ¼Õ½Ç 0.185 -> 3.619, aux 2.6343 -> 0.9118 (R2 +0.088), ¿À¿°·ü 0.001, º¸Á¸·ü 0.996
+[Step 3] CoST-W144-oaux-mean fold 5 seed 1: 28 s, ¼Õ½Ç 0.131 -> 3.608, aux 0.4328 -> 0.4237 (R2 +0.576), ¿À¿°·ü 0.000, º¸Á¸·ü 0.993
+[Step 3] CoST-W144-oaux-mean fold 5 seed 2: 28 s, ¼Õ½Ç 0.257 -> 3.524, aux 2.3489 -> 0.8155 (R2 +0.185), ¿À¿°·ü 0.000, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-oaux-mean fold 5 seed 3: 27 s, ¼Õ½Ç 0.134 -> 3.117, aux 2.1059 -> 0.2426 (R2 +0.757), ¿À¿°·ü 0.000, º¸Á¸·ü 0.997
+[Step 3] CoST-W144-oaux-mean fold 5 seed 4: 28 s, ¼Õ½Ç 0.090 -> 4.152, aux 0.4492 -> 2.4756 (R2 -1.476), ¿À¿°·ü 0.000, º¸Á¸·ü 0.993
+[save] loss curve -> outputs/03_baselines/13_proposed_cost_offset_aux_loss/CoST-W144-oaux-mean_loss.png / .pdf
+[save] run     -> outputs/03_baselines/13_proposed_cost_offset_aux_loss/CoST-W144-oaux-mean_run_metrics.csv
+[save] fold    -> outputs/03_baselines/13_proposed_cost_offset_aux_loss/CoST-W144-oaux-mean_fold_metrics.csv
+[save] summary -> outputs/03_baselines/13_proposed_cost_offset_aux_loss/CoST-W144-oaux-mean_summary.csv
+[save] config  -> outputs/03_baselines/13_proposed_cost_offset_aux_loss/CoST-W144-oaux-mean_config.csv
+[save] heatmap -> outputs/03_baselines/13_proposed_cost_offset_aux_loss/CoST-W144-oaux-mean_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/03_baselines/13_proposed_cost_offset_aux_loss/CoST-W144-oaux-mean_heatmap_retention_rate.png / .pdf
+[done] CoST-W144-oaux-mean
+[done] ¿ÀÇÁ¼Â º¸Á¶ ¼Õ½Ç ¿Ï·á -> outputs/03_baselines/13_proposed_cost_offset_aux_loss

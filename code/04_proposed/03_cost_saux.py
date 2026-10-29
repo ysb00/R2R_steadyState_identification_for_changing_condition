@@ -30,6 +30,7 @@
 # 실행 : python code/04_proposed/03_cost_saux.py                   (A, beta=12 기본)
 #        python code/04_proposed/03_cost_saux.py c                 (C)
 #        python code/04_proposed/03_cost_saux.py tension beta=30   (민감도)
+#        python code/04_proposed/03_cost_saux.py tension aux320    (P3 — head 가 표현 320 전체를 읽음)
 #        python code/04_proposed/03_cost_saux.py tension amb       (ambiguous 포함 — 추론만)
 # =============================================================================
 import os, sys, time
@@ -52,7 +53,9 @@ from models.encoder import CoSTEncoder                                  # 외부
 from utils import init_dl_program                                       # 외부 저장소 원본의 시드 초기화
 
 SPLIT = sys.argv[1] if len(sys.argv) > 1 else 'tension'   # 'tension' (A) | 'c' (C)
-_rest = [t for t in sys.argv[2:] if not t.startswith('beta=')]
+AUX320_TOKEN = 'aux320'                     # P3 (hyperparameters.md 13.10). **기본은 꺼져 있다**
+AUX_SRC_320 = AUX320_TOKEN in sys.argv[2:]  # True -> 보조 head 가 trend 160 대신 표현 320 전체를 읽는다
+_rest = [t for t in sys.argv[2:] if not t.startswith('beta=') and t != AUX320_TOKEN]
 _beta = [t for t in sys.argv[2:] if t.startswith('beta=')]
 INFER = splits.set_amb_mode(_rest)          # 'amb' -> ambiguous 포함 채점 + 재학습 없이 추론만
 
@@ -88,6 +91,7 @@ STAGE = '11_proposed_cost_direction_aux_loss'
 OUT_DIR = splits.resolve(SPLIT, STAGE)
 CKPT_DIR = splits.ckpt_dir(SPLIT, STAGE)
 SUFFIX = '' if BETA == BETA_DEFAULT else f'-b{BETA:g}'    # 기본값이 아니면 이름에 붙여 섞이지 않게
+SRC_SUFFIX = '-r320' if AUX_SRC_320 else ''               # P3 변형도 이름으로 분리한다
 
 T1 = 'Film Tension #1 (kg)'
 TS, RS, VS = ev.TS, ev.RS, ev.VS
@@ -151,10 +155,11 @@ class Ch0CoSTEncoder(CoSTEncoder):
 class SAuxCoSTModel(CoSTModel):
     # 역할 : 원본 forward 를 그대로 수행하고 **끝에 보조 항 하나**를 더한다.
     #        trend 원시 표현(정규화·head 통과 전)에서 선형 head 로 s̄ 를 예측하는 MSE 다.
-    def __init__(self, *a, beta, readout, dim, **kw):
+    def __init__(self, *a, beta, readout, dim, src320=False, **kw):
         super().__init__(*a, dim=dim, **kw)
-        self.beta, self.readout = beta, readout
-        self.aux_head = nn.Linear(dim, 1)         # 160 -> 1. 선형 최소 구조
+        self.beta, self.readout, self.src320 = beta, readout, src320
+        # src320=False : trend 160 -> 1 (기본). True : trend|seasonal 320 -> 1 (P3)
+        self.aux_head = nn.Linear(dim * 2 if src320 else dim, 1)   # 선형 최소 구조
         self.last_aux = float('nan')
 
     def forward(self, x_q, x_k):
@@ -162,6 +167,7 @@ class SAuxCoSTModel(CoSTModel):
         rand_idx = np.random.randint(0, x_q.shape[1])
         q_t, q_s = self.encoder_q(x_q)
         t_raw = q_t                                           # 보조 손실용 (정규화 전 trend)
+        s_raw = q_s                                           # 보조 손실용 (정규화 전 seasonal, P3 만 씀)
         if q_t is not None:
             q_t = F.normalize(self.head_q(q_t[:, rand_idx]), dim=-1)
         with torch.no_grad():
@@ -183,10 +189,12 @@ class SAuxCoSTModel(CoSTModel):
         loss += (self.alpha * (seasonal_loss / 2))
         # ---- 여기까지 원본. 아래가 추가분 ----
         s = x_q[..., 1]                                       # (B, T) 목표값 s̄
+        # P3 : head 가 읽는 표현. 기본은 trend 160, src320 이면 표현 320 전체 (trend|seasonal)
+        feat = torch.cat([t_raw, s_raw], dim=-1) if self.src320 else t_raw
         if self.readout == 'point':
-            pred, tgt = self.aux_head(t_raw[:, rand_idx]).squeeze(-1), s[:, rand_idx]
+            pred, tgt = self.aux_head(feat[:, rand_idx]).squeeze(-1), s[:, rand_idx]
         else:                                                 # 'mean' — 시점별 오차를 전 시점 평균
-            pred, tgt = self.aux_head(t_raw).squeeze(-1), s
+            pred, tgt = self.aux_head(feat).squeeze(-1), s
         m = torch.isfinite(tgt)                               # 패딩(NaN) 제외
         aux = F.mse_loss(pred[m], tgt[m]) if m.any() else t_raw.new_zeros(())
         self.last_aux = float(aux.detach())
@@ -220,6 +228,8 @@ print(f'[Step 2] 창 {WINDOW} (baseline 동일) | 평활 = 1회전 P(V): ' +
 print(f'[Step 2] s_bar 평균 {s_flat.mean():.3f}  분산 {s_flat.var():.5f}  -> L_aux 초기값 기대치')
 print(f'[Step 2] beta = {BETA:g}  (L_MoCo 수렴값 약 3.25 기준 보조 항 비중 '
       f'{BETA * s_flat.var() / 3.25:.1%})')
+print(f'[Step 2] 보조 head 입력 = ' +
+      ('표현 320 전체 (trend|seasonal), P3' if AUX_SRC_320 else 'trend 160 (기본)'))
 
 
 def unpad(z):
@@ -235,7 +245,7 @@ def new_model(readout):
                            length=WINDOW, hidden_dims=64, depth=10).to(DEVICE)
     m.cost = SAuxCoSTModel(m.net, copy.deepcopy(m.net), kernels=KERNELS,
                            dim=m.net.component_dims, alpha=ALPHA, K=256, device=DEVICE,
-                           beta=BETA, readout=readout).to(DEVICE)
+                           beta=BETA, readout=readout, src320=AUX_SRC_320).to(DEVICE)
     return m
 
 
@@ -246,7 +256,7 @@ if not INFER:
     os.makedirs(f'{OUT_DIR}/checkpoints', exist_ok=True)
 
 for readout in READOUTS:
-    method = f'CoST-W{WINDOW}-saux-{readout}{SUFFIX}'
+    method = f'CoST-W{WINDOW}-saux-{readout}{SRC_SUFFIX}{SUFFIX}'
     if os.path.exists(f'{OUT_DIR}/{method}_fold_metrics.csv'):
         print(f'[Step 3] {method}: 이미 결과가 있어 건너뛴다', flush=True)
         continue
@@ -319,11 +329,14 @@ for readout in READOUTS:
                      'BATCH_SIZE': BATCH_SIZE, 'LR': LR, 'REPR_DIMS': REPR_DIMS,
                      'KERNELS': KERNELS, 'ALPHA': ALPHA,
                      'idea': 'docs/idea/03_direction_aux_loss.md',
-                     'aux_loss': 'beta * MSE(Linear(trend_160), s_bar)',
+                     'aux_loss': 'beta * MSE(Linear(%s), s_bar)'
+                                 % ('repr_320' if AUX_SRC_320 else 'trend_160'),
                      'BETA': BETA, 'readout': readout,
                      'readout_meaning': {'point': 'MoCo 가 쓰는 무작위 시점 1개',
                                          'mean': '시점별 오차를 전 시점에서 평균'}[readout],
-                     'aux_head': f'nn.Linear({REPR_DIMS // 2}, 1) — 선형 최소 구조',
+                     'aux_head': f'nn.Linear({REPR_DIMS if AUX_SRC_320 else REPR_DIMS // 2}, 1) '
+                                 f'— 선형 최소 구조',
+                     'aux_src': 'repr_320 (trend|seasonal)' if AUX_SRC_320 else 'trend_160',
                      'aux_target': 's_bar = 창 내 설정값 접근 비율, 평활 1회전 P(V)',
                      'ROLL_CIRCUMFERENCE_MM': ROLL_CIRCUMFERENCE_MM,
                      'augmentation': 'jitter only (scale, shift removed via runtime shim)',

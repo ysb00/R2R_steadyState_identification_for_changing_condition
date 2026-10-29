@@ -1,0 +1,72 @@
+[Step 1] runs = 210, ÀÔ·Â (210, 1300, 2) (1.8 s)
+[Step 2] Ã¢ 144 (baseline µ¿ÀÏ) | ÆòÈ° = 1È¸Àü P(V): V50:144, V75:96, V100:72, V125:58, V150:48, V175:41, V200:36
+[Step 2] s_bar Æò±Õ 0.491  ºÐ»ê 0.02386  -> L_aux ÃÊ±â°ª ±â´ëÄ¡
+[Step 2] beta = 12  (L_MoCo ¼ö·Å°ª ¾à 3.25 ±âÁØ º¸Á¶ Ç× ºñÁß 8.8%)
+[Step 2] º¸Á¶ head ÀÔ·Â = Ç¥Çö 320 ÀüÃ¼ (trend|seasonal), P3
+[Step 3] CoST-W144-saux-point-r320 fold 1 seed 0: 37 s, ¼Õ½Ç 4.948 -> 3.700, aux 0.0866 -> 0.0245 (R2 +0.005), ¿À¿°·ü 0.002, º¸Á¸·ü 0.938
+[Step 3] CoST-W144-saux-point-r320 fold 1 seed 1: 27 s, ¼Õ½Ç 4.044 -> 3.873, aux 0.1031 -> 0.0220 (R2 +0.105), ¿À¿°·ü 0.001, º¸Á¸·ü 0.936
+[Step 3] CoST-W144-saux-point-r320 fold 1 seed 2: 28 s, ¼Õ½Ç 2.989 -> 3.672, aux 0.0697 -> 0.0227 (R2 +0.075), ¿À¿°·ü 0.002, º¸Á¸·ü 0.945
+[Step 3] CoST-W144-saux-point-r320 fold 1 seed 3: 27 s, ¼Õ½Ç 2.093 -> 3.498, aux 0.1254 -> 0.0268 (R2 -0.088), ¿À¿°·ü 0.002, º¸Á¸·ü 0.961
+[Step 3] CoST-W144-saux-point-r320 fold 1 seed 4: 27 s, ¼Õ½Ç 2.800 -> 3.710, aux 0.1103 -> 0.0164 (R2 +0.334), ¿À¿°·ü 0.001, º¸Á¸·ü 0.926
+[Step 3] CoST-W144-saux-point-r320 fold 2 seed 0: 28 s, ¼Õ½Ç 4.856 -> 3.716, aux 0.0802 -> 0.0248 (R2 -0.028), ¿À¿°·ü 0.000, º¸Á¸·ü 0.960
+[Step 3] CoST-W144-saux-point-r320 fold 2 seed 1: 28 s, ¼Õ½Ç 3.457 -> 3.898, aux 0.1015 -> 0.0217 (R2 +0.100), ¿À¿°·ü 0.000, º¸Á¸·ü 0.956
+[Step 3] CoST-W144-saux-point-r320 fold 2 seed 2: 29 s, ¼Õ½Ç 2.767 -> 3.684, aux 0.0628 -> 0.0239 (R2 +0.007), ¿À¿°·ü 0.000, º¸Á¸·ü 0.962
+[Step 3] CoST-W144-saux-point-r320 fold 2 seed 3: 27 s, ¼Õ½Ç 2.173 -> 3.525, aux 0.1216 -> 0.0276 (R2 -0.143), ¿À¿°·ü 0.001, º¸Á¸·ü 0.983
+[Step 3] CoST-W144-saux-point-r320 fold 2 seed 4: 28 s, ¼Õ½Ç 3.237 -> 3.742, aux 0.1149 -> 0.0175 (R2 +0.275), ¿À¿°·ü 0.000, º¸Á¸·ü 0.959
+[Step 3] CoST-W144-saux-point-r320 fold 3 seed 0: 30 s, ¼Õ½Ç 4.248 -> 3.665, aux 0.0803 -> 0.0215 (R2 +0.096), ¿À¿°·ü 0.000, º¸Á¸·ü 0.961
+[Step 3] CoST-W144-saux-point-r320 fold 3 seed 1: 28 s, ¼Õ½Ç 3.405 -> 3.939, aux 0.1063 -> 0.0224 (R2 +0.056), ¿À¿°·ü 0.000, º¸Á¸·ü 0.958
+[Step 3] CoST-W144-saux-point-r320 fold 3 seed 2: 28 s, ¼Õ½Ç 3.138 -> 3.706, aux 0.0671 -> 0.0234 (R2 +0.015), ¿À¿°·ü 0.000, º¸Á¸·ü 0.962
+[Step 3] CoST-W144-saux-point-r320 fold 3 seed 3: 27 s, ¼Õ½Ç 2.402 -> 3.536, aux 0.1211 -> 0.0285 (R2 -0.202), ¿À¿°·ü 0.000, º¸Á¸·ü 0.978
+[Step 3] CoST-W144-saux-point-r320 fold 3 seed 4: 29 s, ¼Õ½Ç 2.786 -> 3.737, aux 0.1226 -> 0.0154 (R2 +0.351), ¿À¿°·ü 0.000, º¸Á¸·ü 0.957
+[Step 3] CoST-W144-saux-point-r320 fold 4 seed 0: 31 s, ¼Õ½Ç 3.294 -> 3.654, aux 0.0816 -> 0.0189 (R2 +0.196), ¿À¿°·ü 0.000, º¸Á¸·ü 0.961
+[Step 3] CoST-W144-saux-point-r320 fold 4 seed 1: 29 s, ¼Õ½Ç 3.262 -> 3.921, aux 0.1091 -> 0.0218 (R2 +0.072), ¿À¿°·ü 0.000, º¸Á¸·ü 0.953
+[Step 3] CoST-W144-saux-point-r320 fold 4 seed 2: 28 s, ¼Õ½Ç 3.179 -> 3.702, aux 0.0693 -> 0.0232 (R2 +0.010), ¿À¿°·ü 0.000, º¸Á¸·ü 0.965
+[Step 3] CoST-W144-saux-point-r320 fold 4 seed 3: 28 s, ¼Õ½Ç 2.442 -> 3.542, aux 0.1246 -> 0.0281 (R2 -0.195), ¿À¿°·ü 0.000, º¸Á¸·ü 0.972
+[Step 3] CoST-W144-saux-point-r320 fold 4 seed 4: 28 s, ¼Õ½Ç 3.196 -> 3.744, aux 0.1308 -> 0.0144 (R2 +0.387), ¿À¿°·ü 0.000, º¸Á¸·ü 0.963
+[Step 3] CoST-W144-saux-point-r320 fold 5 seed 0: 29 s, ¼Õ½Ç 3.235 -> 3.664, aux 0.0790 -> 0.0200 (R2 +0.146), ¿À¿°·ü 0.000, º¸Á¸·ü 0.967
+[Step 3] CoST-W144-saux-point-r320 fold 5 seed 1: 28 s, ¼Õ½Ç 3.254 -> 3.875, aux 0.1028 -> 0.0192 (R2 +0.181), ¿À¿°·ü 0.000, º¸Á¸·ü 0.960
+[Step 3] CoST-W144-saux-point-r320 fold 5 seed 2: 28 s, ¼Õ½Ç 3.355 -> 3.710, aux 0.0717 -> 0.0240 (R2 -0.027), ¿À¿°·ü 0.000, º¸Á¸·ü 0.967
+[Step 3] CoST-W144-saux-point-r320 fold 5 seed 3: 29 s, ¼Õ½Ç 2.439 -> 3.560, aux 0.1164 -> 0.0294 (R2 -0.256), ¿À¿°·ü 0.000, º¸Á¸·ü 0.979
+[Step 3] CoST-W144-saux-point-r320 fold 5 seed 4: 28 s, ¼Õ½Ç 3.196 -> 3.763, aux 0.1314 -> 0.0158 (R2 +0.325), ¿À¿°·ü 0.000, º¸Á¸·ü 0.968
+[save] loss curve -> outputs/03_baselines/11_proposed_cost_direction_aux_loss/CoST-W144-saux-point-r320_loss.png / .pdf
+[save] run     -> outputs/03_baselines/11_proposed_cost_direction_aux_loss/CoST-W144-saux-point-r320_run_metrics.csv
+[save] fold    -> outputs/03_baselines/11_proposed_cost_direction_aux_loss/CoST-W144-saux-point-r320_fold_metrics.csv
+[save] summary -> outputs/03_baselines/11_proposed_cost_direction_aux_loss/CoST-W144-saux-point-r320_summary.csv
+[save] config  -> outputs/03_baselines/11_proposed_cost_direction_aux_loss/CoST-W144-saux-point-r320_config.csv
+[save] heatmap -> outputs/03_baselines/11_proposed_cost_direction_aux_loss/CoST-W144-saux-point-r320_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/03_baselines/11_proposed_cost_direction_aux_loss/CoST-W144-saux-point-r320_heatmap_retention_rate.png / .pdf
+[done] CoST-W144-saux-point-r320
+[Step 3] CoST-W144-saux-mean-r320 fold 1 seed 0: 28 s, ¼Õ½Ç 3.694 -> 3.732, aux 0.0812 -> 0.0263 (R2 -0.071), ¿À¿°·ü 0.002, º¸Á¸·ü 0.936
+[Step 3] CoST-W144-saux-mean-r320 fold 1 seed 1: 29 s, ¼Õ½Ç 3.965 -> 3.844, aux 0.0987 -> 0.0194 (R2 +0.211), ¿À¿°·ü 0.001, º¸Á¸·ü 0.924
+[Step 3] CoST-W144-saux-mean-r320 fold 1 seed 2: 29 s, ¼Õ½Ç 2.840 -> 3.647, aux 0.0654 -> 0.0197 (R2 +0.200), ¿À¿°·ü 0.002, º¸Á¸·ü 0.935
+[Step 3] CoST-W144-saux-mean-r320 fold 1 seed 3: 29 s, ¼Õ½Ç 2.383 -> 3.298, aux 0.0688 -> 0.0207 (R2 +0.160), ¿À¿°·ü 0.002, º¸Á¸·ü 0.954
+[Step 3] CoST-W144-saux-mean-r320 fold 1 seed 4: 29 s, ¼Õ½Ç 2.689 -> 3.678, aux 0.0872 -> 0.0206 (R2 +0.163), ¿À¿°·ü 0.001, º¸Á¸·ü 0.934
+[Step 3] CoST-W144-saux-mean-r320 fold 2 seed 0: 28 s, ¼Õ½Ç 3.712 -> 3.738, aux 0.0803 -> 0.0262 (R2 -0.086), ¿À¿°·ü 0.000, º¸Á¸·ü 0.959
+[Step 3] CoST-W144-saux-mean-r320 fold 2 seed 1: 27 s, ¼Õ½Ç 3.962 -> 3.856, aux 0.0970 -> 0.0192 (R2 +0.204), ¿À¿°·ü 0.000, º¸Á¸·ü 0.952
+[Step 3] CoST-W144-saux-mean-r320 fold 2 seed 2: 30 s, ¼Õ½Ç 2.800 -> 3.644, aux 0.0661 -> 0.0196 (R2 +0.187), ¿À¿°·ü 0.000, º¸Á¸·ü 0.957
+[Step 3] CoST-W144-saux-mean-r320 fold 2 seed 3: 29 s, ¼Õ½Ç 2.360 -> 3.306, aux 0.0676 -> 0.0201 (R2 +0.164), ¿À¿°·ü 0.000, º¸Á¸·ü 0.966
+[Step 3] CoST-W144-saux-mean-r320 fold 2 seed 4: 28 s, ¼Õ½Ç 2.663 -> 3.707, aux 0.0877 -> 0.0211 (R2 +0.126), ¿À¿°·ü 0.000, º¸Á¸·ü 0.958
+[Step 3] CoST-W144-saux-mean-r320 fold 3 seed 0: 28 s, ¼Õ½Ç 3.626 -> 3.719, aux 0.0784 -> 0.0257 (R2 -0.084), ¿À¿°·ü 0.000, º¸Á¸·ü 0.961
+[Step 3] CoST-W144-saux-mean-r320 fold 3 seed 1: 29 s, ¼Õ½Ç 3.918 -> 3.850, aux 0.0963 -> 0.0189 (R2 +0.206), ¿À¿°·ü 0.000, º¸Á¸·ü 0.956
+[Step 3] CoST-W144-saux-mean-r320 fold 3 seed 2: 28 s, ¼Õ½Ç 2.822 -> 3.666, aux 0.0666 -> 0.0198 (R2 +0.169), ¿À¿°·ü 0.000, º¸Á¸·ü 0.960
+[Step 3] CoST-W144-saux-mean-r320 fold 3 seed 3: 28 s, ¼Õ½Ç 2.379 -> 3.316, aux 0.0669 -> 0.0210 (R2 +0.116), ¿À¿°·ü 0.000, º¸Á¸·ü 0.965
+[Step 3] CoST-W144-saux-mean-r320 fold 3 seed 4: 30 s, ¼Õ½Ç 2.720 -> 3.712, aux 0.0888 -> 0.0213 (R2 +0.103), ¿À¿°·ü 0.000, º¸Á¸·ü 0.961
+[Step 3] CoST-W144-saux-mean-r320 fold 4 seed 0: 35 s, ¼Õ½Ç 3.573 -> 3.705, aux 0.0788 -> 0.0238 (R2 -0.012), ¿À¿°·ü 0.000, º¸Á¸·ü 0.962
+[Step 3] CoST-W144-saux-mean-r320 fold 4 seed 1: 31 s, ¼Õ½Ç 3.766 -> 3.836, aux 0.0954 -> 0.0179 (R2 +0.239), ¿À¿°·ü 0.000, º¸Á¸·ü 0.955
+[Step 3] CoST-W144-saux-mean-r320 fold 4 seed 2: 29 s, ¼Õ½Ç 2.897 -> 3.681, aux 0.0672 -> 0.0199 (R2 +0.154), ¿À¿°·ü 0.000, º¸Á¸·ü 0.960
+[Step 3] CoST-W144-saux-mean-r320 fold 4 seed 3: 29 s, ¼Õ½Ç 2.372 -> 3.314, aux 0.0653 -> 0.0206 (R2 +0.124), ¿À¿°·ü 0.000, º¸Á¸·ü 0.968
+[Step 3] CoST-W144-saux-mean-r320 fold 4 seed 4: 30 s, ¼Õ½Ç 2.871 -> 3.713, aux 0.0895 -> 0.0210 (R2 +0.106), ¿À¿°·ü 0.000, º¸Á¸·ü 0.960
+[Step 3] CoST-W144-saux-mean-r320 fold 5 seed 0: 28 s, ¼Õ½Ç 3.556 -> 3.690, aux 0.0790 -> 0.0235 (R2 -0.005), ¿À¿°·ü 0.000, º¸Á¸·ü 0.967
+[Step 3] CoST-W144-saux-mean-r320 fold 5 seed 1: 29 s, ¼Õ½Ç 3.804 -> 3.835, aux 0.0965 -> 0.0177 (R2 +0.244), ¿À¿°·ü 0.000, º¸Á¸·ü 0.960
+[Step 3] CoST-W144-saux-mean-r320 fold 5 seed 2: 33 s, ¼Õ½Ç 2.870 -> 3.671, aux 0.0662 -> 0.0199 (R2 +0.150), ¿À¿°·ü 0.000, º¸Á¸·ü 0.964
+[Step 3] CoST-W144-saux-mean-r320 fold 5 seed 3: 30 s, ¼Õ½Ç 2.606 -> 3.320, aux 0.0656 -> 0.0209 (R2 +0.106), ¿À¿°·ü 0.000, º¸Á¸·ü 0.971
+[Step 3] CoST-W144-saux-mean-r320 fold 5 seed 4: 30 s, ¼Õ½Ç 2.871 -> 3.712, aux 0.0884 -> 0.0205 (R2 +0.125), ¿À¿°·ü 0.000, º¸Á¸·ü 0.966
+[save] loss curve -> outputs/03_baselines/11_proposed_cost_direction_aux_loss/CoST-W144-saux-mean-r320_loss.png / .pdf
+[save] run     -> outputs/03_baselines/11_proposed_cost_direction_aux_loss/CoST-W144-saux-mean-r320_run_metrics.csv
+[save] fold    -> outputs/03_baselines/11_proposed_cost_direction_aux_loss/CoST-W144-saux-mean-r320_fold_metrics.csv
+[save] summary -> outputs/03_baselines/11_proposed_cost_direction_aux_loss/CoST-W144-saux-mean-r320_summary.csv
+[save] config  -> outputs/03_baselines/11_proposed_cost_direction_aux_loss/CoST-W144-saux-mean-r320_config.csv
+[save] heatmap -> outputs/03_baselines/11_proposed_cost_direction_aux_loss/CoST-W144-saux-mean-r320_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/03_baselines/11_proposed_cost_direction_aux_loss/CoST-W144-saux-mean-r320_heatmap_retention_rate.png / .pdf
+[done] CoST-W144-saux-mean-r320
+[done] Á¦¾È ¾ÆÀÌµð¾î 03 ¿Ï·á -> outputs/03_baselines/11_proposed_cost_direction_aux_loss

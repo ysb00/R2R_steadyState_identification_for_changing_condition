@@ -83,7 +83,7 @@ METHODS = [
     ('MovStd-Slope-fixed',  '01_stat_ssd', 'movstd'),      # 2차원
     ('TS2Vec',              '02_ts2vec',   'ts2vec'),      # 320
     ('MOMENT',              '03_moment',   'moment'),      # 512
-    ('CoST-W144',           '04_cost',     'cost'),        # 320
+    ('CoST-W144',           '04_cost (ablation)',     'cost'),        # 320
     ('SoftCLT-fs-rule1b',   '05_softclt',  'softclt'),     # 320
     ('TS-TCC',              '07_tstcc',    'tstcc'),       # 2,560
     ('SimMTM',              '08_simmtm',   'simmtm'),      # 1,024

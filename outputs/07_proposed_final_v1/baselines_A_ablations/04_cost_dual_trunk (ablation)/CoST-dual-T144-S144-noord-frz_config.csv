@@ -1,0 +1,46 @@
+name,value
+DT,0.109
+ENTRY_MIN_CONSEC,10
+N_GMM_COMPONENTS,2
+GMM_COVARIANCE_TYPE,diag
+SPLIT,tension
+SEED,0
+N_SEEDS,5
+WINDOW,144
+N_ITERS,600
+DEVICE,cuda
+BATCH_SIZE,8
+LR,0.001
+REPR_DIMS,320
+KERNELS,"[1, 2, 4, 8, 16, 32, 64, 128]"
+ALPHA,0.0005
+idea,hyperparameters.md 13.10 P5 (아이디어 01 이원 trunk)
+design,"trunk 2개 — trend 는 창 144, seasonal 은 창 144"
+WINDOW_T,144
+WINDOW_S,144
+HIDDEN_DIMS,64
+trunk_sharing,separate (trend trunk / seasonal trunk 각자 64)
+trunk_params_each,637248
+trainable_params_note,"학습되는 파라미터 15.31M (공유 trunk 판 14.67M 대비 +4.4%). 죽은 분기(trend trunk 의 sfd, seasonal trunk 의 tfd) 16.8M 은 gradient 0. 용량 대조군은 CoST-W144-order-h116"
+role,대조군 — trunk 2개(파라미터 2배)이지만 창 분리 없음
+max_train_length,144
+BASE_N_ITERS,600
+n_iters_rule,baseline 의 데이터 통과 횟수에 맞춘 유도값 = 600 x 9/9
+sections_trend_window,9
+sections_seasonal_window,9
+trend_input_equals_baseline,True
+seasonal_trunk_frozen,True
+seasonal_axis,"Hz (원본 BandedFourierLayer, 차수 재색인 없음)"
+N_ROT,1
+L_ORD,36
+order_resolution_per_bin,1.0
+ROLL_CIRCUMFERENCE_MM,783.5
+order_window_by_speed,"{50: 144, 75: 96, 100: 72, 125: 58, 150: 48, 175: 42, 200: 36}"
+interp,"linear (F.interpolate, align_corners=True)"
+loss_split,L_MoCo <- trend trunk(창 144) / alpha*L_season <- seasonal trunk(창 144)
+augmentation,"jitter only (scale, shift removed via runtime shim)"
+uses_setting_value,Web Speed — seasonal 창 길이 결정에만. 표현 입력 아님. 선례: MovStd-Slope-speed-rule1b (01_stat_ssd.py:163)
+baseline,CoST-W144-noscaleshift (trend 창이 같고 입력도 동일)
+repo,salesforce/CoST
+commit,7bb5271c2b66cd5a1d634c27f5df308f190b50ec
+LABEL_MODE,ambiguous(2) 를 채점에서 제외 (기본값)

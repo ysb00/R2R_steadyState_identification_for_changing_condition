@@ -980,23 +980,192 @@ C 실험 `final_test` (저속 학습 → 미학습 고속, seed 5회 평균):
 |---|---|
 | 01 차수 정규화 (N_rot=2, 창 288) | `docs/idea/01_*.md`. **차수 효과는 +0.175 (F1 ns) 로 확인**되나 창 288 손해 −0.291 이 더 커 baseline 미달 |
 | 02 방향 게이트 (FiLM) | `docs/idea/02_*.md`. **효과 0** (F1 +0.0009). FiLM 이 영 초기화에서 안 움직임(|w| 0.00133) — 손실이 요구하지 않으면 학습이 버린다 |
-| 01 차수 정규화 (N_rot=1, 창 144) | 실행 중 → 결과는 worklog 참조 |
+| 01 차수 정규화 (N_rot=1, 창 144) | `docs/idea/01_*.md` §10. **baseline 초과** — F1(ns) +0.0124 (19/6, p=0.0056), AUPRC +0.0191 (20/5, p=0.0025), 보존률 +0.0033 (25/0) |
+| 03 방향 보조 손실 (β=12, 창 144) | `docs/idea/03_*.md` §7. **baseline 초과** — `saux-mean` F1(ns) +0.0047 (16/9, p=0.017), AUROC +0.0098 (23/2, p<0.001). 단 보존률 −0.0013 (4/21, p=0.002). `aux_r2` 0.06~0.09 라 **보조 과제를 푼 것이 아니라 약한 압력만으로 개선**됐다 |
+| 03 β 민감도 (β=30/100/300) | **발산해서 실행 불가**. β=30 은 10번째 iteration 에서 `L_aux` 1.8e4 → NaN, 인코더 파라미터 전부 NaN. 원인은 ① 보조 손실이 정규화 전 `t_raw` 에 직접 붙어 표현 크기를 키우는 양의 되먹임 ② 초반 `L_MoCo` 0.045 대비 β·L_aux ≈ 1~3 으로 보조가 지배 (§13.10 아래 P2 항목 참조) |
 
 #### **할 일**
 
 | # | 항목 | 비용 | 비고 |
 |---|---|---|---|
-| **P1** | **아이디어 03 — 방향 보조 손실 실행** | A 약 25분 | **구현 완료**, 실행만 남았다. `python code/04_proposed/03_cost_saux.py tension`. 변형 2종(`saux-point` / `saux-mean`), β=12 기본. 설계는 `docs/idea/03_*.md` |
-| P2 | 아이디어 03 β 민감도 | 변형당 25분 | `beta=30`, `beta=100`. β 선택은 **C `cv_S1`·`cv_S2` 에서만** 하고 `final_test` 는 보지 않는다 |
-| P3 | 아이디어 03 readout 확장 | 10분 | 보조 head 가 trend 160 대신 **320 전체**를 읽는 변형. 현 설계로 먼저 보고 재논의 (연구자 결정 2026-10-28) |
+| ~~P1~~ | ~~아이디어 03 — 방향 보조 손실 실행~~ | — | **완료 (2026-10-29)**. A 2변형 25분. 결과는 위 표와 `docs/idea/03_*.md` §7 |
+| ~~P2~~ | ~~아이디어 03 β 민감도~~ | — | **종결 (연구자 결정 2026-10-29)**. β=30/100/300 이 전부 발산해 격자를 돌릴 수 없고, 안정 구간은 β=12 근처뿐이다. **β=12 고정으로 보고하고 "항 크기에서 유도했으며 그 이상은 발산한다" 로 서술한다.** 안정화 장치(β warmup, head 입력 정규화, grad clipping)를 넣어 큰 β 를 시험하는 쪽은 아이디어 설계 변경이라 채택하지 않았다 — 비교군이 As-published 인 상황에서 공정성 서술이 복잡해진다 |
+| P3 | 아이디어 03 readout 확장 | A 약 25분 | 보조 head 가 trend 160 대신 **320 전체**를 읽는 변형. `python code/04_proposed/03_cost_saux.py tension aux320` (β=12). **실행 중 (2026-10-29)** |
 | P4 | 대역 에너지 비율 | 미설계 | C3 를 재다 나온 부산물. `ratio = env(e_fast)/|e_slow|` AUROC 0.804, **고속 전이 +0.053**, 진폭 Q5 통제 후 0.791. 아이디어 01 의 물리 대역 분할(B0/B_h/B_r)과 같은 물리를 가리킨다 |
 | P5 | 아이디어 01 이원 trunk | 반나절 + 실험 | trend 창 144 / seasonal 창 288 로 분리해 창 손해 없이 차수 효과만 얻는 설계. 계산 2배, CoST 공유 trunk 설계를 깬다 |
-| P6 | 유망한 변형의 C 실험 + ambiguous 포함 | 변형당 약 1시간 | A 에서 baseline 을 넘는 것만 진행한다 |
+| ~~P6~~ | ~~유망한 변형의 C 실험 + ambiguous 포함~~ | — | **하지 않는다 (연구자 결정 2026-10-29).** 제안 방법의 실험은 **A 까지만** 진행한다 |
+| P7 | 아이디어 01 + 03 결합 변형 | 미설계. 반나절 + A 24분 | A 에서 baseline 을 넘은 것이 둘이 되었으므로 조합을 묻는 질문이 생겼다. 설계·구현 합의 필요. 보류 (P5 우선) |
+| **P5** | **이원 trunk — 분기별 창 분리** | A 약 50분 | **구현 완료** `code/04_proposed/04_cost_dual_trunk.py`, **실행 중**. 가설·이론적 개념은 `docs/idea/proposed_ideas_already_implemented.md` §3.2. 제안 `CoST-dual-T144-S288` + 대조군 `CoST-dual-T144-S144`(파라미터 2배·창 분리 없음) |
+
+#### ⚠ 폴더 이름 변경 (2026-10-29) — **어댑터를 재실행하면 전체 재학습한다**
+
+연구자 지시로 `outputs/03_baselines/` 의 4폴더 이름에 역할 표시를 붙였고, 기각된 3폴더를 삭제했다.
+
+| 이전 | 현재 |
+|---|---|
+| `04_cost` | **`04_cost (ablation)`** |
+| `06_cost_ablation` | **`06_cost_ablation (ablation)`** |
+| `09_proposed_cost_order_normalized_seasonal` | **`09_proposed_cost_order_normalized_seasonal (ablation)`** |
+| `12_proposed_cost_dual_trunk` | **`12_proposed_cost_dual_trunk (final v1 and ablation)`** |
+
+**삭제한 폴더** (기각된 시행착오 7종, 결과물 91개 / 15 MB. 숫자는
+`docs/idea/proposed_ideas_already_implemented.md` 의 "전체 결과 요약" 에 기록돼 있다)
+
+| 폴더 | 방법 |
+|---|---|
+| ~~`10_proposed_cost_setpoint_direction_gate`~~ | `CoST-W144-dirgate` |
+| ~~`11_proposed_cost_direction_aux_loss`~~ | `CoST-W144-saux-{point,mean}`, `-r320` 2종 |
+| ~~`13_proposed_cost_offset_aux_loss`~~ | `CoST-W144-oaux-{point,mean}` |
+
+**4개 출력 루트를 모두 같이 바꿨다** (연구자 결정 2026-10-29). `splits.resolve(SPLIT, stage)` 가
+`{출력루트}/{stage}` 를 만들기 때문에, A 만 바꾸면 C·ambiguous 가 깨진다. 그래서 전부 통일했다.
+
+| 출력 루트 | `04_cost (ablation)` | `06_cost_ablation (ablation)` |
+|---|---|---|
+| `outputs/03_baselines/` (A) | ✔ | ✔ |
+| `outputs/04_speed_extrap/` (C) | ✔ (ckpt 200개 포함) | ✔ (ckpt 40개) |
+| `outputs/05_ambiguous_included_A/` | ✔ | ✔ |
+| `outputs/06_ambiguous_included_C/` | ✔ | ✔ |
+
+`09_…`·`12_…` 는 A 에만 있다 (제안방법은 A 실험까지만).
+
+**함께 고친 코드 7곳** — 이제 코드와 폴더 이름이 일치하므로 **재실행하면 정상적으로 스킵된다**
+(별칭 계층 없음, 재학습 함정 없음). 실제 실행으로 검증했다.
+
+| 파일 | 줄 | 내용 |
+|---|---|---|
+| `03_baselines/04_cost.py` | 94, 95 | `resolve` / `ckpt_dir` |
+| `03_baselines/06_cost_ablation.py` | 81, 82 | **교차 참조** — Step 5 가 읽는 `04_cost` 결과·체크포인트 |
+| `03_baselines/06_cost_ablation.py` | 83, 84 | 자기 `resolve` / `ckpt_dir` |
+| `03_baselines/10_embeddings.py` | 86 | `METHODS` 의 `('CoST-W144', …)` |
+| `03_baselines/11_embedding_plots.py` | 105 | 방법 → 폴더 매핑 |
+| `04_proposed/01_cost_order.py` | 120 | `STAGE` |
+| `04_proposed/04_cost_dual_trunk.py` | 162 | `STAGE` |
+
+> **삭제된 3폴더의 어댑터는 그대로 뒀다** (연구자 지시) — `02_cost_dirgate.py`,
+> `03_cost_saux.py`, `05_cost_offset_aux.py` 의 `STAGE` 는 옛 이름이다.
+> **재실행하면 삭제한 폴더가 다시 생기고 전체 재학습한다.**
+
+**주의 — `04_cost (ablation)` / `06_cost_ablation (ablation)` 은 이름이 내용과 어긋난다.**
+특히 **C 와 ambiguous 쪽은 ablation 이 아니다** — 표 (2) ablation 은 **A 실험 전용**이고
+C 에는 제안방법이 아예 없다. 이름 통일을 위해 붙인 것이다.
+A 쪽도 이름이 내용보다 좁다:
+`04_cost (ablation)` 의 5종 중 ablation 행에 쓰이는 것은 `CoST-W144` 하나이고 나머지
+(`W160/W256/W306/W512`)는 **비교군 창 민감도**다. `06_cost_ablation (ablation)` 도
+`-trend`/`-season` **성분 분해**가 섞여 있고 ablation 행은 `-noscaleshift` 뿐이다.
+`09_… (ablation)` 도 9종 중 쓰는 것은 `CoST-W144-order` 하나다.
+**어느 방법이 어느 표의 어느 행인지는 두 표의 `source_folder`·`source_method` 열이 정본이다.**
+
+**새 이름을 참조하도록 고친 코드**: `code/04_proposed/06_final_v1_tables.py`
+(`TABLE1` / `TABLE2` / `ABL_CODE_MAP`, 16곳). 표 2종 재생성으로 검증했다.
+`09_summary_tables.py` 는 `03_baselines/*/` 를 glob 하므로 이름과 무관하지만,
+다시 돌리면 제안방법이 집계에 섞여 들어간다 (현재 집계 CSV 는 비교군 23종만).
+
+#### 추후 할일 — 2026-10-29 에 미룬 것 2건
+
+**(1) final v1 체크포인트 재생성 + 임베딩 그림**
+
+2026-10-29 에 제안방법 5폴더(`09_`~`13_`)의 `checkpoints/` 를 전부 삭제했다 (49 GB 확보).
+**여기에 확정된 제안방법 `CoST-dual-T144-S144-frz` 의 체크포인트 25개도 포함됐다** —
+보존 대상으로 분리해야 했는데 범위에서 빠졌다. 결과 CSV·그림은 모두 남아 있다.
+
+| 잃은 기능 | 복구 비용 |
+|---|---|
+| 임베딩 그림 (`10_embeddings.py` → `11_embedding_plots.py`) | 아래 3단계 |
+| `amb` 모드 재채점 | 같은 재학습 |
+
+임베딩 그림은 **두 가지가 모두** 필요하다.
+
+| # | 할 일 | 비용 |
+|---|---|---|
+| 1 | `10_embeddings.py` 의 `METHODS` 에 제안방법이 **등록된 적이 없다** (비교군 8종만). 등록 + **`dual` 로더 분기 추가** — `DualCoST` 체크포인트는 `{'net':…, 'net_s':…}` 딕셔너리라 기존 `cost` 분기(`m.load(ck)`)로 열리지 않는다 | 구현 약 30분 |
+| 2 | 체크포인트 재생성 — 결과 CSV 를 임시로 비켜두고(스킵 가드) `python code/04_proposed/04_cost_dual_trunk.py tension nrot=1 freeze` 재실행. **시드 고정이라 같은 결과가 재현**되므로 기존 CSV 와 소수점 일치 여부를 재현성 증거로 함께 확인한다 | 약 16분 |
+| 3 | `python code/03_baselines/10_embeddings.py tension` → `11_embedding_plots.py tension` | 약 5분 |
+
+비교군 8종의 체크포인트(`01_`~`08_`, 약 16 GB)는 **남아 있어** 함께 그릴 수 있다.
+ablation 변형(`order`, `dual-noord` 등)도 그림에 넣으려면 각각 같은 재학습이 필요하므로,
+**그릴 대상을 먼저 정하고 한 번에 큐로 돌리는 것**이 낫다.
+
+**(2) `outputs/` 폴더 구조 전반 재정비** (연구자 지적 2026-10-29: "지금 폴더 구조가 엉망")
+
+쌓이면서 축이 섞였다. 구체적으로:
+
+| # | 문제 |
+|---|---|
+| a | **`03_baselines/` 가 A 실험 전용인데 이름에 표시가 없다.** 짝인 `04_speed_extrap/` 은 C 전용인데 이름 기준이 "역할" 과 "분할" 로 서로 다르다 |
+| b | **제안방법 결과가 `03_baselines/09_`~`13_` 에 비교군과 같은 폴더에 섞여 있다** — 이름은 "baselines" 인데 내용은 제안방법이다 |
+| c | 단계 번호가 **두 체계로 중복**된다 — `outputs/` 최상위 `01_`~`07_` 과 `03_baselines/` 안의 `01_`~`13_` |
+| d | `CoST-W144-noscaleshift` 가 `06_cost_ablation (ablation)/` 과 `09_…/` 두 곳에 **같은 이름**으로 있다 (의도된 재현 검증 사본이지만 어느 쪽이 정본인지 파일만 보고는 모른다) |
+| e | **로그 19개가 최상위에 흩어져 있다** (`_proposed01_A.log` … `_proposed12_A_noord_frz.log`, `_amb_run.log`, `_final_v1_tables.log`) |
+| f | `07_proposed_final_v1/` 이 **사본**이라 정본(`03_baselines/`)이 바뀌면 다시 생성해야 한다 (지금은 `06_final_v1_tables.py` 재실행으로 동기화) |
+| g | 방법 이름이 설정을 인코딩해 길다 (`CoST-dual-T144-S144-noord-frz`) — 사람이 읽기 어렵고 접두사 매칭이 깨지기 쉽다 |
+
+**주의 — 재정비 시 반드시 함께 고쳐야 하는 것**: 폴더·방법 이름은 `splits.py` 의 `resolve()`/`ckpt_dir()`,
+각 어댑터의 `STAGE` 상수, `09_summary_tables.py`·`12_summary_tables_c.py` 의 glob,
+`10_embeddings.py` 의 `METHODS`, `06_final_v1_tables.py` 의 `TABLE1`/`TABLE2`/`ABL_CODE_MAP`,
+그리고 `docs/hyperparameters.md` §13.10 의 재실험 명령표가 **모두 참조**한다.
+**기존 결과를 옮기는 작업이므로 되돌릴 수 없다** — 범위를 먼저 합의하고 한 번에 한다.
+
+#### ★ Proposed (final v1) — 연구자 결정 2026-10-29
+
+> **`CoST-dual-T144-S144-frz`** = baseline `CoST-W144-noscaleshift`
+> **+ trunk 분리 + seasonal 분기 전체 동결 + 차수 정규화** (창은 둘 다 144)
+> A 실험 F1(ns) **.9303** (+0.0171, 22/3, p<0.0001) · AUROC .9807 · 보존률 .9932
+> **gradient 를 받는 파라미터는 baseline 보다 21% 적다** (13.69M vs 17.44M)
+> **현재까지의 최종판이고 추후 검증으로 개선해 나간다.**
+
+| | |
+|---|---|
+| 코드 | `code/04_proposed/04_cost_dual_trunk.py` (맨 위에 `★★★` 표식) |
+| 실행 | `python code/04_proposed/04_cost_dual_trunk.py tension nrot=1 freeze` |
+| **모아둔 곳** | **`outputs/07_proposed_final_v1/`** (README + 논문 표 2종 + 산출물 사본) |
+| 논문 표 | `table1_model_comparison_final_v1.csv` / `table2_ablation_study_final_v1.csv` |
+| 표 생성 | `python code/04_proposed/06_final_v1_tables.py` |
+| 해석 | `docs/idea/proposed_ideas_already_implemented.md` "전체 결과 요약" 과 §4 |
+
+#### 재실험 명령표 (2026-10-29) — **trunk 공유/분리 × 차수 × 폭 격자**
+
+`outputs/03_baselines/` 아래. 방법 이름이 모두 달라 서로 덮어쓰지 않으며, 같은 명령을 다시 돌리면
+`{방법}_fold_metrics.csv` 가 있으면 **건너뛴다**(재실행하려면 그 파일을 먼저 지운다).
+
+| trunk | 차수 | 폭 | 방법 이름 | 명령 | 폴더 |
+|---|---|---|---|---|---|
+| 공유 | 없음 | 64 | `CoST-W144-noscaleshift` | `python code/03_baselines/06_cost_ablation.py` | `06_cost_ablation (ablation)/` |
+| 공유 | 없음 | 64 | `CoST-W144-noscaleshift` (재현 검증 사본) | `python code/04_proposed/01_cost_order.py tension nrot=1` | `09_… (ablation)/` |
+| 공유 | 없음 | **116** | `CoST-W144-noscaleshift-h116` | `python code/04_proposed/01_cost_order.py tension nrot=1 hidden=116` | `09_… (ablation)/` |
+| 공유 | **있음** | 64 | `CoST-W144-order` | `python code/04_proposed/01_cost_order.py tension nrot=1` | `09_… (ablation)/` |
+| 공유 | **있음** | **116** | `CoST-W144-order-h116` | `python code/04_proposed/01_cost_order.py tension nrot=1 hidden=116` | `09_… (ablation)/` |
+| 공유 | 있음 | 64 | `CoST-W288-order` (창 288, N_rot=2) | `python code/04_proposed/01_cost_order.py tension` | `09_… (ablation)/` |
+| 공유 | 없음 | 64 | `CoST-W288-noscaleshift` (창 대조군) | `python code/04_proposed/01_cost_order.py tension` | `09_… (ablation)/` |
+| **분리** | **있음** | 64 | `CoST-dual-T144-S144` | `python code/04_proposed/04_cost_dual_trunk.py tension nrot=1` | `12_… (final v1 and ablation)/` |
+| **분리** | 있음 + 창 288 | 64 | `CoST-dual-T144-S288` | `python code/04_proposed/04_cost_dual_trunk.py tension` | `12_… (final v1 and ablation)/` |
+
+- `01_cost_order.py` 는 **한 번의 호출로 두 방법**(차수 없음 + 차수 있음)을 같은 폭으로 돌린다.
+- `hidden=116` 은 공유 trunk 를 1,266,552 (= 64 판의 **1.988배**)로 만든다. 이원 trunk 의
+  용량 증가(+4.4%, trunk 637,248 하나 추가분)에 맞춘 값이다
+- **주의**: `CoST-W144-order` 와 `CoST-dual-*` 의 config CSV 는 2026-10-29 이전 실행이라
+  `HIDDEN_DIMS` 필드가 없다. 둘 다 **64** 이고, 그 뒤 실행분에는 필드가 기록된다
+- `CoST-W144-noscaleshift` 가 두 폴더에 같은 이름으로 있다. **정본은 `06_cost_ablation (ablation)/`** 이고
+  `09_` 쪽은 새 어댑터의 재현 검증 사본이다 (소수 셋째 자리까지 일치 확인)
+- 다른 아이디어: 아이디어 02 `02_cost_dirgate.py` → `10_.../`, 아이디어 03 `03_cost_saux.py` → `11_.../`,
+  오프셋 보조 손실 `05_cost_offset_aux.py` → `13_.../`
 
 #### 공통 주의
 
-- **β 는 기본값이 없는 새 하이퍼파라미터다.** 비교군은 As-published 였으므로 절차가 다르다 —
-  고를 경우 CV 에서만 고르고 논문에 명시한다
+- **제안 방법의 실험 범위는 A 까지다** (연구자 결정 2026-10-29). C 실험·ambiguous 포함 재채점은
+  하지 않는다. 비교군 23종의 C 결과(`04_speed_extrap/`)와 ambiguous 포함 결과는 그대로 남는다
+- **학습량은 언제나 baseline 과 동등해야 한다** (연구자 결정 2026-10-29). 창을 바꾸는 변형은
+  `max_train_length` 가 run 을 쪼개는 조각 수를 바꿔 1 epoch 의 iteration 수가 달라진다
+  (§11 문제 9). 같은 iteration 수를 쓰면 **데이터 통과 횟수가 달라져 비교가 깨진다** —
+  창 144 는 9조각 189 iter/epoch (600 iter → 통과 3.17회), 창 288 은 4조각 84 iter/epoch
+  (600 iter → 7.14회, 2.25배). 그래서 **통과 횟수를 맞추는 `n_iters` 를 유도해서 쓴다**:
+  `n_iters = 600 × (조각수_변형 / 조각수_baseline)`. P5 의 창 288 분기는 600 × 4/9 = **267**.
+  `data_passes` 와 `data_passes_baseline` 을 fold 마다 함께 기록해 동등성을 감사할 수 있게 둔다.
+  대가는 갱신 횟수가 줄어 제안 방법이 덜 학습된다는 것 — **제안에 불리한 쪽으로 보수적**이다
+- **β 는 기본값이 없는 새 하이퍼파라미터다.** 비교군은 As-published 였으므로 절차가 다르다.
+  → **P2 종결로 "CV 에서 고른다" 는 적용되지 않는다.** β=12 는 측정한 항 크기에서 **유도**한 값이고
+  (`L_aux ≈ Var(s̄) = 0.0239`, `L_MoCo` 수렴값 3.25 의 약 10%), 그보다 큰 값은 발산한다.
+  데이터로 고른 값이 아니므로 CV 절차가 필요 없다 — **유도 과정과 발산 사실을 논문에 쓴다**
 - 제안 방법은 **속도 설정값 V 를 창·평활 길이 결정에 쓴다.** 비교군 23종 중 같은 정보를 쓰는 것은
   `MovStd-Slope-speed*` 2종뿐이다. 공정성 서술에 반드시 적는다
 - `final_test` 는 변형 선택에 쓰지 않는다 (`split_description.md` §3.3)

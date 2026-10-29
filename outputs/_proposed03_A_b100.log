@@ -1,0 +1,42 @@
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\sklearn\utils\extmath.py:1211: RuntimeWarning: invalid value encountered in divide
+  updated_mean = (last_sum + new_sum) / updated_sample_count
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\sklearn\utils\extmath.py:1216: RuntimeWarning: invalid value encountered in divide
+  T = new_sum / new_sample_count
+C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\sklearn\utils\extmath.py:1240: RuntimeWarning: invalid value encountered in divide
+  new_unnormalized_variance -= correction**2 / new_sample_count
+[Step 1] runs = 210, 입력 (210, 1300, 2) (2.2 s)
+[Step 2] 창 144 (baseline 동일) | 평활 = 1회전 P(V): V50:144, V75:96, V100:72, V125:58, V150:48, V175:41, V200:36
+[Step 2] s_bar 평균 0.491  분산 0.02386  -> L_aux 초기값 기대치
+[Step 2] beta = 100  (L_MoCo 수렴값 약 3.25 기준 보조 항 비중 73.4%)
+[Step 2] 보조 head 입력 = trend 160 (기본)
+Traceback (most recent call last):
+  File "C:\Users\KIMM\research\informs-paper\code\04_proposed\03_cost_saux.py", line 289, in <module>
+    gmm, sidx, emeans = ev.fit_steady_gmm(z[is_train_pt], e_flat[is_train_pt], seed)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KIMM\research\informs-paper\code\03_baselines\evaluation.py", line 183, in fit_steady_gmm
+    random_state=seed)).fit(z_train)
+                        ^^^^^^^^^^^^
+  File "C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\sklearn\base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\sklearn\pipeline.py", line 649, in fit
+    self._final_estimator.fit(Xt, y, **last_step_params["fit"])
+  File "C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\sklearn\mixture\_base.py", line 199, in fit
+    self.fit_predict(X, y)
+  File "C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\sklearn\base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\sklearn\mixture\_base.py", line 231, in fit_predict
+    X = validate_data(self, X, dtype=[xp.float64, xp.float32], ensure_min_samples=2)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\sklearn\utils\validation.py", line 3038, in validate_data
+    out = check_array(X, input_name="X", **check_params)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\sklearn\utils\validation.py", line 1087, in check_array
+    _assert_all_finite(
+  File "C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\sklearn\utils\validation.py", line 137, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "C:\Users\KIMM\anaconda3\envs\exp-pnt\Lib\site-packages\sklearn\utils\validation.py", line 186, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input X contains NaN.
+GaussianMixture does not accept missing values encoded as NaN natively. For supervised learning, you might want to consider sklearn.ensemble.HistGradientBoostingClassifier and Regressor which accept missing values encoded as NaNs natively. Alternatively, it is possible to preprocess the data, for instance by using an imputer transformer in a pipeline or drop samples with missing values. See https://scikit-learn.org/stable/modules/impute.html You can find a list of all estimators that handle NaN values at the following page: https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values

@@ -17,7 +17,8 @@ Roll-to-Roll 웹 공정에서 **운전 조건이 바뀔 때** 필름 장력의 �
 | **`docs/research_plan.md`** | 연구 전제·가정·한계, 진행 현황(9절), 결정이 필요한 사항 |
 | **`docs/hyperparameters.md`** | **설정값 전체 + 열려 있는 문제(§11) + 앞으로 할 일(§13)**. §13.0 이 최종 목표 |
 | **`docs/split_description.md`** | **fold 가 어떤 설정값 조건으로 나뉘는가** — A·C 전 fold 의 학습/검증 조건 + 라벨 개수 |
-| **`docs/idea/proposed_ideas_already_implemented.md`** | **제안 방법 아이디어 전체 개요** — 검토·기각·구현 내역과 측정 근거. 개별 설계는 `docs/idea/0*.md` |
+| **`docs/idea/proposed_ideas_already_implemented.md`** | **제안 방법 아이디어 전체 개요** — 맨 앞에 전체 결과 요약(19개 변형), 검토·기각·구현 내역과 측정 근거. 개별 설계는 `docs/idea/0*.md` |
+| **`outputs/07_proposed_final_v1/README.md`** | **★ Proposed (final v1)** — 확정판의 정의·실행 명령·논문 표 2종·재실험 명령 |
 | `docs/research_experiments_plan.md` | 비교군 실험 설계, ablation 설계 |
 | **`docs/baseline_cases.md`** | **비교군 23종이 각각 무엇인가** — 무엇/왜/설정 출처/주의사항 |
 | `docs/outputs_guide.md` | 지표 정의, CSV 컬럼, 그림 읽는 법, 방법별 로직 |
@@ -99,6 +100,10 @@ outputs/03_baselines/_all_methods_full_table.csv   전 지표 + 설정값
 outputs/03_baselines/_all_methods_by_fold.csv      방법 x fold
 outputs/03_baselines/_all_methods_by_fold_seed.csv 방법 x fold x seed
 outputs/03_baselines/<단계>/<방법>_*.csv|png|pdf   방법별 run/fold/summary/config + heatmap + 손실곡선
+  단계 폴더 이름에 역할 표시 (2026-10-29) — `04_cost (ablation)`, `06_cost_ablation (ablation)`,
+  `09_…_seasonal (ablation)`, `12_…_dual_trunk (final v1 and ablation)`.
+  4개 출력 루트(03_/04_/05_/06_)를 모두 통일했고 코드 7곳도 함께 고쳤다.
+  C·ambiguous 쪽 `(ablation)` 은 **이름 통일용**이고 실제로는 비교군이다 (hyperparameters.md §13.10)
 
 outputs/04_speed_extrap/_paper_table_c.csv         C 논문 표 — 지표마다 cv_T / cv_S1 / cv_S2 / final_test 4열
 outputs/04_speed_extrap/_all_methods_by_group.csv  방법 x 묶음 (묶음 안에서만 평균)
@@ -108,6 +113,14 @@ outputs/04_speed_extrap/<단계>/<방법>_embedding_*.png  seen/unseen + 테스�
 
 outputs/05_ambiguous_included_A/   A 를 ambiguous 포함으로 재채점 (구조는 03_baselines 와 동일)
 outputs/06_ambiguous_included_C/   C 를 ambiguous 포함으로 재채점 (구조는 04_speed_extrap 과 동일)
+
+★ outputs/07_proposed_final_v1/                    **Proposed (final v1) 모아둔 곳**
+  README.md                                        final v1 정의·실행 명령·표 설명·재실험 명령
+  table1_model_comparison_final_v1.csv             논문 표 (1) 모델별 성능 비교 (8행, 전 지표)
+  table2_ablation_study_final_v1.csv               논문 표 (2) 제안 방법 ablation (7행, 전 지표)
+  baselines_A/                                     표 (1) 8종의 A 실험 산출물 사본 (csv+plot)
+  baselines_A_ablations/                           표 (2) ablation 7종의 산출물 사본
+  code/ , code_ablations/                          final v1 / ablation 코드 사본
 ```
 
 **ambiguous 포함 폴더의 AUPRC(ns) 는 기존 폴더와 직접 비교하면 안 된다** — 기준선이 유병률이라

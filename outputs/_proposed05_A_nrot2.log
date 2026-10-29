@@ -1,0 +1,39 @@
+[Step 1] runs = 210, ÀÔ·Â (210, 1300, 2) (0.2 s)
+[Step 2] trend Ã¢ 144 (15.7 s, baseline °ú µ¿ÀÏ) | seasonal Ã¢ 288 (31.4 s) = V50 ÀÇ 2 È¸Àü | Â÷¼ö¿µ¿ª ±æÀÌ 72 | Â÷¼ö ÇØ»óµµ 0.50 Â÷¼ö/bin
+[Step 2] ¼Óµµº° seasonal Ã¢: V50:288, V75:192, V100:144, V125:116, V150:96, V175:83, V200:72
+[Step 2] ÇÐ½À·® ¸ÂÃã: Á¶°¢ 9(Ã¢ 144) vs 4(Ã¢ 288) -> n_iters 600 -> 267  [baseline Åë°ú È½¼ö¿¡ ¸ÂÃá À¯µµ°ª]
+[Step 2] µ¥ÀÌÅÍ Åë°ú ºñ·Ê·®: baseline 66.67 vs Á¦¾È 66.75 (¿ÀÂ÷ 0.12%)
+[Step 2] baseline º¯Çü °Ë»ç, trend ÀÔ·ÂÀÌ Ã¢ 144 ´Üµ¶°ú µ¿ÀÏ: True
+[Step 3] CoST-dual-T144-S288 fold 1 seed 0: 59 s, ¼Õ½Ç 0.032 -> 4.252, steady ÆÇÁ¤ ºñÀ² 0.871, ¿À¿°·ü 0.004, º¸Á¸·ü 0.955
+[Step 3] CoST-dual-T144-S288 fold 1 seed 1: 53 s, ¼Õ½Ç 0.032 -> 3.968, steady ÆÇÁ¤ ºñÀ² 0.874, ¿À¿°·ü 0.004, º¸Á¸·ü 0.957
+[Step 3] CoST-dual-T144-S288 fold 1 seed 2: 53 s, ¼Õ½Ç 0.023 -> 4.085, steady ÆÇÁ¤ ºñÀ² 0.874, ¿À¿°·ü 0.004, º¸Á¸·ü 0.957
+[Step 3] CoST-dual-T144-S288 fold 1 seed 3: 53 s, ¼Õ½Ç 0.037 -> 3.758, steady ÆÇÁ¤ ºñÀ² 0.872, ¿À¿°·ü 0.004, º¸Á¸·ü 0.956
+[Step 3] CoST-dual-T144-S288 fold 1 seed 4: 52 s, ¼Õ½Ç 0.037 -> 4.109, steady ÆÇÁ¤ ºñÀ² 0.873, ¿À¿°·ü 0.004, º¸Á¸·ü 0.956
+[Step 3] CoST-dual-T144-S288 fold 2 seed 0: 52 s, ¼Õ½Ç 0.032 -> 4.257, steady ÆÇÁ¤ ºñÀ² 0.869, ¿À¿°·ü 0.003, º¸Á¸·ü 0.983
+[Step 3] CoST-dual-T144-S288 fold 2 seed 1: 52 s, ¼Õ½Ç 0.032 -> 3.966, steady ÆÇÁ¤ ºñÀ² 0.871, ¿À¿°·ü 0.004, º¸Á¸·ü 0.984
+[Step 3] CoST-dual-T144-S288 fold 2 seed 2: 52 s, ¼Õ½Ç 0.023 -> 4.087, steady ÆÇÁ¤ ºñÀ² 0.873, ¿À¿°·ü 0.004, º¸Á¸·ü 0.984
+[Step 3] CoST-dual-T144-S288 fold 2 seed 3: 52 s, ¼Õ½Ç 0.037 -> 3.766, steady ÆÇÁ¤ ºñÀ² 0.870, ¿À¿°·ü 0.004, º¸Á¸·ü 0.983
+[Step 3] CoST-dual-T144-S288 fold 2 seed 4: 53 s, ¼Õ½Ç 0.037 -> 4.109, steady ÆÇÁ¤ ºñÀ² 0.871, ¿À¿°·ü 0.004, º¸Á¸·ü 0.984
+[Step 3] CoST-dual-T144-S288 fold 3 seed 0: 54 s, ¼Õ½Ç 0.032 -> 4.251, steady ÆÇÁ¤ ºñÀ² 0.860, ¿À¿°·ü 0.001, º¸Á¸·ü 0.989
+[Step 3] CoST-dual-T144-S288 fold 3 seed 1: 56 s, ¼Õ½Ç 0.032 -> 3.972, steady ÆÇÁ¤ ºñÀ² 0.872, ¿À¿°·ü 0.003, º¸Á¸·ü 0.991
+[Step 3] CoST-dual-T144-S288 fold 3 seed 2: 58 s, ¼Õ½Ç 0.023 -> 4.082, steady ÆÇÁ¤ ºñÀ² 0.874, ¿À¿°·ü 0.005, º¸Á¸·ü 0.991
+[Step 3] CoST-dual-T144-S288 fold 3 seed 3: 60 s, ¼Õ½Ç 0.037 -> 3.760, steady ÆÇÁ¤ ºñÀ² 0.866, ¿À¿°·ü 0.002, º¸Á¸·ü 0.990
+[Step 3] CoST-dual-T144-S288 fold 3 seed 4: 53 s, ¼Õ½Ç 0.037 -> 4.109, steady ÆÇÁ¤ ºñÀ² 0.872, ¿À¿°·ü 0.003, º¸Á¸·ü 0.991
+[Step 3] CoST-dual-T144-S288 fold 4 seed 0: 55 s, ¼Õ½Ç 0.032 -> 4.251, steady ÆÇÁ¤ ºñÀ² 0.859, ¿À¿°·ü 0.000, º¸Á¸·ü 0.994
+[Step 3] CoST-dual-T144-S288 fold 4 seed 1: 59 s, ¼Õ½Ç 0.032 -> 3.968, steady ÆÇÁ¤ ºñÀ² 0.871, ¿À¿°·ü 0.001, º¸Á¸·ü 0.996
+[Step 3] CoST-dual-T144-S288 fold 4 seed 2: 61 s, ¼Õ½Ç 0.022 -> 4.084, steady ÆÇÁ¤ ºñÀ² 0.873, ¿À¿°·ü 0.001, º¸Á¸·ü 0.997
+[Step 3] CoST-dual-T144-S288 fold 4 seed 3: 54 s, ¼Õ½Ç 0.037 -> 3.766, steady ÆÇÁ¤ ºñÀ² 0.866, ¿À¿°·ü 0.000, º¸Á¸·ü 0.995
+[Step 3] CoST-dual-T144-S288 fold 4 seed 4: 61 s, ¼Õ½Ç 0.037 -> 4.112, steady ÆÇÁ¤ ºñÀ² 0.871, ¿À¿°·ü 0.001, º¸Á¸·ü 0.996
+[Step 3] CoST-dual-T144-S288 fold 5 seed 0: 55 s, ¼Õ½Ç 0.032 -> 4.260, steady ÆÇÁ¤ ºñÀ² 0.859, ¿À¿°·ü 0.002, º¸Á¸·ü 0.993
+[Step 3] CoST-dual-T144-S288 fold 5 seed 1: 56 s, ¼Õ½Ç 0.032 -> 3.967, steady ÆÇÁ¤ ºñÀ² 0.871, ¿À¿°·ü 0.003, º¸Á¸·ü 0.998
+[Step 3] CoST-dual-T144-S288 fold 5 seed 2: 54 s, ¼Õ½Ç 0.023 -> 4.091, steady ÆÇÁ¤ ºñÀ² 0.874, ¿À¿°·ü 0.004, º¸Á¸·ü 0.998
+[Step 3] CoST-dual-T144-S288 fold 5 seed 3: 70 s, ¼Õ½Ç 0.037 -> 3.755, steady ÆÇÁ¤ ºñÀ² 0.865, ¿À¿°·ü 0.003, º¸Á¸·ü 0.995
+[Step 3] CoST-dual-T144-S288 fold 5 seed 4: 54 s, ¼Õ½Ç 0.038 -> 4.109, steady ÆÇÁ¤ ºñÀ² 0.871, ¿À¿°·ü 0.003, º¸Á¸·ü 0.997
+[save] loss curve -> outputs/03_baselines/12_proposed_cost_dual_trunk/CoST-dual-T144-S288_loss.png / .pdf
+[save] run     -> outputs/03_baselines/12_proposed_cost_dual_trunk/CoST-dual-T144-S288_run_metrics.csv
+[save] fold    -> outputs/03_baselines/12_proposed_cost_dual_trunk/CoST-dual-T144-S288_fold_metrics.csv
+[save] summary -> outputs/03_baselines/12_proposed_cost_dual_trunk/CoST-dual-T144-S288_summary.csv
+[save] config  -> outputs/03_baselines/12_proposed_cost_dual_trunk/CoST-dual-T144-S288_config.csv
+[save] heatmap -> outputs/03_baselines/12_proposed_cost_dual_trunk/CoST-dual-T144-S288_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/03_baselines/12_proposed_cost_dual_trunk/CoST-dual-T144-S288_heatmap_retention_rate.png / .pdf
+[done] CoST-dual-T144-S288 -> outputs/03_baselines/12_proposed_cost_dual_trunk

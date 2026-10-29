@@ -1,0 +1,52 @@
+[save] table1_model_comparison_final_v1.csv  (8행)
+[save] table2_ablation_study_final_v1.csv  (7행)
+[copy] baselines_A/ MovStd-Slope-fixed                 12개
+[copy] baselines_A/ TS-TCC                             15개
+[copy] baselines_A/ TS2Vec                             15개
+[copy] baselines_A/ CoST-W144                          15개
+[copy] baselines_A/ SimMTM                             15개
+[copy] baselines_A/ SoftCLT-ref                        11개
+[copy] baselines_A/ MOMENT                             12개
+[copy] baselines_A/ CoST-dual-T144-S144-frz            11개  <- ★ Proposed (final v1)
+[copy] baselines_A/ 합계 106개 파일, 방법 8종
+[copy] baselines_A_ablations/ CoST-W144                          15개
+[copy] baselines_A_ablations/ CoST-W144-noscaleshift             11개
+[copy] baselines_A_ablations/ CoST-dual-T144-S144-noord          11개
+[copy] baselines_A_ablations/ CoST-W144-order                    11개
+[copy] baselines_A_ablations/ CoST-dual-T144-S144-noord-frz      11개
+[copy] baselines_A_ablations/ CoST-dual-T144-S144                11개
+[copy] baselines_A_ablations/ CoST-dual-T144-S144-frz            11개  <- ★ Proposed (final v1)
+[copy] baselines_A_ablations/ 합계 81개 파일, 방법 7종
+[copy] code/                  04_cost_dual_trunk.py                        <- code/04_proposed/04_cost_dual_trunk.py
+[copy] code/                  evaluation.py                                <- code/03_baselines/evaluation.py
+[copy] code/                  splits.py                                    <- code/03_baselines/splits.py
+[copy] code/                  06_final_v1_tables.py                        <- code/04_proposed/06_final_v1_tables.py
+[save] code/README.md
+[copy] code_ablations/        04_cost (ablation).py                        <- code/03_baselines/04_cost.py
+[copy] code_ablations/        06_cost_ablation (ablation).py               <- code/03_baselines/06_cost_ablation.py
+[copy] code_ablations/        01_cost_order (ablation).py                  <- code/04_proposed/01_cost_order.py
+[copy] code_ablations/        04_cost_dual_trunk (ablation).py             <- code/04_proposed/04_cost_dual_trunk.py
+[save] code_ablations/README.md
+
+=== 표 (1) 모델별 성능 비교 ===
+                                             보존률       오염률  Prec(ns)   Rec(ns)    F1(ns) AUPRC(ns)     AUROC     진입MAE
+Statistics-based                          0.9776    0.0334    0.7149    0.6136    0.6598    0.7181    0.8839   11.3085
+TS-TCC (2021)                             0.8531    0.0151    0.3300    0.8291    0.4124    0.2899    0.8412   12.6365
+TS2Vec (2022)                             0.7073    0.0016    0.3443    0.9885    0.4743    0.3438    0.8495   31.5859
+CoST (2022)                               0.9910    0.0054    0.8814    0.9376    0.9016    0.8324    0.9644    5.7515
+SimMTM (2023)                             0.8934    0.0086    0.4210    0.8823    0.5357    0.3858    0.8884   11.9705
+SoftCLT (2024)                            0.6235    0.0008    0.2753    0.9901    0.4014    0.2731    0.8068   45.6064
+MOMENT (2024)                             0.6250    0.0302    0.1566    0.7714    0.2569    0.1428    0.7014   14.2515
+Proposed method                           0.9932    0.0024    0.9041    0.9674    0.9303    0.8802    0.9807    5.4102
+
+=== 표 (2) 제안 방법 ablation ===
+                                             보존률       오염률  Prec(ns)   Rec(ns)    F1(ns) AUPRC(ns)     AUROC     진입MAE
+CoST                                      0.9910    0.0054    0.8814    0.9376    0.9016    0.8324    0.9644    5.7515
+CoST (no scale/shift)                     0.9903    0.0026    0.8773    0.9657    0.9132    0.8525    0.9782    5.0957
++ trunk separation                        0.9903    0.0022    0.8770    0.9693    0.9150    0.8559    0.9801    4.9829
++ order tracking                          0.9936    0.0036    0.9073    0.9544    0.9256    0.8717    0.9743    5.9435
++ trunk separation + freeze               0.9887    0.0013    0.8647    0.9804    0.9133    0.8526    0.9848    4.6553
++ trunk separation + order tracking       0.9935    0.0030    0.9066    0.9608    0.9285    0.8769    0.9775    5.7343
+Proposed method                           0.9932    0.0024    0.9041    0.9674    0.9303    0.8802    0.9807    5.4102
+
+[done] -> C:\Users\KIMM\research\informs-paper\outputs\07_proposed_final_v1

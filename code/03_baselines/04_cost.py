@@ -91,8 +91,8 @@ KERNELS = [1, 2, 4, 8, 16, 32, 64, 128]   # 저장소 기본값 (train.py --kern
 ALPHA = 0.0005                  # 저장소 기본값 (train.py --alpha, 손실 가중)
 
 IN_PATH = 'outputs/merged_data.csv'
-OUT_DIR = splits.resolve(SPLIT, '04_cost')
-CKPT_DIR = splits.ckpt_dir(SPLIT, '04_cost')   # 인코더를 읽는 곳 (추론 모드에서도 기존 실험 것을 쓴다)
+OUT_DIR = splits.resolve(SPLIT, '04_cost (ablation)')
+CKPT_DIR = splits.ckpt_dir(SPLIT, '04_cost (ablation)')   # 인코더를 읽는 곳 (추론 모드에서도 기존 실험 것을 쓴다)
 
 T1 = 'Film Tension #1 (kg)'     # 원본 컬럼명 (변경하지 않음)
 TS, RS, VS = ev.TS, ev.RS, ev.VS

@@ -1,0 +1,70 @@
+[Step 1] runs = 210, ÀÔ·Â (210, 1300, 1) / (210, 1300, 2) (0.1 s)
+[Step 2] Ã¢ 144 samples (15.7 s) = V50 ÀÇ 1 È¸Àü | Â÷¼ö¿µ¿ª ±æÀÌ 36 = V200 ÀÇ 1 È¸Àü | Â÷¼ö ÇØ»óµµ 1.00 Â÷¼ö/bin
+[Step 2] ¼Óµµº° seasonal Ã¢: V50:144, V75:96, V100:72, V125:58, V150:48, V175:42, V200:36
+[Step 3] CoST-W144-noscaleshift-sg fold 1 seed 0: 33 s, ¼Õ½Ç 0.038 -> 3.186, steady ÆÇÁ¤ ºñÀ² 0.885, ¿À¿°·ü 0.003, º¸Á¸·ü 0.970
+[Step 3] CoST-W144-noscaleshift-sg fold 1 seed 1: 26 s, ¼Õ½Ç 0.048 -> 3.555, steady ÆÇÁ¤ ºñÀ² 0.886, ¿À¿°·ü 0.003, º¸Á¸·ü 0.971
+[Step 3] CoST-W144-noscaleshift-sg fold 1 seed 2: 27 s, ¼Õ½Ç 0.039 -> 3.160, steady ÆÇÁ¤ ºñÀ² 0.885, ¿À¿°·ü 0.003, º¸Á¸·ü 0.970
+[Step 3] CoST-W144-noscaleshift-sg fold 1 seed 3: 29 s, ¼Õ½Ç 0.053 -> 3.019, steady ÆÇÁ¤ ºñÀ² 0.884, ¿À¿°·ü 0.002, º¸Á¸·ü 0.971
+[Step 3] CoST-W144-noscaleshift-sg fold 1 seed 4: 27 s, ¼Õ½Ç 0.054 -> 3.225, steady ÆÇÁ¤ ºñÀ² 0.886, ¿À¿°·ü 0.003, º¸Á¸·ü 0.971
+[Step 3] CoST-W144-noscaleshift-sg fold 2 seed 0: 29 s, ¼Õ½Ç 0.038 -> 3.204, steady ÆÇÁ¤ ºñÀ² 0.880, ¿À¿°·ü 0.003, º¸Á¸·ü 0.991
+[Step 3] CoST-W144-noscaleshift-sg fold 2 seed 1: 28 s, ¼Õ½Ç 0.048 -> 3.545, steady ÆÇÁ¤ ºñÀ² 0.882, ¿À¿°·ü 0.004, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-noscaleshift-sg fold 2 seed 2: 29 s, ¼Õ½Ç 0.039 -> 3.173, steady ÆÇÁ¤ ºñÀ² 0.881, ¿À¿°·ü 0.003, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-noscaleshift-sg fold 2 seed 3: 25 s, ¼Õ½Ç 0.054 -> 3.008, steady ÆÇÁ¤ ºñÀ² 0.878, ¿À¿°·ü 0.002, º¸Á¸·ü 0.991
+[Step 3] CoST-W144-noscaleshift-sg fold 2 seed 4: 26 s, ¼Õ½Ç 0.054 -> 3.213, steady ÆÇÁ¤ ºñÀ² 0.883, ¿À¿°·ü 0.004, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-noscaleshift-sg fold 3 seed 0: 25 s, ¼Õ½Ç 0.038 -> 3.189, steady ÆÇÁ¤ ºñÀ² 0.868, ¿À¿°·ü 0.001, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-noscaleshift-sg fold 3 seed 1: 25 s, ¼Õ½Ç 0.048 -> 3.543, steady ÆÇÁ¤ ºñÀ² 0.882, ¿À¿°·ü 0.004, º¸Á¸·ü 0.997
+[Step 3] CoST-W144-noscaleshift-sg fold 3 seed 2: 25 s, ¼Õ½Ç 0.039 -> 3.173, steady ÆÇÁ¤ ºñÀ² 0.875, ¿À¿°·ü 0.001, º¸Á¸·ü 0.997
+[Step 3] CoST-W144-noscaleshift-sg fold 3 seed 3: 25 s, ¼Õ½Ç 0.054 -> 3.011, steady ÆÇÁ¤ ºñÀ² 0.873, ¿À¿°·ü 0.001, º¸Á¸·ü 0.997
+[Step 3] CoST-W144-noscaleshift-sg fold 3 seed 4: 25 s, ¼Õ½Ç 0.054 -> 3.203, steady ÆÇÁ¤ ºñÀ² 0.884, ¿À¿°·ü 0.005, º¸Á¸·ü 0.997
+[Step 3] CoST-W144-noscaleshift-sg fold 4 seed 0: 26 s, ¼Õ½Ç 0.038 -> 3.179, steady ÆÇÁ¤ ºñÀ² 0.865, ¿À¿°·ü 0.000, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-noscaleshift-sg fold 4 seed 1: 27 s, ¼Õ½Ç 0.049 -> 3.545, steady ÆÇÁ¤ ºñÀ² 0.879, ¿À¿°·ü 0.002, º¸Á¸·ü 0.997
+[Step 3] CoST-W144-noscaleshift-sg fold 4 seed 2: 26 s, ¼Õ½Ç 0.039 -> 3.173, steady ÆÇÁ¤ ºñÀ² 0.871, ¿À¿°·ü 0.000, º¸Á¸·ü 0.996
+[Step 3] CoST-W144-noscaleshift-sg fold 4 seed 3: 25 s, ¼Õ½Ç 0.054 -> 3.013, steady ÆÇÁ¤ ºñÀ² 0.871, ¿À¿°·ü 0.000, º¸Á¸·ü 0.996
+[Step 3] CoST-W144-noscaleshift-sg fold 4 seed 4: 25 s, ¼Õ½Ç 0.054 -> 3.209, steady ÆÇÁ¤ ºñÀ² 0.882, ¿À¿°·ü 0.004, º¸Á¸·ü 0.997
+[Step 3] CoST-W144-noscaleshift-sg fold 5 seed 0: 25 s, ¼Õ½Ç 0.038 -> 3.195, steady ÆÇÁ¤ ºñÀ² 0.861, ¿À¿°·ü 0.000, º¸Á¸·ü 0.993
+[Step 3] CoST-W144-noscaleshift-sg fold 5 seed 1: 25 s, ¼Õ½Ç 0.049 -> 3.542, steady ÆÇÁ¤ ºñÀ² 0.880, ¿À¿°·ü 0.006, º¸Á¸·ü 0.998
+[Step 3] CoST-W144-noscaleshift-sg fold 5 seed 2: 25 s, ¼Õ½Ç 0.039 -> 3.178, steady ÆÇÁ¤ ºñÀ² 0.869, ¿À¿°·ü 0.001, º¸Á¸·ü 0.997
+[Step 3] CoST-W144-noscaleshift-sg fold 5 seed 3: 25 s, ¼Õ½Ç 0.053 -> 3.019, steady ÆÇÁ¤ ºñÀ² 0.869, ¿À¿°·ü 0.000, º¸Á¸·ü 0.998
+[Step 3] CoST-W144-noscaleshift-sg fold 5 seed 4: 25 s, ¼Õ½Ç 0.054 -> 3.201, steady ÆÇÁ¤ ºñÀ² 0.884, ¿À¿°·ü 0.009, º¸Á¸·ü 0.998
+[save] loss curve -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W144-noscaleshift-sg_loss.png / .pdf
+[save] run     -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W144-noscaleshift-sg_run_metrics.csv
+[save] fold    -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W144-noscaleshift-sg_fold_metrics.csv
+[save] summary -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W144-noscaleshift-sg_summary.csv
+[save] config  -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W144-noscaleshift-sg_config.csv
+[save] heatmap -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W144-noscaleshift-sg_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W144-noscaleshift-sg_heatmap_retention_rate.png / .pdf
+[done] CoST-W144-noscaleshift-sg
+[Step 3] CoST-W144-order-sg fold 1 seed 0: 47 s, ¼Õ½Ç 0.024 -> 2.940, steady ÆÇÁ¤ ºñÀ² 0.896, ¿À¿°·ü 0.003, º¸Á¸·ü 0.977
+[Step 3] CoST-W144-order-sg fold 1 seed 1: 49 s, ¼Õ½Ç 0.031 -> 3.631, steady ÆÇÁ¤ ºñÀ² 0.896, ¿À¿°·ü 0.003, º¸Á¸·ü 0.977
+[Step 3] CoST-W144-order-sg fold 1 seed 2: 48 s, ¼Õ½Ç 0.023 -> 3.188, steady ÆÇÁ¤ ºñÀ² 0.896, ¿À¿°·ü 0.003, º¸Á¸·ü 0.977
+[Step 3] CoST-W144-order-sg fold 1 seed 3: 51 s, ¼Õ½Ç 0.028 -> 2.959, steady ÆÇÁ¤ ºñÀ² 0.896, ¿À¿°·ü 0.003, º¸Á¸·ü 0.977
+[Step 3] CoST-W144-order-sg fold 1 seed 4: 46 s, ¼Õ½Ç 0.037 -> 3.244, steady ÆÇÁ¤ ºñÀ² 0.895, ¿À¿°·ü 0.003, º¸Á¸·ü 0.977
+[Step 3] CoST-W144-order-sg fold 2 seed 0: 47 s, ¼Õ½Ç 0.025 -> 2.962, steady ÆÇÁ¤ ºñÀ² 0.893, ¿À¿°·ü 0.005, º¸Á¸·ü 0.994
+[Step 3] CoST-W144-order-sg fold 2 seed 1: 47 s, ¼Õ½Ç 0.030 -> 3.641, steady ÆÇÁ¤ ºñÀ² 0.891, ¿À¿°·ü 0.004, º¸Á¸·ü 0.994
+[Step 3] CoST-W144-order-sg fold 2 seed 2: 47 s, ¼Õ½Ç 0.023 -> 3.188, steady ÆÇÁ¤ ºñÀ² 0.893, ¿À¿°·ü 0.005, º¸Á¸·ü 0.994
+[Step 3] CoST-W144-order-sg fold 2 seed 3: 48 s, ¼Õ½Ç 0.029 -> 2.968, steady ÆÇÁ¤ ºñÀ² 0.894, ¿À¿°·ü 0.005, º¸Á¸·ü 0.994
+[Step 3] CoST-W144-order-sg fold 2 seed 4: 50 s, ¼Õ½Ç 0.038 -> 3.254, steady ÆÇÁ¤ ºñÀ² 0.891, ¿À¿°·ü 0.004, º¸Á¸·ü 0.994
+[Step 3] CoST-W144-order-sg fold 3 seed 0: 49 s, ¼Õ½Ç 0.025 -> 2.962, steady ÆÇÁ¤ ºñÀ² 0.889, ¿À¿°·ü 0.005, º¸Á¸·ü 0.999
+[Step 3] CoST-W144-order-sg fold 3 seed 1: 50 s, ¼Õ½Ç 0.030 -> 3.639, steady ÆÇÁ¤ ºñÀ² 0.885, ¿À¿°·ü 0.003, º¸Á¸·ü 0.999
+[Step 3] CoST-W144-order-sg fold 3 seed 2: 48 s, ¼Õ½Ç 0.023 -> 3.186, steady ÆÇÁ¤ ºñÀ² 0.889, ¿À¿°·ü 0.004, º¸Á¸·ü 0.999
+[Step 3] CoST-W144-order-sg fold 3 seed 3: 49 s, ¼Õ½Ç 0.029 -> 2.956, steady ÆÇÁ¤ ºñÀ² 0.891, ¿À¿°·ü 0.006, º¸Á¸·ü 0.999
+[Step 3] CoST-W144-order-sg fold 3 seed 4: 49 s, ¼Õ½Ç 0.037 -> 3.254, steady ÆÇÁ¤ ºñÀ² 0.881, ¿À¿°·ü 0.002, º¸Á¸·ü 0.998
+[Step 3] CoST-W144-order-sg fold 4 seed 0: 51 s, ¼Õ½Ç 0.025 -> 2.955, steady ÆÇÁ¤ ºñÀ² 0.888, ¿À¿°·ü 0.002, º¸Á¸·ü 0.999
+[Step 3] CoST-W144-order-sg fold 4 seed 1: 50 s, ¼Õ½Ç 0.030 -> 3.643, steady ÆÇÁ¤ ºñÀ² 0.884, ¿À¿°·ü 0.001, º¸Á¸·ü 0.999
+[Step 3] CoST-W144-order-sg fold 4 seed 2: 49 s, ¼Õ½Ç 0.023 -> 3.191, steady ÆÇÁ¤ ºñÀ² 0.888, ¿À¿°·ü 0.002, º¸Á¸·ü 0.999
+[Step 3] CoST-W144-order-sg fold 4 seed 3: 49 s, ¼Õ½Ç 0.030 -> 2.961, steady ÆÇÁ¤ ºñÀ² 0.889, ¿À¿°·ü 0.002, º¸Á¸·ü 0.999
+[Step 3] CoST-W144-order-sg fold 4 seed 4: 49 s, ¼Õ½Ç 0.037 -> 3.244, steady ÆÇÁ¤ ºñÀ² 0.881, ¿À¿°·ü 0.000, º¸Á¸·ü 0.998
+[Step 3] CoST-W144-order-sg fold 5 seed 0: 49 s, ¼Õ½Ç 0.025 -> 2.959, steady ÆÇÁ¤ ºñÀ² 0.889, ¿À¿°·ü 0.006, º¸Á¸·ü 1.000
+[Step 3] CoST-W144-order-sg fold 5 seed 1: 49 s, ¼Õ½Ç 0.031 -> 3.650, steady ÆÇÁ¤ ºñÀ² 0.882, ¿À¿°·ü 0.004, º¸Á¸·ü 0.999
+[Step 3] CoST-W144-order-sg fold 5 seed 2: 49 s, ¼Õ½Ç 0.023 -> 3.184, steady ÆÇÁ¤ ºñÀ² 0.888, ¿À¿°·ü 0.006, º¸Á¸·ü 1.000
+[Step 3] CoST-W144-order-sg fold 5 seed 3: 49 s, ¼Õ½Ç 0.030 -> 2.961, steady ÆÇÁ¤ ºñÀ² 0.891, ¿À¿°·ü 0.007, º¸Á¸·ü 1.000
+[Step 3] CoST-W144-order-sg fold 5 seed 4: 49 s, ¼Õ½Ç 0.037 -> 3.247, steady ÆÇÁ¤ ºñÀ² 0.878, ¿À¿°·ü 0.002, º¸Á¸·ü 0.999
+[save] loss curve -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W144-order-sg_loss.png / .pdf
+[save] run     -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W144-order-sg_run_metrics.csv
+[save] fold    -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W144-order-sg_fold_metrics.csv
+[save] summary -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W144-order-sg_summary.csv
+[save] config  -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W144-order-sg_config.csv
+[save] heatmap -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W144-order-sg_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal/CoST-W144-order-sg_heatmap_retention_rate.png / .pdf
+[done] CoST-W144-order-sg
+[done] Á¦¾È ¾ÆÀÌµð¾î 01 ¿Ï·á -> outputs/03_baselines/09_proposed_cost_order_normalized_seasonal

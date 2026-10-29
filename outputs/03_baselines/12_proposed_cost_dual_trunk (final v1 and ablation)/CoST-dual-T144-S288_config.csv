@@ -1,0 +1,41 @@
+name,value
+DT,0.109
+ENTRY_MIN_CONSEC,10
+N_GMM_COMPONENTS,2
+GMM_COVARIANCE_TYPE,diag
+SPLIT,tension
+SEED,0
+N_SEEDS,5
+WINDOW,144
+N_ITERS,267
+DEVICE,cuda
+BATCH_SIZE,8
+LR,0.001
+REPR_DIMS,320
+KERNELS,"[1, 2, 4, 8, 16, 32, 64, 128]"
+ALPHA,0.0005
+idea,hyperparameters.md 13.10 P5 (아이디어 01 이원 trunk)
+design,"trunk 2개 — trend 는 창 144, seasonal 은 창 288"
+WINDOW_T,144
+WINDOW_S,288
+role,제안 — 창 분리 (trend 144 / seasonal 288)
+max_train_length,288
+BASE_N_ITERS,600
+n_iters_rule,baseline 의 데이터 통과 횟수에 맞춘 유도값 = 600 x 4/9
+sections_trend_window,9
+sections_seasonal_window,4
+trend_input_equals_baseline,True
+seasonal_axis,rotation order (not Hz)
+N_ROT,2
+L_ORD,72
+order_resolution_per_bin,0.5
+ROLL_CIRCUMFERENCE_MM,783.5
+order_window_by_speed,"{50: 288, 75: 192, 100: 144, 125: 116, 150: 96, 175: 83, 200: 72}"
+interp,"linear (F.interpolate, align_corners=True)"
+loss_split,L_MoCo <- trend trunk(창 144) / alpha*L_season <- seasonal trunk(창 288)
+augmentation,"jitter only (scale, shift removed via runtime shim)"
+uses_setting_value,Web Speed — seasonal 창 길이 결정에만. 표현 입력 아님. 선례: MovStd-Slope-speed-rule1b (01_stat_ssd.py:163)
+baseline,CoST-W144-noscaleshift (trend 창이 같고 입력도 동일)
+repo,salesforce/CoST
+commit,7bb5271c2b66cd5a1d634c27f5df308f190b50ec
+LABEL_MODE,ambiguous(2) 를 채점에서 제외 (기본값)

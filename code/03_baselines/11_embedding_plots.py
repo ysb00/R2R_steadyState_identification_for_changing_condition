@@ -102,7 +102,7 @@ TRAJ_SPEEDS = [50, 100, 150, 200]   # 그림 B 의 대표 속도. **[임의]** �
 TRAJ_RUNS_PER_PANEL = 3         # 패널당 궤적 수. **[임의]** — 더 많으면 선이 엉킨다
 
 STAGE_OF = {'MovStd-Slope-fixed': '01_stat_ssd', 'TS2Vec': '02_ts2vec', 'MOMENT': '03_moment',
-            'CoST-W144': '04_cost', 'SoftCLT-fs-rule1b': '05_softclt',
+            'CoST-W144': '04_cost (ablation)', 'SoftCLT-fs-rule1b': '05_softclt',
             'TS-TCC': '07_tstcc', 'SimMTM': '08_simmtm'}
 
 d = np.load(NPZ, allow_pickle=True)
