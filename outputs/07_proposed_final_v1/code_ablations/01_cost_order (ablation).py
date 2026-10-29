@@ -117,7 +117,7 @@ KERNELS = [1, 2, 4, 8, 16, 32, 64, 128]
 ALPHA = 0.0005
 
 IN_PATH = 'outputs/merged_data.csv'
-STAGE = '09_proposed_cost_order_normalized_seasonal'   # 비교군 단계 폴더(01~08)와 같은 명명 규칙
+STAGE = '09_proposed_cost_order_normalized_seasonal (ablation)'   # 비교군 단계 폴더(01~08)와 같은 명명 규칙
 OUT_DIR = splits.resolve(SPLIT, STAGE)
 CKPT_DIR = splits.ckpt_dir(SPLIT, STAGE)
 HSUF = '' if HIDDEN == 64 else f'-h{HIDDEN}'        # 기본 폭이 아니면 이름으로 분리한다

@@ -31,7 +31,7 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 B = os.path.join(ROOT, 'outputs', '03_baselines')
 OUT = os.path.join(ROOT, 'outputs', '07_proposed_final_v1')
 
-FINAL_V1 = ('12_proposed_cost_dual_trunk (final v1 and ablation)', 'CoST-dual-T144-S144-frz')
+FINAL_V1 = ('12_proposed_cost_dual_trunk (final v1)', 'CoST-dual-T144-S144-frz')
 FINAL_V1_CMD = 'python code/04_proposed/04_cost_dual_trunk.py tension nrot=1 freeze'
 
 # --- 표에 넣는 지표 (fold_metrics 의 pooled 지표 전부 + 진입 오차) ---
@@ -70,11 +70,11 @@ TABLE1 = [
 TABLE2 = [
     ('CoST', '04_cost (ablation)', 'CoST-W144', '', '', ''),
     ('CoST (no scale/shift)', '06_cost_ablation (ablation)', 'CoST-W144-noscaleshift', '', '', ''),
-    ('+ trunk separation', '12_proposed_cost_dual_trunk (final v1 and ablation)', 'CoST-dual-T144-S144-noord', 'O', '', ''),
+    ('+ trunk separation', '12_proposed_cost_dual_trunk (ablation)', 'CoST-dual-T144-S144-noord', 'O', '', ''),
     ('+ order tracking', '09_proposed_cost_order_normalized_seasonal (ablation)', 'CoST-W144-order', '', '', 'O'),
-    ('+ trunk separation + freeze', '12_proposed_cost_dual_trunk (final v1 and ablation)',
+    ('+ trunk separation + freeze', '12_proposed_cost_dual_trunk (ablation)',
      'CoST-dual-T144-S144-noord-frz', 'O', 'O', ''),
-    ('+ trunk separation + order tracking', '12_proposed_cost_dual_trunk (final v1 and ablation)',
+    ('+ trunk separation + order tracking', '12_proposed_cost_dual_trunk (ablation)',
      'CoST-dual-T144-S144', 'O', '', 'O'),
     ('Proposed method', *FINAL_V1, 'O', 'O', 'O'),
 ]
@@ -92,10 +92,10 @@ ABL_CODE_MAP = [
     ('04_proposed/01_cost_order.py',
      [('09_proposed_cost_order_normalized_seasonal (ablation)', 'CoST-W144-order')]),
     ('04_proposed/04_cost_dual_trunk.py',
-     [('12_proposed_cost_dual_trunk (final v1 and ablation)', 'CoST-dual-T144-S144-noord'),
-      ('12_proposed_cost_dual_trunk (final v1 and ablation)', 'CoST-dual-T144-S144-noord-frz'),
-      ('12_proposed_cost_dual_trunk (final v1 and ablation)', 'CoST-dual-T144-S144'),
-      ('12_proposed_cost_dual_trunk (final v1 and ablation)', 'CoST-dual-T144-S144-frz')]),
+     [('12_proposed_cost_dual_trunk (ablation)', 'CoST-dual-T144-S144-noord'),
+      ('12_proposed_cost_dual_trunk (ablation)', 'CoST-dual-T144-S144-noord-frz'),
+      ('12_proposed_cost_dual_trunk (ablation)', 'CoST-dual-T144-S144'),
+      ('12_proposed_cost_dual_trunk (final v1)', 'CoST-dual-T144-S144-frz')]),
 ]
 
 
@@ -174,6 +174,91 @@ def row(display, stage, method, extra=None, base=None):
 
 os.makedirs(OUT, exist_ok=True)
 
+
+def copy_method(stage, method, dst_dir):
+    src_dir = os.path.join(B, stage)
+    if not os.path.isdir(src_dir):
+        return 0
+    os.makedirs(dst_dir, exist_ok=True)
+    n = 0
+    for f in sorted(os.listdir(src_dir)):
+        if not f.startswith(method + '_') or '_progress_' in f:
+            continue
+        s = os.path.join(src_dir, f)
+        if os.path.isfile(s):
+            shutil.copy2(s, os.path.join(dst_dir, f))
+            n += 1
+    return n
+
+
+
+# =============================================================================
+# C 모드 — `python 06_final_v1_tables.py c` (연구자 지시 2026-10-29)
+#   **표 (1) 만** 만든다 (ablation 은 A 전용이다). A 산출물과 겹치지 않게
+#   파일 이름과 폴더를 따로 쓴다: table1_..._C_final_v1.csv / baselines_C/
+#
+#   C 는 **네 단위를 가로질러 평균하지 않는다** (hyperparameters.md §13.0 F6) —
+#   묻는 질문과 학습량이 서로 다르다. 그래서 지표마다 단위별 열을 따로 만든다.
+#     cv_T       : cv_T1~cv_T5 (25행) 저속 안에서 새 장력 (A 와 같은 질문)
+#     cv_S1      : 5행  학습{50,75}      -> 검증{100}   1수준 속도 외삽
+#     cv_S2      : 5행  학습{50,75,100}  -> 검증{125}   1수준 속도 외삽 (학습량 증가)
+#     final_test : 5행  학습 저속 4수준  -> 검증 고속 3수준. **최종 목표**
+# =============================================================================
+C_UNITS = ['cv_T', 'cv_S1', 'cv_S2', 'final_test']
+
+
+def c_unit(fold):
+    f = str(fold)
+    return 'cv_T' if f.startswith('cv_T') else f
+
+
+if len(sys.argv) > 1 and sys.argv[1] == 'c':
+    B = os.path.join(ROOT, 'outputs', '04_speed_extrap')          # 읽는 루트를 C 로 바꾼다
+    rows = []
+    for display, stage, method in TABLE1:
+        d = load(stage, method)
+        if d is None:
+            print('[skip] %s: %s/%s_fold_metrics.csv 없음' % (display, stage, method), flush=True)
+            continue
+        derived = derive_missing(d)
+        d['unit'] = d.fold.map(c_unit)
+        r = {'model': display, 'source_method': method, 'source_folder': stage,
+             'n_runs_total': len(d)}
+        for u in C_UNITS:
+            g = d[d.unit == u]
+            r[f'n_runs_{u}'] = len(g)
+            for col, name in METRICS:
+                if col in d.columns and len(g):
+                    r[f'{name}_{u}_mean'], r[f'{name}_{u}_std'] = g[col].mean(), g[col].std()
+                else:
+                    r[f'{name}_{u}_mean'], r[f'{name}_{u}_std'] = np.nan, np.nan
+        r['derived_from_confusion_matrix'] = ';'.join(derived)
+        r['unavailable_metrics'] = ';'.join(n for c, n in METRICS if c not in d.columns)
+        rows.append(r)
+    t1c = pd.DataFrame(rows)
+    p = os.path.join(OUT, 'table1_model_comparison_C_final_v1.csv')
+    t1c.to_csv(p, index=False)
+    print('[save] table1_model_comparison_C_final_v1.csv  (%d행 x %d열)' % t1c.shape)
+
+    # final v1 의 C 산출물 사본 (A 쪽 baselines_A/ 와 분리)
+    n = copy_method(*FINAL_V1, os.path.join(OUT, 'baselines_C'))
+    print('[copy] baselines_C/ %-34s %2d개  <- ★ Proposed (final v1) C 실험' % (FINAL_V1[1], n))
+
+    SHOW = ['retention_rate', 'contamination_rate', 'f1_nonsteady', 'auprc_nonsteady',
+            'auroc', 'entry_mae_s']
+    HDR = ['보존률', '오염률', 'F1(ns)', 'AUPRC(ns)', 'AUROC', '진입MAE']
+    for u in C_UNITS:
+        print()
+        print('=== 표 (1) C 실험 — %s (n=%d) ===' % (u, int(t1c[f'n_runs_{u}'].iloc[0])))
+        print('%-22s' % '' + ''.join('%11s' % h for h in HDR))
+        for _, r in t1c.iterrows():
+            print('%-22s' % r.model + ''.join(
+                '%11.4f' % r[f'{c}_{u}_mean'] if pd.notna(r[f'{c}_{u}_mean']) else '%11s' % '-'
+                for c in SHOW))
+    print()
+    print('[done] -> %s' % OUT)
+    sys.exit(0)
+
 # =============================================================================
 # 표 (1)
 # =============================================================================
@@ -208,22 +293,6 @@ print('[save] table2_ablation_study_final_v1.csv  (%d행)' % len(t2))
 # =============================================================================
 A_DIR = os.path.join(OUT, 'baselines_A')              # Proposed (final v1) 하나
 ABL_DIR = os.path.join(OUT, 'baselines_A_ablations')  # 표 (2) ablation, 코드별 하위 폴더
-
-
-def copy_method(stage, method, dst_dir):
-    src_dir = os.path.join(B, stage)
-    if not os.path.isdir(src_dir):
-        return 0
-    os.makedirs(dst_dir, exist_ok=True)
-    n = 0
-    for f in sorted(os.listdir(src_dir)):
-        if not f.startswith(method + '_') or '_progress_' in f:
-            continue
-        s = os.path.join(src_dir, f)
-        if os.path.isfile(s):
-            shutil.copy2(s, os.path.join(dst_dir, f))
-            n += 1
-    return n
 
 
 # 사본 폴더는 매 실행마다 비우고 다시 채운다 (파생물이라 안전하고, 구성이 바뀌어도 잔여물이 없다)

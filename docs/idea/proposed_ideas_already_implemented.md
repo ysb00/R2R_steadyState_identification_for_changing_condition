@@ -1076,4 +1076,4 @@ multi-task 학습의 표준 그림과 맞는지도 확인된다.
 
 | 아이디어 | 단계 폴더 |
 |---|---|
-| P5 이원 trunk / **final v1** | `12_proposed_cost_dual_trunk (final v1 and ablation)/` |
+| P5 이원 trunk / **final v1** | `12_proposed_cost_dual_trunk (final v1)/` |

@@ -31,7 +31,7 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 B = os.path.join(ROOT, 'outputs', '03_baselines')
 OUT = os.path.join(ROOT, 'outputs', '07_proposed_final_v1')
 
-FINAL_V1 = ('12_proposed_cost_dual_trunk (final v1 and ablation)', 'CoST-dual-T144-S144-frz')
+FINAL_V1 = ('12_proposed_cost_dual_trunk (final v1)', 'CoST-dual-T144-S144-frz')
 FINAL_V1_CMD = 'python code/04_proposed/04_cost_dual_trunk.py tension nrot=1 freeze'
 
 # --- 표에 넣는 지표 (fold_metrics 의 pooled 지표 전부 + 진입 오차) ---
@@ -70,11 +70,11 @@ TABLE1 = [
 TABLE2 = [
     ('CoST', '04_cost (ablation)', 'CoST-W144', '', '', ''),
     ('CoST (no scale/shift)', '06_cost_ablation (ablation)', 'CoST-W144-noscaleshift', '', '', ''),
-    ('+ trunk separation', '12_proposed_cost_dual_trunk (final v1 and ablation)', 'CoST-dual-T144-S144-noord', 'O', '', ''),
+    ('+ trunk separation', '12_proposed_cost_dual_trunk (ablation)', 'CoST-dual-T144-S144-noord', 'O', '', ''),
     ('+ order tracking', '09_proposed_cost_order_normalized_seasonal (ablation)', 'CoST-W144-order', '', '', 'O'),
-    ('+ trunk separation + freeze', '12_proposed_cost_dual_trunk (final v1 and ablation)',
+    ('+ trunk separation + freeze', '12_proposed_cost_dual_trunk (ablation)',
      'CoST-dual-T144-S144-noord-frz', 'O', 'O', ''),
-    ('+ trunk separation + order tracking', '12_proposed_cost_dual_trunk (final v1 and ablation)',
+    ('+ trunk separation + order tracking', '12_proposed_cost_dual_trunk (ablation)',
      'CoST-dual-T144-S144', 'O', '', 'O'),
     ('Proposed method', *FINAL_V1, 'O', 'O', 'O'),
 ]
@@ -92,10 +92,10 @@ ABL_CODE_MAP = [
     ('04_proposed/01_cost_order.py',
      [('09_proposed_cost_order_normalized_seasonal (ablation)', 'CoST-W144-order')]),
     ('04_proposed/04_cost_dual_trunk.py',
-     [('12_proposed_cost_dual_trunk (final v1 and ablation)', 'CoST-dual-T144-S144-noord'),
-      ('12_proposed_cost_dual_trunk (final v1 and ablation)', 'CoST-dual-T144-S144-noord-frz'),
-      ('12_proposed_cost_dual_trunk (final v1 and ablation)', 'CoST-dual-T144-S144'),
-      ('12_proposed_cost_dual_trunk (final v1 and ablation)', 'CoST-dual-T144-S144-frz')]),
+     [('12_proposed_cost_dual_trunk (ablation)', 'CoST-dual-T144-S144-noord'),
+      ('12_proposed_cost_dual_trunk (ablation)', 'CoST-dual-T144-S144-noord-frz'),
+      ('12_proposed_cost_dual_trunk (ablation)', 'CoST-dual-T144-S144'),
+      ('12_proposed_cost_dual_trunk (final v1)', 'CoST-dual-T144-S144-frz')]),
 ]
 
 

@@ -159,13 +159,20 @@ KERNELS = [1, 2, 4, 8, 16, 32, 64, 128]
 ALPHA = 0.0005
 
 IN_PATH = 'outputs/merged_data.csv'
-STAGE = '12_proposed_cost_dual_trunk (final v1 and ablation)'          # 비교군 단계 폴더(01~08)와 같은 명명 규칙
-OUT_DIR = splits.resolve(SPLIT, STAGE)
-CKPT_DIR = splits.ckpt_dir(SPLIT, STAGE)
 SUFFIX = '' if N_ITERS_FIXED is None else f'-it{N_ITERS_FIXED}'   # 수동 지정 변형은 이름으로 분리
 NOORD_SUF = '-noord' if NOORDER else ''
 FRZ_SUF = '-frz' if FREEZE else ''
 METHOD = f'CoST-dual-T{WINDOW_T}-S{WINDOW_S}{NOORD_SUF}{FRZ_SUF}{SUFFIX}'
+
+# 출력 폴더는 **방법 이름으로 갈린다** (연구자 지시 2026-10-29) — 한 스크립트가 여러 변형을 만들어
+# 결과가 한 폴더에 섞이면 읽기 어렵다. 확정된 제안방법만 `(final v1)` 로 분리한다.
+#   nrot=1 freeze          -> CoST-dual-T144-S144-frz        -> (final v1)
+#   그 외 전부(noorder / noorder freeze / 없음 / nrot=2 / iters=…) -> (ablation)
+FINAL_V1_METHOD = 'CoST-dual-T144-S144-frz'
+STAGE = ('12_proposed_cost_dual_trunk (final v1)' if METHOD == FINAL_V1_METHOD
+         else '12_proposed_cost_dual_trunk (ablation)')
+OUT_DIR = splits.resolve(SPLIT, STAGE)
+CKPT_DIR = splits.ckpt_dir(SPLIT, STAGE)
 
 T1 = 'Film Tension #1 (kg)'
 TS, RS, VS = ev.TS, ev.RS, ev.VS

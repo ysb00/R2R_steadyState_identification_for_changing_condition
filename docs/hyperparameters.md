@@ -1006,7 +1006,7 @@ C 실험 `final_test` (저속 학습 → 미학습 고속, seed 5회 평균):
 | `04_cost` | **`04_cost (ablation)`** |
 | `06_cost_ablation` | **`06_cost_ablation (ablation)`** |
 | `09_proposed_cost_order_normalized_seasonal` | **`09_proposed_cost_order_normalized_seasonal (ablation)`** |
-| `12_proposed_cost_dual_trunk` | **`12_proposed_cost_dual_trunk (final v1 and ablation)`** |
+| `12_proposed_cost_dual_trunk` | **`12_… (final v1)`** + **`12_… (ablation)`** (아래 분리 표 참조) |
 
 **삭제한 폴더** (기각된 시행착오 7종, 결과물 91개 / 15 MB. 숫자는
 `docs/idea/proposed_ideas_already_implemented.md` 의 "전체 결과 요약" 에 기록돼 있다)
@@ -1028,6 +1028,19 @@ C 실험 `final_test` (저속 학습 → 미학습 고속, seed 5회 평균):
 | `outputs/06_ambiguous_included_C/` | ✔ | ✔ |
 
 `09_…`·`12_…` 는 A 에만 있다 (제안방법은 A 실험까지만).
+
+**`12_…` 는 둘로 나눴다** (연구자 지시 2026-10-29) — 한 스크립트가 5변형을 만들어 결과가
+한 폴더에 섞여 읽기 어려웠다.
+
+| 폴더 | 방법 | 비고 |
+|---|---|---|
+| `12_proposed_cost_dual_trunk (final v1)` | `CoST-dual-T144-S144-frz` | ★ 확정된 제안방법 |
+| `12_proposed_cost_dual_trunk (ablation)` | `CoST-dual-T144-S144`, `-noord`, `-noord-frz` | 표 (2) 의 3행 |
+| | `CoST-dual-T144-S288` | 기각(창 분리). 어느 표에도 없음 |
+
+`04_cost_dual_trunk.py` 는 **`METHOD` 를 먼저 계산하고 그 이름으로 `STAGE` 를 고른다** —
+`CoST-dual-T144-S144-frz` 면 `(final v1)`, 나머지는 `(ablation)`. 네 조합 전부
+재실행 시 정상 스킵됨을 확인했다.
 
 **함께 고친 코드 7곳** — 이제 코드와 폴더 이름이 일치하므로 **재실행하면 정상적으로 스킵된다**
 (별칭 계층 없음, 재학습 함정 없음). 실제 실행으로 검증했다.
@@ -1137,8 +1150,8 @@ ablation 변형(`order`, `dual-noord` 등)도 그림에 넣으려면 각각 같�
 | 공유 | **있음** | **116** | `CoST-W144-order-h116` | `python code/04_proposed/01_cost_order.py tension nrot=1 hidden=116` | `09_… (ablation)/` |
 | 공유 | 있음 | 64 | `CoST-W288-order` (창 288, N_rot=2) | `python code/04_proposed/01_cost_order.py tension` | `09_… (ablation)/` |
 | 공유 | 없음 | 64 | `CoST-W288-noscaleshift` (창 대조군) | `python code/04_proposed/01_cost_order.py tension` | `09_… (ablation)/` |
-| **분리** | **있음** | 64 | `CoST-dual-T144-S144` | `python code/04_proposed/04_cost_dual_trunk.py tension nrot=1` | `12_… (final v1 and ablation)/` |
-| **분리** | 있음 + 창 288 | 64 | `CoST-dual-T144-S288` | `python code/04_proposed/04_cost_dual_trunk.py tension` | `12_… (final v1 and ablation)/` |
+| **분리** | **있음** | 64 | `CoST-dual-T144-S144` | `python code/04_proposed/04_cost_dual_trunk.py tension nrot=1` | `12_… (ablation)/` |
+| **분리** | 있음 + 창 288 | 64 | `CoST-dual-T144-S288` | `python code/04_proposed/04_cost_dual_trunk.py tension` | `12_… (ablation)/` |
 
 - `01_cost_order.py` 는 **한 번의 호출로 두 방법**(차수 없음 + 차수 있음)을 같은 폭으로 돌린다.
 - `hidden=116` 은 공유 trunk 를 1,266,552 (= 64 판의 **1.988배**)로 만든다. 이원 trunk 의

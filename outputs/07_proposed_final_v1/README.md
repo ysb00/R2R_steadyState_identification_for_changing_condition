@@ -16,8 +16,9 @@
 | **방법 이름** | `CoST-dual-T144-S144-frz` |
 | **코드** | [`code/04_proposed/04_cost_dual_trunk.py`](../../code/04_proposed/04_cost_dual_trunk.py) — 파일 맨 위에 `★★★ Proposed (final v1)` 표식 |
 | **실행 명령** | `python code/04_proposed/04_cost_dual_trunk.py tension nrot=1 freeze` |
-| **정본 결과** | `outputs/03_baselines/12_proposed_cost_dual_trunk/CoST-dual-T144-S144-frz_*` |
-| **사본** | 이 폴더의 `final_v1_outputs/` |
+| **정본 결과 (A)** | `outputs/03_baselines/12_proposed_cost_dual_trunk (final v1)/CoST-dual-T144-S144-frz_*` |
+| **정본 결과 (C)** | `outputs/04_speed_extrap/12_proposed_cost_dual_trunk (final v1)/CoST-dual-T144-S144-frz_*` |
+| **사본** | 이 폴더의 `baselines_A/` · `baselines_C/` |
 | **표 생성 코드** | [`code/04_proposed/06_final_v1_tables.py`](../../code/04_proposed/06_final_v1_tables.py) |
 | **설계·해석** | [`docs/idea/proposed_ideas_already_implemented.md`](../../docs/idea/proposed_ideas_already_implemented.md) 의 "전체 결과 요약" 과 §4 |
 
@@ -33,6 +34,24 @@
 **학습 용량을 21% 줄이면서 성능이 가장 좋다** — "파라미터를 늘려서 좋아진 것" 이라는 반론이
 이 변형에서는 성립하지 않는다.
 
+### C 실험 성능 (저속 → 고속 외삽, 8 fold × 5 seed = 40회)
+
+네 단위 전부에서 F1(ns)·AUPRC(ns)가 **8종 중 1위**다. 괄호는 baseline `CoST-W144-noscaleshift` 대비.
+
+| 단위 | F1(ns) | AUPRC(ns) | 보존률 | 오염률 | AUROC |
+|---|---|---|---|---|---|
+| `cv_T` | **.8831** (+.0277) | **.8172** (+.0424) | .9921 | .0035 | **.9664** (+.0135) |
+| `cv_S1` | **.9860** (+.0234) | **.9735** (+.0455) | .9982 | .0003 | **.9972** |
+| `cv_S2` | **.9361** (+.0318) | **.8811** (+.0575) | .9946 | .0045 | .9683 |
+| **`final_test`** | **.9564** (+.0054) | **.9185** (+.0108) | **.9950** | .0031 | .9809 (−.0087) |
+
+**속도 외삽 단위(`cv_S1`·`cv_S2`)에서 이득이 가장 크다** (+.023, +.032) — 차수 정규화의
+본래 동기가 C 에서 드러난다. A 는 7개 속도가 학습·검증에 모두 들어가 이 효과를 볼 수 없었다.
+
+> **정직하게 적어둘 것** — `final_test` 에서 **AUROC 가 −.0087, 진입 MAE 가 +1.14 s** 로 나빠진다.
+> A 의 속도별 분해에서 차수가 V=200 에서 해로웠던 것(−0.0076)과 같은 방향이고, 고속에서
+> order window 의 시간 범위가 3.9 s 로 짧아지는 문제로 보인다.
+
 ### 바꾸지 않은 것 (baseline 과 동일)
 
 창 144 · jitter-only 증강 · 표현 320차원 · GMM 후단(`StandardScaler` + `GaussianMixture(2, diag)`) ·
@@ -47,9 +66,11 @@
 
 | 파일 | 내용 |
 |---|---|
-| `table1_model_comparison_final_v1.csv` | **표 (1)** 모델별 성능 비교 (8행) |
-| `table2_ablation_study_final_v1.csv` | **표 (2)** 제안 방법 ablation (7행) |
-| **`baselines_A/`** | **표 (1) 8종**의 실제 산출물 사본 (csv + plot) |
+| `table1_model_comparison_final_v1.csv` | **표 (1) — A 실험** 모델별 성능 비교 (8행 × 34열) |
+| **`table1_model_comparison_C_final_v1.csv`** | **표 (1) — C 실험** 모델별 성능 비교 (8행 × 122열, **지표마다 4단위 열**) |
+| `table2_ablation_study_final_v1.csv` | **표 (2) — A 실험** 제안 방법 ablation (7행 × 40열). ablation 은 **A 전용**이다 |
+| **`baselines_A/`** | **A 실험** final v1 산출물 사본 (csv + plot) |
+| **`baselines_C/`** | **C 실험** final v1 산출물 사본 (csv + plot). heatmap 이 `cv_T` / `cv_S` / `final_test` 로 3종 |
 | **`baselines_A_ablations/`** | **표 (2) ablation 7종**의 실제 산출물 사본 (csv + plot) |
 | **`code/`** | **final v1 코드 사본** + 그 README |
 | **`code_ablations/`** | **ablation 코드 사본** (이름에 ` (ablation)`) + 그 README |
@@ -109,7 +130,24 @@ $$\widehat{N_{st}} = TP_{st}/\text{precision}_{st},\quad TP_{ns} = P_{ns}-(\wide
 
 ---
 
-## 3. 표 (1) 모델별 성능 비교
+## 3. 표 (1) 모델별 성능 비교 — A·C 두 판
+
+행 순서와 모델 매핑은 A·C 가 **같다**. 파일만 다르다
+(`table1_model_comparison_final_v1.csv` / `table1_model_comparison_C_final_v1.csv`).
+
+**C 판은 열 구조가 다르다** — C 는 **네 단위를 가로질러 평균하지 않는다**
+(`docs/hyperparameters.md` §13.0 F6). 묻는 질문과 학습량이 서로 다르기 때문이다.
+그래서 지표마다 단위별 열을 따로 둔다: `{지표}_{단위}_mean` / `_std` (총 122열).
+
+| 단위 | 행 수 (방법당) | 묻는 것 |
+|---|---|---|
+| `cv_T` | 25 (cv_T1~cv_T5 × seed 5) | 저속 안에서 **새 장력** (A 와 같은 질문) |
+| `cv_S1` | 5 | 학습 {50,75} → 검증 {100}. **1수준 속도 외삽** |
+| `cv_S2` | 5 | 학습 {50,75,100} → 검증 {125}. 1수준 외삽 (학습량 증가) |
+| `final_test` | 5 | 학습 저속 4수준 → 검증 **고속 3수준**. **최종 목표. 한 번만 쓴다** |
+
+생성: `python code/04_proposed/06_final_v1_tables.py c` (A 는 인자 없이).
+**C 모드는 표 (1) 만 만들고 A 산출물을 건드리지 않는다** — ablation 은 A 전용이다.
 
 행 순서는 연구자 지정. `Proposed method` 가 final v1 이다.
 
@@ -118,11 +156,11 @@ $$\widehat{N_{st}} = TP_{st}/\text{precision}_{st},\quad TP_{ns} = P_{ns}-(\wide
 | Statistics-based | `MovStd-Slope-fixed` | `01_stat_ssd` |
 | TS-TCC (2021) | `TS-TCC` | `07_tstcc` |
 | TS2Vec (2022) | `TS2Vec` | `02_ts2vec` |
-| CoST (2022) | `CoST-W144` | `04_cost` |
+| CoST (2022) | `CoST-W144` | `04_cost (ablation)` |
 | SimMTM (2023) | `SimMTM` | `08_simmtm` |
 | SoftCLT (2024) | `SoftCLT-ref` | `05_softclt` |
 | MOMENT (2024) | `MOMENT` | `03_moment` |
-| **Proposed method** | **`CoST-dual-T144-S144-frz`** | `12_proposed_cost_dual_trunk` |
+| **Proposed method** | **`CoST-dual-T144-S144-frz`** | `12_proposed_cost_dual_trunk (final v1)` |
 
 > **변형 선택을 적어둔다 (바꾸려면 `06_final_v1_tables.py` 의 `TABLE1` 한 줄)**
 > `01_stat_ssd` 에는 통계 기준선이 8종, `05_softclt` 에는 3종이 있다. 각 계열에서
