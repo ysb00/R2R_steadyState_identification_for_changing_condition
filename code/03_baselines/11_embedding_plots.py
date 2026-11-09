@@ -82,13 +82,17 @@ import splits
 
 SPLIT = sys.argv[1] if len(sys.argv) > 1 else 'tension'                # 'tension' (A) | 'c' (C)
 INFER = splits.set_amb_mode(sys.argv[2:])   # 2번째 인자 'amb' -> ambiguous 포함 모드의 npz 를 읽고 같은 루트에 그린다
-FOLD = 1 if SPLIT == 'tension' else 'final_test'                       # 10_embeddings.py 와 같은 값
+FOLD = {'tension': 1, 'b': 7}.get(SPLIT, 'final_test')                 # 10_embeddings.py 와 같은 값
 SEED = 0
 OUT_ROOT = splits.out_root(SPLIT)
 NPZ = f'{OUT_ROOT}/_embeddings_fold{FOLD}_seed{SEED}.npz'
 
 # 그림 A 에서 '학습 조건 vs 미학습 조건' 을 가르는 설정값 — 분할마다 다르다
 CONTRAST = ('tension', 'film tension', 'kg') if SPLIT == 'tension' else ('speed', 'web speed', 'mm/s')
+# B 도 unseen 축이 속도이므로 'speed' 가 맞다 (위 식의 else 가 그대로 옳다).
+# 그림 C(검증 속도별 색 구분)는 **C 실험 전용**이다 — B 의 검증은 속도 1수준뿐이라 색이 하나뿐인
+# 패널이 되어 의미가 없다. 그래서 아래에서 SPLIT == 'c' 일 때만 그린다.
+PLOT_C_BY_TEST_SPEED = (SPLIT == 'c')
 SPEED_RAMP = [0.30, 0.60, 0.95]  # 그림 C 의 속도별 색 위치 (SEQ_CMAP 상). **[임의]** — 밝기 차이를
                                  # 충분히 벌려 3수준이 구분되게 잡았다. 밝음 -> 어두움 = 느림 -> 빠름
 C_SEEN_BG = '#c9c8c0'            # 그림 C 의 학습(저속) 배경색 — 중성 회색 (상태·속도 색과 겹치지 않게)
@@ -153,7 +157,8 @@ for _, r in info.iterrows():
         continue
     z = d[f'{method}__z2']
     xl, yl = axis_names(method)
-    scope = '5 fold x 5 seed' if SPLIT == 'tension' else f'{FOLD}, 5 seeds'
+    scope = ('5 fold x 5 seed' if SPLIT == 'tension' else
+             'fold 7, web speed 200 mm/s, 5 seeds' if SPLIT == 'b' else f'{FOLD}, 5 seeds')
     head = (f'{method}   dim={dim}   PC1+PC2 explains {r["ev2"]:.1%} of variance   '
             f'AUPRC (official, {scope}) {r[OFFICIAL]:.3f}')
     rng = np.random.default_rng(SEED)
@@ -202,7 +207,7 @@ for _, r in info.iterrows():
     # =========================================================================
     # 그림 C — 테스트 속도별 (C 실험 전용). 검증 속도마다 다른 색으로 그린다.
     # =========================================================================
-    if SPLIT != 'tension':
+    if PLOT_C_BY_TEST_SPEED:
         test_speeds = sorted({int(v) for v in speed[is_val]})
         cmap_pos = SPEED_RAMP if len(test_speeds) == len(SPEED_RAMP) else \
             list(np.linspace(0.30, 0.95, len(test_speeds)))

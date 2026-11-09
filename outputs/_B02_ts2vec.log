@@ -1,0 +1,53 @@
+[Step 1] rows = 268933, runs = 210, 분할 b (B 실험 — Web Speed 수준별 leave-one-level-out 7-fold (검증 30 / 학습 180)) fold [1, 2, 3, 4, 5, 6, 7] (0.1 s)
+split  fold  n_train  n_val  n_unused
+    b     1      180     30         0
+    b     2      180     30         0
+    b     3      180     30         0
+    b     4      180     30         0
+    b     5      180     30         0
+    b     6      180     30         0
+    b     7      180     30         0
+[Step 2] 입력 배열 (210, 1300, 1), run 길이 1275~1300, 패딩 비율 0.015 (0.0 s)
+[Step 3] fold 1 seed 0: 학습 28 s, 전체 36 s, epoch 27 손실 3.456 -> 3.203, 군집별 e 평균 [ 0.   -0.04] -> steady = 군집 0, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.931
+[Step 3] fold 1 seed 1: 학습 23 s, 전체 27 s, epoch 27 손실 3.386 -> 3.246, 군집별 e 평균 [-0.022  0.   ] -> steady = 군집 1, steady 판정 비율 0.599, 오염률 0.000, 보존률 0.740
+[Step 3] fold 1 seed 2: 학습 22 s, 전체 26 s, epoch 27 손실 3.548 -> 3.251, 군집별 e 평균 [ 0.001 -0.043] -> steady = 군집 0, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.931
+[Step 3] fold 1 seed 3: 학습 24 s, 전체 28 s, epoch 27 손실 3.383 -> 1.466, 군집별 e 평균 [-0.041  0.001] -> steady = 군집 1, steady 판정 비율 0.766, 오염률 0.000, 보존률 0.919
+[Step 3] fold 1 seed 4: 학습 23 s, 전체 27 s, epoch 27 손실 3.401 -> 3.283, 군집별 e 평균 [-0.04  0.  ] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.931
+[Step 3] fold 2 seed 0: 학습 23 s, 전체 26 s, epoch 27 손실 3.456 -> 3.191, 군집별 e 평균 [ 0.001 -0.026] -> steady = 군집 0, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.701
+[Step 3] fold 2 seed 1: 학습 24 s, 전체 28 s, epoch 27 손실 3.386 -> 3.289, 군집별 e 평균 [-0.025  0.   ] -> steady = 군집 1, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.700
+[Step 3] fold 2 seed 2: 학습 25 s, 전체 31 s, epoch 27 손실 3.553 -> 1.575, 군집별 e 평균 [ 0.004 -0.045] -> steady = 군집 0, steady 판정 비율 0.735, 오염률 0.000, 보존률 0.858
+[Step 3] fold 2 seed 3: 학습 24 s, 전체 27 s, epoch 27 손실 3.383 -> 1.830, 군집별 e 평균 [-0.044 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.916
+[Step 3] fold 2 seed 4: 학습 24 s, 전체 27 s, epoch 27 손실 3.401 -> 3.277, 군집별 e 평균 [-0.044 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.916
+[Step 3] fold 3 seed 0: 학습 24 s, 전체 28 s, epoch 27 손실 3.456 -> 3.143, 군집별 e 평균 [ 0.001 -0.027] -> steady = 군집 0, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.678
+[Step 3] fold 3 seed 1: 학습 25 s, 전체 29 s, epoch 27 손실 3.386 -> 3.164, 군집별 e 평균 [-0.026  0.   ] -> steady = 군집 1, steady 판정 비율 0.597, 오염률 0.000, 보존률 0.675
+[Step 3] fold 3 seed 2: 학습 24 s, 전체 27 s, epoch 27 손실 3.555 -> 3.246, 군집별 e 평균 [-0.017 -0.   ] -> steady = 군집 1, steady 판정 비율 0.385, 오염률 0.000, 보존률 0.435
+[Step 3] fold 3 seed 3: 학습 24 s, 전체 30 s, epoch 27 손실 3.390 -> 1.520, 군집별 e 평균 [-0.047  0.001] -> steady = 군집 1, steady 판정 비율 0.773, 오염률 0.000, 보존률 0.874
+[Step 3] fold 3 seed 4: 학습 24 s, 전체 27 s, epoch 27 손실 3.400 -> 3.297, 군집별 e 평균 [-0.045 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.887
+[Step 3] fold 4 seed 0: 학습 24 s, 전체 27 s, epoch 27 손실 3.455 -> 3.196, 군집별 e 평균 [-0.    -0.017] -> steady = 군집 0, steady 판정 비율 0.385, 오염률 0.000, 보존률 0.442
+[Step 3] fold 4 seed 1: 학습 23 s, 전체 27 s, epoch 27 손실 3.386 -> 2.584, 군집별 e 평균 [-0.027  0.   ] -> steady = 군집 1, steady 판정 비율 0.598, 오염률 0.000, 보존률 0.686
+[Step 3] fold 4 seed 2: 학습 23 s, 전체 27 s, epoch 27 손실 3.564 -> 3.250, 군집별 e 평균 [-0.013 -0.003] -> steady = 군집 1, steady 판정 비율 0.200, 오염률 0.000, 보존률 0.230
+[Step 3] fold 4 seed 3: 학습 24 s, 전체 30 s, epoch 27 손실 3.386 -> 1.627, 군집별 e 평균 [-0.016 -0.003] -> steady = 군집 1, steady 판정 비율 0.389, 오염률 0.011, 보존률 0.442
+[Step 3] fold 4 seed 4: 학습 24 s, 전체 27 s, epoch 27 손실 3.401 -> 3.302, 군집별 e 평균 [-0.047 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.004, 보존률 0.896
+[Step 3] fold 5 seed 0: 학습 23 s, 전체 27 s, epoch 27 손실 3.333 -> 1.996, 군집별 e 평균 [-0.001 -0.046] -> steady = 군집 0, steady 판정 비율 0.780, 오염률 0.001, 보존률 0.892
+[Step 3] fold 5 seed 1: 학습 24 s, 전체 34 s, epoch 27 손실 3.387 -> 1.957, 군집별 e 평균 [-0.041  0.005] -> steady = 군집 1, steady 판정 비율 0.663, 오염률 0.002, 보존률 0.758
+[Step 3] fold 5 seed 2: 학습 27 s, 전체 33 s, epoch 27 손실 3.554 -> 3.248, 군집별 e 평균 [-0.014  0.003] -> steady = 군집 1, steady 판정 비율 0.199, 오염률 0.000, 보존률 0.229
+[Step 3] fold 5 seed 3: 학습 24 s, 전체 29 s, epoch 27 손실 3.386 -> 1.739, 군집별 e 평균 [-0.049 -0.   ] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.895
+[Step 3] fold 5 seed 4: 학습 24 s, 전체 27 s, epoch 27 손실 3.399 -> 2.735, 군집별 e 평균 [-0.046 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.896
+[Step 3] fold 6 seed 0: 학습 23 s, 전체 29 s, epoch 27 손실 3.335 -> 3.158, 군집별 e 평균 [-0.    -0.028] -> steady = 군집 0, steady 판정 비율 0.601, 오염률 0.001, 보존률 0.685
+[Step 3] fold 6 seed 1: 학습 24 s, 전체 28 s, epoch 27 손실 3.392 -> 1.688, 군집별 e 평균 [-0.028  0.   ] -> steady = 군집 1, steady 판정 비율 0.598, 오염률 0.000, 보존률 0.683
+[Step 3] fold 6 seed 2: 학습 24 s, 전체 28 s, epoch 27 손실 3.619 -> 3.129, 군집별 e 평균 [-0.019  0.001] -> steady = 군집 1, steady 판정 비율 0.385, 오염률 0.000, 보존률 0.439
+[Step 3] fold 6 seed 3: 학습 24 s, 전체 28 s, epoch 27 손실 3.577 -> 1.439, 군집별 e 평균 [-0.029  0.001] -> steady = 군집 1, steady 판정 비율 0.587, 오염률 0.000, 보존률 0.670
+[Step 3] fold 6 seed 4: 학습 24 s, 전체 27 s, epoch 27 손실 3.399 -> 3.344, 군집별 e 평균 [-0.049 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.896
+[Step 3] fold 7 seed 0: 학습 24 s, 전체 29 s, epoch 27 손실 3.335 -> 1.354, 군집별 e 평균 [ 0.022 -0.044] -> steady = 군집 0, steady 판정 비율 0.559, 오염률 0.000, 보존률 0.665
+[Step 3] fold 7 seed 1: 학습 24 s, 전체 35 s, epoch 27 손실 3.392 -> 1.565, 군집별 e 평균 [-0.029 -0.   ] -> steady = 군집 1, steady 판정 비율 0.594, 오염률 0.000, 보존률 0.709
+[Step 3] fold 7 seed 2: 학습 23 s, 전체 28 s, epoch 27 손실 3.454 -> 1.671, 군집별 e 평균 [-0.001 -0.051] -> steady = 군집 0, steady 판정 비율 0.782, 오염률 0.000, 보존률 0.930
+[Step 3] fold 7 seed 3: 학습 25 s, 전체 31 s, epoch 27 손실 3.577 -> 1.531, 군집별 e 평균 [-0.028  0.002] -> steady = 군집 1, steady 판정 비율 0.567, 오염률 0.000, 보존률 0.676
+[Step 3] fold 7 seed 4: 학습 25 s, 전체 28 s, epoch 27 손실 3.392 -> 1.591, 군집별 e 평균 [-0.05  -0.001] -> steady = 군집 1, steady 판정 비율 0.782, 오염률 0.000, 보존률 0.930
+[save] loss curve -> outputs/08_speed_loo_B/02_ts2vec/TS2Vec_loss.png / .pdf
+[save] run     -> outputs/08_speed_loo_B/02_ts2vec/TS2Vec_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/02_ts2vec/TS2Vec_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/02_ts2vec/TS2Vec_summary.csv
+[save] config  -> outputs/08_speed_loo_B/02_ts2vec/TS2Vec_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/02_ts2vec/TS2Vec_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/02_ts2vec/TS2Vec_heatmap_retention_rate.png / .pdf
+[done] TS2Vec 평가 완료

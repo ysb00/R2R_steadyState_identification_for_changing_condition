@@ -15,6 +15,9 @@
 #        C('c')       : **final_test** — 저속 4수준(120 run) 학습 -> 미학습 고속 3수준(90 run) 검증.
 #                       최종 목표와 같은 조건이라 '학습 조건 vs 미학습 조건' 그림이
 #                       그대로 **저속 학습 vs 미학습 고속**이 된다 (2026-10-27 연구자 결정).
+#        B('b')       : **fold 7** — 속도 50~175 (180 run) 학습 -> 미학습 속도 200 (30 run) 검증.
+#                       미학습 조건이 최고속이라 연구 목표와 방향이 같고, 격자 끝이라 7 fold 중
+#                       유일하게 진짜 외삽이다 (2026-11-09 연구자 결정).
 #
 # 투영 : **PCA** (연구자 결정). UMAP/t-SNE 는 하이퍼파라미터가 새 임의값이 되고 군집이
 #        인공물일 수 있다. 그리고 본 후단이 **축정렬 가우시안**(diag GMM)을 가정하므로
@@ -35,10 +38,14 @@
 # 입력 : outputs/merged_data.csv, splits.py 가 읽는 fold 파일, <분할 폴더>/*/checkpoints/*.pt
 # 출력 : <분할 폴더>/_embeddings_fold{FOLD}_seed{SEED}.npz
 #        (A -> outputs/03_baselines/ , C -> outputs/04_speed_extrap/)
-# 실험 : 인자로 고른다 — 'tension' (A) / 'c' (C). 어댑터 8개와 같은 규약이다
+# 실험 : 인자로 고른다 — 'tension' (A) / 'b' (B) / 'c' (C). 어댑터 8개와 같은 규약이다
 # 실행 : python code/03_baselines/10_embeddings.py        (A 실험, 기본값)
+#        python code/03_baselines/10_embeddings.py b      (B 실험)
 #        python code/03_baselines/10_embeddings.py c      (C 실험)
 #        C 는 **F6(12_summary_tables_c.py) 이후**에 돌린다 — 정식 AUPRC 를 그 표에서 읽는다
+#        B 는 **09_summary_tables.py b 이후**에 돌린다 — 같은 이유로 `_all_methods_by_fold.csv` 를 읽는다.
+#        체크포인트가 없는 방법은 FAILED 로 건너뛰므로 **방법을 추가할 때마다 다시 돌려도 된다**
+#        (npz 가 그때까지 성공한 방법으로 다시 채워진다)
 # =============================================================================
 import os, sys, time
 import numpy as np
@@ -60,7 +67,11 @@ INFER = splits.set_amb_mode(sys.argv[2:])   # 2번째 인자 'amb' -> ambiguous 
 # =============================================================================
 # hyperparameter
 # =============================================================================
-FOLD = 1 if SPLIT == 'tension' else 'final_test'    # [사용자] A: 장력 3 kg 검증(외삽) / C: 미학습 고속 검증
+FOLD = {'tension': 1, 'b': 7}.get(SPLIT, 'final_test')
+# [사용자] A: fold 1 = 장력 3 kg 검증(외삽) / B: fold 7 = 속도 200 검증 / C: final_test = 미학습 고속 검증
+#   B 의 fold 7 을 고른 이유 (2026-11-09 연구자 결정) — 미학습 조건이 **최고속**이라 연구 목표와
+#   방향이 같고, 격자 끝이라 7 fold 중 유일하게 진짜 외삽이다. C 의 final_test 그림과 '미학습 =
+#   고속' 축이 같아 A/B/C 세 장이 한 줄기로 읽힌다.
 SEED = 0                        # [사용자] seed 0
 STRIDE = 10                     # 시점 추출 간격. **[임의]** — 그림·PCA 용 서브샘플.
                                 # 27만 시점을 다 쓰면 TS-TCC 2,560차원에서 2.8 GB 다.
@@ -367,6 +378,9 @@ for method, stage, kind in METHODS:
 #   A : 5 fold x 5 seed 전체 평균 (`_all_methods_full_table.csv`)
 #   C : **그 fold(final_test) 의 seed 평균** (`_all_methods_by_fold.csv`) — 묶음을 가로질러
 #       평균하면 안 되므로(§13.0 F6) fold 단위 값을 쓴다
+#   B : C 와 같이 **그 fold(7 = 속도 200) 의 seed 평균**을 쓴다. 이유는 묶음이 아니라 기준선이다 —
+#       B 의 7 fold 는 검증 속도가 달라 non-steady 비율(= AUPRC 기준선)이 fold 마다 다르다.
+#       7 fold 평균값을 fold 7 그림에 붙이면 그림과 숫자가 다른 대상을 가리킨다.
 if SPLIT == 'tension':
     full = pd.read_csv(f'{OUT_ROOT}/_all_methods_full_table.csv')[['method', 'pooled_auprc__mean']]
 else:
