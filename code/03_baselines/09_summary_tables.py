@@ -39,9 +39,18 @@ import evaluation as ev
 import splits
 
 # 'amb' 를 붙이면 ambiguous 포함 재추론 결과(outputs/05_ambiguous_included_A)를 집계한다.
-# 인자가 없으면 **기존 그대로** outputs/03_baselines 를 집계한다 (A 전용 스크립트라 분할은 고정).
-splits.set_amb_mode(sys.argv[1:])
-OUT_DIR = splits.out_root('tension')
+# 인자가 없으면 **기존 그대로** outputs/03_baselines 를 집계한다.
+#
+# 2026-11-09 — 첫 인자로 **분할 이름**을 받는다 ('tension' 기본 / 'b' = B 실험).
+#   B 를 여기서 처리하는 이유: B 의 fold 구조가 A 와 동일하다 (leave-one-level-out, 묶음 1개,
+#   학습 = 나머지 전부). C 만 `12_summary_tables_c.py` 가 따로 필요하다 — 네 묶음을 가로질러
+#   평균하면 안 되기 때문이고, B 에는 그 제약이 없다.
+#   **기존 호출은 그대로 동작한다** — 인자 없음 / 'amb' 단독이면 분할은 'tension' 이다.
+_argv = sys.argv[1:]
+_has_split = bool(_argv) and _argv[0] in ('tension', 'b')
+SPLIT = _argv[0] if _has_split else 'tension'
+splits.set_amb_mode(_argv[1:] if _has_split else _argv)
+OUT_DIR = splits.out_root(SPLIT)
 
 # --- 방법 분류 (그림·표 묶음용). 새 방법을 추가하면 여기에 등록한다 ---
 CATEGORY = {

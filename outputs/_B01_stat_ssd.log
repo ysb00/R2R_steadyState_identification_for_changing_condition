@@ -1,0 +1,125 @@
+[Step 1] rows = 268933, runs = 210, 분할 b fold [1, 2, 3, 4, 5, 6, 7] (0.1 s)
+split  fold  n_train  n_val  n_unused
+    b     1      180     30         0
+    b     2      180     30         0
+    b     3      180     30         0
+    b     4      180     30         0
+    b     5      180     30         0
+    b     6      180     30         0
+    b     7      180     30         0
+[Step 2] 특징 계산 완료. 속도별 창 길이 = {50: 160, 75: 107, 100: 80, 125: 64, 150: 53, 175: 46, 200: 40} samples (0.6 s)
+[Step 2] 원 샘플링(9 Hz): lag1 자기상관 run평균 0.92, R 중앙값 3.77, steady 임계값(0.9) 미만 0.000, TS 임계값(2.5) 초과 0.881
+[Step 2] 1/10 다운샘플링: lag1 자기상관 run평균 0.54, R 중앙값 1.43, steady 임계값(0.9) 미만 0.026, TS 임계값(2.5) 초과 0.167
+[Step 3] R-test fold 1: steady 판정 비율 0.000, 오염률 nan, 보존률 0.000
+[Step 3] R-test fold 2: steady 판정 비율 0.000, 오염률 1.000, 보존률 0.000
+[Step 3] R-test fold 3: steady 판정 비율 0.000, 오염률 1.000, 보존률 0.000
+[Step 3] R-test fold 4: steady 판정 비율 0.001, 오염률 1.000, 보존률 0.000
+[Step 3] R-test fold 5: steady 판정 비율 0.000, 오염률 1.000, 보존률 0.000
+[Step 3] R-test fold 6: steady 판정 비율 0.001, 오염률 1.000, 보존률 0.000
+[Step 3] R-test fold 7: steady 판정 비율 0.001, 오염률 1.000, 보존률 0.000
+[save] run     -> outputs/08_speed_loo_B/01_stat_ssd/R-test_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/01_stat_ssd/R-test_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/01_stat_ssd/R-test_summary.csv
+[save] config  -> outputs/08_speed_loo_B/01_stat_ssd/R-test_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/01_stat_ssd/R-test_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/01_stat_ssd/R-test_heatmap_retention_rate.png / .pdf
+[Step 3] R-test 완료 (4.8 s)
+[Step 3] R-test-decimated fold 1: steady 판정 비율 0.148, 오염률 0.016, 보존률 0.167
+[Step 3] R-test-decimated fold 2: steady 판정 비율 0.041, 오염률 0.089, 보존률 0.034
+[Step 3] R-test-decimated fold 3: steady 판정 비율 0.003, 오염률 1.000, 보존률 0.000
+[Step 3] R-test-decimated fold 4: steady 판정 비율 0.032, 오염률 0.133, 보존률 0.031
+[Step 3] R-test-decimated fold 5: steady 판정 비율 0.277, 오염률 0.014, 보존률 0.313
+[Step 3] R-test-decimated fold 6: steady 판정 비율 0.386, 오염률 0.007, 보존률 0.435
+[Step 3] R-test-decimated fold 7: steady 판정 비율 0.208, 오염률 0.014, 보존률 0.244
+[save] run     -> outputs/08_speed_loo_B/01_stat_ssd/R-test-decimated_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/01_stat_ssd/R-test-decimated_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/01_stat_ssd/R-test-decimated_summary.csv
+[save] config  -> outputs/08_speed_loo_B/01_stat_ssd/R-test-decimated_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/01_stat_ssd/R-test-decimated_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/01_stat_ssd/R-test-decimated_heatmap_retention_rate.png / .pdf
+[Step 3] R-test-decimated 완료 (4.0 s)
+[Step 3b] R-test-calibrated fold 1: 군집별 e 평균 [-0.007 -0.061] -> steady = 군집 0, steady 판정 비율 0.922, 오염률 0.088, 보존률 0.927
+[Step 3b] R-test-calibrated fold 2: 군집별 e 평균 [-0.008 -0.052] -> steady = 군집 0, steady 판정 비율 0.970, 오염률 0.075, 보존률 0.981
+[Step 3b] R-test-calibrated fold 3: 군집별 e 평균 [-0.051 -0.009] -> steady = 군집 1, steady 판정 비율 0.978, 오염률 0.061, 보존률 0.989
+[Step 3b] R-test-calibrated fold 4: 군집별 e 평균 [-0.047 -0.009] -> steady = 군집 1, steady 판정 비율 0.977, 오염률 0.059, 보존률 0.991
+[Step 3b] R-test-calibrated fold 5: 군집별 e 평균 [-0.038 -0.009] -> steady = 군집 1, steady 판정 비율 0.965, 오염률 0.058, 보존률 0.978
+[Step 3b] R-test-calibrated fold 6: 군집별 e 평균 [-0.046 -0.01 ] -> steady = 군집 1, steady 판정 비율 0.964, 오염률 0.051, 보존률 0.993
+[Step 3b] R-test-calibrated fold 7: 군집별 e 평균 [-0.035 -0.008] -> steady = 군집 1, steady 판정 비율 0.805, 오염률 0.040, 보존률 0.872
+[save] run     -> outputs/08_speed_loo_B/01_stat_ssd/R-test-calibrated_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/01_stat_ssd/R-test-calibrated_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/01_stat_ssd/R-test-calibrated_summary.csv
+[save] config  -> outputs/08_speed_loo_B/01_stat_ssd/R-test-calibrated_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/01_stat_ssd/R-test-calibrated_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/01_stat_ssd/R-test-calibrated_heatmap_retention_rate.png / .pdf
+[Step 3b] R-test-calibrated 완료 (29.0 s)
+[Step 3b] R-test-decimated-calibrated fold 1: 군집별 e 평균 [-0.032 -0.002] -> steady = 군집 1, steady 판정 비율 0.875, 오염률 0.031, 보존률 0.957
+[Step 3b] R-test-decimated-calibrated fold 2: 군집별 e 평균 [-0.035 -0.004] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.015, 보존률 0.868
+[Step 3b] R-test-decimated-calibrated fold 3: 군집별 e 평균 [-0.035 -0.004] -> steady = 군집 1, steady 판정 비율 0.722, 오염률 0.017, 보존률 0.790
+[Step 3b] R-test-decimated-calibrated fold 4: 군집별 e 평균 [-0.038 -0.004] -> steady = 군집 1, steady 판정 비율 0.756, 오염률 0.016, 보존률 0.846
+[Step 3b] R-test-decimated-calibrated fold 5: 군집별 e 평균 [-0.036 -0.004] -> steady = 군집 1, steady 판정 비율 0.847, 오염률 0.021, 보존률 0.936
+[Step 3b] R-test-decimated-calibrated fold 6: 군집별 e 평균 [-0.039 -0.005] -> steady = 군집 1, steady 판정 비율 0.834, 오염률 0.021, 보존률 0.921
+[Step 3b] R-test-decimated-calibrated fold 7: 군집별 e 평균 [-0.045 -0.004] -> steady = 군집 1, steady 판정 비율 0.754, 오염률 0.021, 보존률 0.873
+[save] run     -> outputs/08_speed_loo_B/01_stat_ssd/R-test-decimated-calibrated_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/01_stat_ssd/R-test-decimated-calibrated_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/01_stat_ssd/R-test-decimated-calibrated_summary.csv
+[save] config  -> outputs/08_speed_loo_B/01_stat_ssd/R-test-decimated-calibrated_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/01_stat_ssd/R-test-decimated-calibrated_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/01_stat_ssd/R-test-decimated-calibrated_heatmap_retention_rate.png / .pdf
+[Step 3b] R-test-decimated-calibrated 완료 (22.7 s)
+[Step 4] MovStd-Slope-fixed fold 1: 군집별 e 평균 [-0.053 -0.003] -> steady = 군집 1, steady 판정 비율 0.981, 오염률 0.081, 보존률 0.997
+[Step 4] MovStd-Slope-fixed fold 2: 군집별 e 평균 [-0.006 -0.053] -> steady = 군집 0, steady 판정 비율 0.941, 오염률 0.046, 보존률 0.995
+[Step 4] MovStd-Slope-fixed fold 3: 군집별 e 평균 [-0.006 -0.053] -> steady = 군집 0, steady 판정 비율 0.946, 오염률 0.044, 보존률 0.988
+[Step 4] MovStd-Slope-fixed fold 4: 군집별 e 평균 [-0.007 -0.052] -> steady = 군집 0, steady 판정 비율 0.916, 오염률 0.018, 보존률 0.993
+[Step 4] MovStd-Slope-fixed fold 5: 군집별 e 평균 [-0.007 -0.056] -> steady = 군집 0, steady 판정 비율 0.729, 오염률 0.017, 보존률 0.797
+[Step 4] MovStd-Slope-fixed fold 6: 군집별 e 평균 [-0.007 -0.057] -> steady = 군집 0, steady 판정 비율 0.903, 오염률 0.018, 보존률 0.988
+[Step 4] MovStd-Slope-fixed fold 7: 군집별 e 평균 [-0.007 -0.057] -> steady = 군집 0, steady 판정 비율 0.852, 오염률 0.004, 보존률 0.989
+[save] run     -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-fixed_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-fixed_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-fixed_summary.csv
+[save] config  -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-fixed_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-fixed_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-fixed_heatmap_retention_rate.png / .pdf
+[Step 4] MovStd-Slope-fixed 완료 (23.5 s)
+[Step 4] MovStd-Slope-speed fold 1: 군집별 e 평균 [-0.003 -0.056] -> steady = 군집 0, steady 판정 비율 0.995, 오염률 0.088, 보존률 1.000
+[Step 4] MovStd-Slope-speed fold 2: 군집별 e 평균 [-0.006 -0.056] -> steady = 군집 0, steady 판정 비율 0.953, 오염률 0.050, 보존률 0.995
+[Step 4] MovStd-Slope-speed fold 3: 군집별 e 평균 [-0.006 -0.054] -> steady = 군집 0, steady 판정 비율 0.951, 오염률 0.046, 보존률 0.989
+[Step 4] MovStd-Slope-speed fold 4: 군집별 e 평균 [-0.007 -0.051] -> steady = 군집 0, steady 판정 비율 0.918, 오염률 0.020, 보존률 0.994
+[Step 4] MovStd-Slope-speed fold 5: 군집별 e 평균 [-0.006 -0.062] -> steady = 군집 0, steady 판정 비율 0.711, 오염률 0.022, 보존률 0.768
+[Step 4] MovStd-Slope-speed fold 6: 군집별 e 평균 [-0.007 -0.052] -> steady = 군집 0, steady 판정 비율 0.894, 오염률 0.013, 보존률 0.980
+[Step 4] MovStd-Slope-speed fold 7: 군집별 e 평균 [-0.006 -0.049] -> steady = 군집 0, steady 판정 비율 0.780, 오염률 0.014, 보존률 0.891
+[save] run     -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-speed_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-speed_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-speed_summary.csv
+[save] config  -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-speed_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-speed_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-speed_heatmap_retention_rate.png / .pdf
+[Step 4] MovStd-Slope-speed 완료 (24.8 s)
+[Step 4] MovStd-Slope-fixed-rule1b fold 1: 군집별 e 평균 [-0.001 -0.035] -> steady = 군집 0, steady 판정 비율 0.806, 오염률 0.022, 보존률 0.911
+[Step 4] MovStd-Slope-fixed-rule1b fold 2: 군집별 e 평균 [-0.003 -0.04 ] -> steady = 군집 0, steady 판정 비율 0.871, 오염률 0.028, 보존률 0.945
+[Step 4] MovStd-Slope-fixed-rule1b fold 3: 군집별 e 평균 [-0.004 -0.038] -> steady = 군집 0, steady 판정 비율 0.836, 오염률 0.005, 보존률 0.921
+[Step 4] MovStd-Slope-fixed-rule1b fold 4: 군집별 e 평균 [-0.004 -0.04 ] -> steady = 군집 0, steady 판정 비율 0.829, 오염률 0.003, 보존률 0.943
+[Step 4] MovStd-Slope-fixed-rule1b fold 5: 군집별 e 평균 [-0.045 -0.003] -> steady = 군집 1, steady 판정 비율 0.526, 오염률 0.000, 보존률 0.601
+[Step 4] MovStd-Slope-fixed-rule1b fold 6: 군집별 e 평균 [-0.004 -0.042] -> steady = 군집 0, steady 판정 비율 0.809, 오염률 0.000, 보존률 0.923
+[Step 4] MovStd-Slope-fixed-rule1b fold 7: 군집별 e 평균 [-0.004 -0.043] -> steady = 군집 0, steady 판정 비율 0.780, 오염률 0.000, 보존률 0.930
+[save] run     -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-fixed-rule1b_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-fixed-rule1b_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-fixed-rule1b_summary.csv
+[save] config  -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-fixed-rule1b_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-fixed-rule1b_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-fixed-rule1b_heatmap_retention_rate.png / .pdf
+[Step 4] MovStd-Slope-fixed-rule1b 완료 (27.4 s)
+[Step 4] MovStd-Slope-speed-rule1b fold 1: 군집별 e 평균 [-0.058 -0.004] -> steady = 군집 1, steady 판정 비율 0.992, 오염률 0.085, 보존률 1.000
+[Step 4] MovStd-Slope-speed-rule1b fold 2: 군집별 e 평균 [-0.006 -0.059] -> steady = 군집 0, steady 판정 비율 0.959, 오염률 0.053, 보존률 0.997
+[Step 4] MovStd-Slope-speed-rule1b fold 3: 군집별 e 평균 [-0.006 -0.057] -> steady = 군집 0, steady 판정 비율 0.958, 오염률 0.048, 보존률 0.993
+[Step 4] MovStd-Slope-speed-rule1b fold 4: 군집별 e 평균 [-0.007 -0.054] -> steady = 군집 0, steady 판정 비율 0.930, 오염률 0.024, 보존률 0.996
+[Step 4] MovStd-Slope-speed-rule1b fold 5: 군집별 e 평균 [-0.006 -0.066] -> steady = 군집 0, steady 판정 비율 0.717, 오염률 0.023, 보존률 0.767
+[Step 4] MovStd-Slope-speed-rule1b fold 6: 군집별 e 평균 [-0.007 -0.055] -> steady = 군집 0, steady 판정 비율 0.906, 오염률 0.018, 보존률 0.983
+[Step 4] MovStd-Slope-speed-rule1b fold 7: 군집별 e 평균 [-0.006 -0.049] -> steady = 군집 0, steady 판정 비율 0.791, 오염률 0.021, 보존률 0.891
+[save] run     -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-speed-rule1b_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-speed-rule1b_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-speed-rule1b_summary.csv
+[save] config  -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-speed-rule1b_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-speed-rule1b_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-speed-rule1b_heatmap_retention_rate.png / .pdf
+[Step 4] MovStd-Slope-speed-rule1b 완료 (23.7 s)
+[done] 통계 기준선 2종 (창 길이 2변형 포함) 평가 완료

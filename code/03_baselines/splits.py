@@ -8,10 +8,16 @@
 #   즉 C 에서는 "학습 = 나머지" 가 성립하지 않는다. 그래서 fold 마다 run 의 역할을
 #   train / val / unused 세 값으로 **명시**하고, 어댑터는 그것만 읽는다.
 #
-# 분할 2종
+# 분할 3종
 #   'tension' : A 실험. outputs/03_baselines/folds.csv 의 fold_tension 을 그대로 쓴다.
 #               역할은 (fold_tension == f) 면 val, 아니면 train 으로 유도한다.
 #               **기존 동작과 완전히 같다** — A 결과를 다시 돌려도 값이 바뀌지 않는다.
+#   'b'       : B 실험 (2026-11-09 추가 — A·C 보다 뒤에 만들었다). **같은 folds.csv** 의
+#               fold_speed 컬럼을 읽는다. 해석 방식은 'tension' 과 완전히 동일하고
+#               (leave_one_out, 학습 = 나머지 전부) 바뀌는 것은 fold 컬럼과 결과 루트뿐이다.
+#               배정은 00_folds.py 가 A 와 함께 이미 고정해 두었다 (7 fold x 30 run).
+#               학습량도 A 와 같다 — 어댑터의 N_ITERS 가 600 이 되는데, A 의 None 도
+#               CoST 원본 규칙(200 if size<=100000 else 600)에서 실효 600 이었다.
 #   'c'       : C 실험. outputs/04_speed_extrap/folds_c.csv 의 역할 컬럼 8개를 그대로 읽는다.
 #               생성은 00_folds.py 가 한다 (정의의 단일 출처).
 #
@@ -47,6 +53,11 @@ SPEC = {
                 'kind': 'leave_one_out',          # fold 컬럼 1개, 학습 = 나머지
                 'col': 'fold_tension',
                 'desc': 'A 실험 — Film Tension 수준별 leave-one-level-out 5-fold (검증 42 / 학습 168)'},
+    'b':       {'path': 'outputs/03_baselines/folds.csv',
+                'out_dir': 'outputs/08_speed_loo_B',
+                'kind': 'leave_one_out',          # fold 컬럼 1개, 학습 = 나머지 (A 와 같은 해석)
+                'col': 'fold_speed',
+                'desc': 'B 실험 — Web Speed 수준별 leave-one-level-out 7-fold (검증 30 / 학습 180)'},
     'c':       {'path': 'outputs/04_speed_extrap/folds_c.csv',
                 'out_dir': 'outputs/04_speed_extrap',
                 'kind': 'explicit_role',          # 역할 컬럼 n개, 값 = train/val/unused
@@ -136,7 +147,9 @@ def resolve(name, stage):
 # =============================================================================
 AMB_INCLUDED = False              # set_amb_mode() 만 이 값을 바꾼다. 기본값 False = 기존 동작 그대로
 AMB_OUT_DIR = {'tension': 'outputs/05_ambiguous_included_A',    # A 실험 재추론 결과
-               'c':       'outputs/06_ambiguous_included_C'}    # C 실험 재추론 결과
+               'c':       'outputs/06_ambiguous_included_C',    # C 실험 재추론 결과
+               'b':       'outputs/09_ambiguous_included_B'}    # B 실험 재추론 — **아직 실행하지 않았다**
+                                                                # (연구자 결정 2026-11-09: B 는 ambiguous 제외만 먼저)
 AMB_TOKEN = 'amb'                 # CLI 에서 모드를 켜는 토큰 (분할 이름 **뒤에** 온다)
 
 

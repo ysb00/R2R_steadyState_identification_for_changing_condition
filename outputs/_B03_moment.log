@@ -1,0 +1,49 @@
+W1109 17:52:24.717000 21044 site-packages\torch\distributed\elastic\multiprocessing\redirects.py:29] NOTE: Redirects are currently not supported in Windows or MacOs.
+c:\Users\KIMM\research\informs-paper\code\03_baselines\external\moment\momentfm\models\moment.py:174: UserWarning: Only reconstruction head is pre-trained. Classification and forecasting heads must be fine-tuned.
+  warnings.warn("Only reconstruction head is pre-trained. Classification and forecasting heads must be fine-tuned.")
+[Step 1] rows = 268933, runs = 210, run 길이 1275~1300 (0.2 s)
+[Step 2] AutonLab/MOMENT-1-small 로드: 입력 길이 512, patch 길이 8, d_model 512
+[Step 2] 창 630개 (run당 3.0개), 패딩 비율 0.166
+[Step 2] 표현 (268933, 512) (2.4 s)
+[Step 3] fold 1 seed 0: 11 s, 군집별 e 평균 [ 0.019 -0.051] -> steady = 군집 0, steady 판정 비율 0.564, 오염률 0.020, 보존률 0.601
+[Step 3] fold 1 seed 1: 6 s, 군집별 e 평균 [-0.051  0.019] -> steady = 군집 1, steady 판정 비율 0.564, 오염률 0.020, 보존률 0.601
+[Step 3] fold 1 seed 2: 6 s, 군집별 e 평균 [-0.051  0.019] -> steady = 군집 1, steady 판정 비율 0.564, 오염률 0.020, 보존률 0.601
+[Step 3] fold 1 seed 3: 6 s, 군집별 e 평균 [ 0.019 -0.051] -> steady = 군집 0, steady 판정 비율 0.564, 오염률 0.020, 보존률 0.601
+[Step 3] fold 1 seed 4: 6 s, 군집별 e 평균 [-0.051  0.019] -> steady = 군집 1, steady 판정 비율 0.564, 오염률 0.020, 보존률 0.601
+[Step 3] fold 2 seed 0: 6 s, 군집별 e 평균 [-0.051  0.017] -> steady = 군집 1, steady 판정 비율 0.610, 오염률 0.018, 보존률 0.662
+[Step 3] fold 2 seed 1: 7 s, 군집별 e 평균 [-0.051  0.017] -> steady = 군집 1, steady 판정 비율 0.610, 오염률 0.018, 보존률 0.662
+[Step 3] fold 2 seed 2: 6 s, 군집별 e 평균 [ 0.017 -0.051] -> steady = 군집 0, steady 판정 비율 0.610, 오염률 0.018, 보존률 0.662
+[Step 3] fold 2 seed 3: 7 s, 군집별 e 평균 [ 0.017 -0.051] -> steady = 군집 0, steady 판정 비율 0.610, 오염률 0.018, 보존률 0.662
+[Step 3] fold 2 seed 4: 7 s, 군집별 e 평균 [-0.051  0.017] -> steady = 군집 1, steady 판정 비율 0.610, 오염률 0.018, 보존률 0.662
+[Step 3] fold 3 seed 0: 7 s, 군집별 e 평균 [-0.05   0.017] -> steady = 군집 1, steady 판정 비율 0.636, 오염률 0.005, 보존률 0.686
+[Step 3] fold 3 seed 1: 6 s, 군집별 e 평균 [-0.05   0.017] -> steady = 군집 1, steady 판정 비율 0.636, 오염률 0.005, 보존률 0.686
+[Step 3] fold 3 seed 2: 7 s, 군집별 e 평균 [-0.05   0.017] -> steady = 군집 1, steady 판정 비율 0.636, 오염률 0.005, 보존률 0.686
+[Step 3] fold 3 seed 3: 7 s, 군집별 e 평균 [ 0.017 -0.05 ] -> steady = 군집 0, steady 판정 비율 0.636, 오염률 0.005, 보존률 0.686
+[Step 3] fold 3 seed 4: 6 s, 군집별 e 평균 [-0.05   0.017] -> steady = 군집 1, steady 판정 비율 0.636, 오염률 0.005, 보존률 0.686
+[Step 3] fold 4 seed 0: 7 s, 군집별 e 평균 [ 0.017 -0.051] -> steady = 군집 0, steady 판정 비율 0.621, 오염률 0.014, 보존률 0.646
+[Step 3] fold 4 seed 1: 6 s, 군집별 e 평균 [-0.051  0.017] -> steady = 군집 1, steady 판정 비율 0.621, 오염률 0.014, 보존률 0.646
+[Step 3] fold 4 seed 2: 7 s, 군집별 e 평균 [-0.051  0.017] -> steady = 군집 1, steady 판정 비율 0.621, 오염률 0.014, 보존률 0.646
+[Step 3] fold 4 seed 3: 7 s, 군집별 e 평균 [ 0.017 -0.051] -> steady = 군집 0, steady 판정 비율 0.621, 오염률 0.014, 보존률 0.646
+[Step 3] fold 4 seed 4: 6 s, 군집별 e 평균 [-0.051  0.017] -> steady = 군집 1, steady 판정 비율 0.621, 오염률 0.014, 보존률 0.646
+[Step 3] fold 5 seed 0: 6 s, 군집별 e 평균 [-0.05   0.015] -> steady = 군집 1, steady 판정 비율 0.580, 오염률 0.023, 보존률 0.592
+[Step 3] fold 5 seed 1: 7 s, 군집별 e 평균 [-0.05   0.015] -> steady = 군집 1, steady 판정 비율 0.580, 오염률 0.023, 보존률 0.592
+[Step 3] fold 5 seed 2: 7 s, 군집별 e 평균 [ 0.015 -0.05 ] -> steady = 군집 0, steady 판정 비율 0.580, 오염률 0.023, 보존률 0.592
+[Step 3] fold 5 seed 3: 7 s, 군집별 e 평균 [ 0.015 -0.05 ] -> steady = 군집 0, steady 판정 비율 0.580, 오염률 0.023, 보존률 0.592
+[Step 3] fold 5 seed 4: 6 s, 군집별 e 평균 [-0.05   0.015] -> steady = 군집 1, steady 판정 비율 0.580, 오염률 0.023, 보존률 0.592
+[Step 3] fold 6 seed 0: 6 s, 군집별 e 평균 [ 0.016 -0.052] -> steady = 군집 0, steady 판정 비율 0.591, 오염률 0.044, 보존률 0.598
+[Step 3] fold 6 seed 1: 6 s, 군집별 e 평균 [-0.052  0.016] -> steady = 군집 1, steady 판정 비율 0.591, 오염률 0.044, 보존률 0.598
+[Step 3] fold 6 seed 2: 7 s, 군집별 e 평균 [ 0.016 -0.052] -> steady = 군집 0, steady 판정 비율 0.591, 오염률 0.044, 보존률 0.598
+[Step 3] fold 6 seed 3: 7 s, 군집별 e 평균 [ 0.016 -0.052] -> steady = 군집 0, steady 판정 비율 0.591, 오염률 0.044, 보존률 0.598
+[Step 3] fold 6 seed 4: 6 s, 군집별 e 평균 [-0.052  0.016] -> steady = 군집 1, steady 판정 비율 0.591, 오염률 0.044, 보존률 0.598
+[Step 3] fold 7 seed 0: 7 s, 군집별 e 평균 [-0.051  0.015] -> steady = 군집 1, steady 판정 비율 0.589, 오염률 0.092, 보존률 0.585
+[Step 3] fold 7 seed 1: 6 s, 군집별 e 평균 [-0.051  0.015] -> steady = 군집 1, steady 판정 비율 0.589, 오염률 0.092, 보존률 0.585
+[Step 3] fold 7 seed 2: 7 s, 군집별 e 평균 [-0.051  0.015] -> steady = 군집 1, steady 판정 비율 0.589, 오염률 0.092, 보존률 0.585
+[Step 3] fold 7 seed 3: 6 s, 군집별 e 평균 [-0.051  0.015] -> steady = 군집 1, steady 판정 비율 0.589, 오염률 0.092, 보존률 0.585
+[Step 3] fold 7 seed 4: 7 s, 군집별 e 평균 [-0.051  0.015] -> steady = 군집 1, steady 판정 비율 0.589, 오염률 0.092, 보존률 0.585
+[save] run     -> outputs/08_speed_loo_B/03_moment/MOMENT_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/03_moment/MOMENT_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/03_moment/MOMENT_summary.csv
+[save] config  -> outputs/08_speed_loo_B/03_moment/MOMENT_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/03_moment/MOMENT_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/03_moment/MOMENT_heatmap_retention_rate.png / .pdf
+[done] MOMENT 평가 완료
