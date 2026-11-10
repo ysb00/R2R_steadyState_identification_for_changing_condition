@@ -1,0 +1,252 @@
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\utils_distance_matrix.py:152: RuntimeWarning: overflow encountered in exp
+  return ((2*alpha) / (1 + np.exp(-tau*x))) + (1-alpha)*np.eye(x.shape[0])
+[Step 1] rows = 268933, runs = 210 (0.1 s)
+[Step 2] 입력 배열 (210, 1300, 1), run 길이 1275~1300, 패딩 비율 0.015 (0.0 s)
+[Step 3] DTW 거리 행렬 재사용 (210, 210) <- outputs/03_baselines/05_softclt/dtw_dist.npy
+[Step 4] SoftCLT-fs fold 1: 정규화 거리 중앙값 0.0224, tau_inst = 211.0, n_eff 중앙값 5.00 (학습 run 179개 중)
+[Step 4] SoftCLT-fs fold 1 seed 0: 학습 38 s, 전체 99 s, epoch 27 손실 98.2546 -> 87.6236, n_eff 중앙값 5.00, 군집별 e 평균 [ 0.    -0.017] -> steady = 군집 0, steady 판정 비율 0.500, 오염률 0.000, 보존률 0.617
+[Step 4] SoftCLT-fs fold 1 seed 1: 학습 37 s, 전체 99 s, epoch 27 손실 104.3039 -> 88.9906, n_eff 중앙값 5.00, 군집별 e 평균 [-0.038 -0.   ] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.931
+[Step 4] SoftCLT-fs fold 1 seed 2: 학습 39 s, 전체 110 s, epoch 27 손실 103.0253 -> 90.1180, n_eff 중앙값 5.00, 군집별 e 평균 [-0.011  0.001] -> steady = 군집 1, steady 판정 비율 0.200, 오염률 0.000, 보존률 0.247
+[Step 4] SoftCLT-fs fold 1 seed 3: 학습 40 s, 전체 111 s, epoch 27 손실 99.9883 -> 84.6003, n_eff 중앙값 5.00, 군집별 e 평균 [-0.038 -0.   ] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.931
+[Step 4] SoftCLT-fs fold 1 seed 4: 학습 39 s, 전체 111 s, epoch 27 손실 102.4180 -> 88.9420, n_eff 중앙값 5.00, 군집별 e 평균 [-0.039 -0.   ] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.931
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\utils_distance_matrix.py:152: RuntimeWarning: overflow encountered in exp
+  return ((2*alpha) / (1 + np.exp(-tau*x))) + (1-alpha)*np.eye(x.shape[0])
+[Step 4] SoftCLT-fs fold 2: 정규화 거리 중앙값 0.0226, tau_inst = 225.0, n_eff 중앙값 5.00 (학습 run 179개 중)
+[Step 4] SoftCLT-fs fold 2 seed 0: 학습 40 s, 전체 111 s, epoch 27 손실 98.2594 -> 87.7174, n_eff 중앙값 5.00, 군집별 e 평균 [-0.    -0.025] -> steady = 군집 0, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.701
+[Step 4] SoftCLT-fs fold 2 seed 1: 학습 41 s, 전체 114 s, epoch 27 손실 104.2865 -> 88.9760, n_eff 중앙값 5.00, 군집별 e 평균 [-0.042 -0.002] -> steady = 군집 1, steady 판정 비율 0.785, 오염률 0.000, 보존률 0.916
+[Step 4] SoftCLT-fs fold 2 seed 2: 학습 38 s, 전체 114 s, epoch 27 손실 103.0297 -> 90.1672, n_eff 중앙값 5.00, 군집별 e 평균 [-0.013  0.001] -> steady = 군집 1, steady 판정 비율 0.200, 오염률 0.000, 보존률 0.234
+[Step 4] SoftCLT-fs fold 2 seed 3: 학습 42 s, 전체 114 s, epoch 27 손실 100.0359 -> 84.6311, n_eff 중앙값 5.00, 군집별 e 평균 [-0.042 -0.002] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.916
+[Step 4] SoftCLT-fs fold 2 seed 4: 학습 39 s, 전체 116 s, epoch 27 손실 102.4305 -> 88.9670, n_eff 중앙값 5.00, 군집별 e 평균 [-0.043 -0.001] -> steady = 군집 1, steady 판정 비율 0.785, 오염률 0.000, 보존률 0.916
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\utils_distance_matrix.py:152: RuntimeWarning: overflow encountered in exp
+  return ((2*alpha) / (1 + np.exp(-tau*x))) + (1-alpha)*np.eye(x.shape[0])
+[Step 4] SoftCLT-fs fold 3: 정규화 거리 중앙값 0.0246, tau_inst = 195.3, n_eff 중앙값 5.01 (학습 run 179개 중)
+[Step 4] SoftCLT-fs fold 3 seed 0: 학습 37 s, 전체 112 s, epoch 27 손실 98.2252 -> 87.7415, n_eff 중앙값 5.01, 군집별 e 평균 [-0.    -0.026] -> steady = 군집 0, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.678
+[Step 4] SoftCLT-fs fold 3 seed 1: 학습 41 s, 전체 120 s, epoch 27 손실 104.2526 -> 89.0306, n_eff 중앙값 5.01, 군집별 e 평균 [-0.043 -0.002] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.887
+[Step 4] SoftCLT-fs fold 3 seed 2: 학습 40 s, 전체 125 s, epoch 27 손실 103.0046 -> 90.1093, n_eff 중앙값 5.01, 군집별 e 평균 [-0.013  0.001] -> steady = 군집 1, steady 판정 비율 0.200, 오염률 0.000, 보존률 0.226
+[Step 4] SoftCLT-fs fold 3 seed 3: 학습 41 s, 전체 116 s, epoch 27 손실 100.0317 -> 84.6524, n_eff 중앙값 5.01, 군집별 e 평균 [-0.043 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.887
+[Step 4] SoftCLT-fs fold 3 seed 4: 학습 40 s, 전체 116 s, epoch 27 손실 102.4101 -> 88.9368, n_eff 중앙값 5.01, 군집별 e 평균 [-0.044 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.887
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\utils_distance_matrix.py:152: RuntimeWarning: overflow encountered in exp
+  return ((2*alpha) / (1 + np.exp(-tau*x))) + (1-alpha)*np.eye(x.shape[0])
+[Step 4] SoftCLT-fs fold 4: 정규화 거리 중앙값 0.0243, tau_inst = 194.4, n_eff 중앙값 4.99 (학습 run 179개 중)
+[Step 4] SoftCLT-fs fold 4 seed 0: 학습 39 s, 전체 114 s, epoch 27 손실 98.2576 -> 87.7597, n_eff 중앙값 4.99, 군집별 e 평균 [-0.    -0.022] -> steady = 군집 0, steady 판정 비율 0.500, 오염률 0.000, 보존률 0.574
+[Step 4] SoftCLT-fs fold 4 seed 1: 학습 48 s, 전체 120 s, epoch 27 손실 104.2617 -> 89.1027, n_eff 중앙값 4.99, 군집별 e 평균 [-0.045 -0.002] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.004, 보존률 0.896
+[Step 4] SoftCLT-fs fold 4 seed 2: 학습 39 s, 전체 114 s, epoch 27 손실 103.0211 -> 90.0807, n_eff 중앙값 4.99, 군집별 e 평균 [-0.014  0.001] -> steady = 군집 1, steady 판정 비율 0.200, 오염률 0.000, 보존률 0.230
+[Step 4] SoftCLT-fs fold 4 seed 3: 학습 40 s, 전체 119 s, epoch 27 손실 100.0471 -> 84.6484, n_eff 중앙값 4.99, 군집별 e 평균 [-0.045 -0.002] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.004, 보존률 0.896
+[Step 4] SoftCLT-fs fold 4 seed 4: 학습 41 s, 전체 120 s, epoch 27 손실 102.4292 -> 88.9320, n_eff 중앙값 4.99, 군집별 e 평균 [-0.046 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.004, 보존률 0.896
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\utils_distance_matrix.py:152: RuntimeWarning: overflow encountered in exp
+  return ((2*alpha) / (1 + np.exp(-tau*x))) + (1-alpha)*np.eye(x.shape[0])
+[Step 4] SoftCLT-fs fold 5: 정규화 거리 중앙값 0.0206, tau_inst = 218.6, n_eff 중앙값 5.00 (학습 run 179개 중)
+[Step 4] SoftCLT-fs fold 5 seed 0: 학습 40 s, 전체 118 s, epoch 27 손실 97.5611 -> 87.4035, n_eff 중앙값 5.00, 군집별 e 평균 [-0.002 -0.024] -> steady = 군집 0, steady 판정 비율 0.582, 오염률 0.000, 보존률 0.666
+[Step 4] SoftCLT-fs fold 5 seed 1: 학습 39 s, 전체 110 s, epoch 27 손실 104.2761 -> 88.7668, n_eff 중앙값 5.00, 군집별 e 평균 [-0.046 -0.001] -> steady = 군집 1, steady 판정 비율 0.787, 오염률 0.003, 보존률 0.896
+[Step 4] SoftCLT-fs fold 5 seed 2: 학습 41 s, 전체 115 s, epoch 27 손실 103.0622 -> 90.1533, n_eff 중앙값 5.00, 군집별 e 평균 [-0.014  0.001] -> steady = 군집 1, steady 판정 비율 0.198, 오염률 0.000, 보존률 0.228
+[Step 4] SoftCLT-fs fold 5 seed 3: 학습 41 s, 전체 116 s, epoch 27 손실 100.0382 -> 84.5398, n_eff 중앙값 5.00, 군집별 e 평균 [-0.046 -0.001] -> steady = 군집 1, steady 판정 비율 0.786, 오염률 0.003, 보존률 0.896
+[Step 4] SoftCLT-fs fold 5 seed 4: 학습 40 s, 전체 117 s, epoch 27 손실 102.4501 -> 88.9721, n_eff 중앙값 5.00, 군집별 e 평균 [-0.048 -0.001] -> steady = 군집 1, steady 판정 비율 0.786, 오염률 0.003, 보존률 0.896
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\utils_distance_matrix.py:152: RuntimeWarning: overflow encountered in exp
+  return ((2*alpha) / (1 + np.exp(-tau*x))) + (1-alpha)*np.eye(x.shape[0])
+[Step 4] SoftCLT-fs fold 6: 정규화 거리 중앙값 0.0222, tau_inst = 212.8, n_eff 중앙값 5.00 (학습 run 179개 중)
+[Step 4] SoftCLT-fs fold 6 seed 0: 학습 38 s, 전체 110 s, epoch 27 손실 97.5426 -> 87.5401, n_eff 중앙값 5.00, 군집별 e 평균 [-0.    -0.022] -> steady = 군집 0, steady 판정 비율 0.500, 오염률 0.000, 보존률 0.571
+[Step 4] SoftCLT-fs fold 6 seed 1: 학습 39 s, 전체 118 s, epoch 27 손실 104.2708 -> 89.0955, n_eff 중앙값 5.00, 군집별 e 평균 [-0.047 -0.002] -> steady = 군집 1, steady 판정 비율 0.785, 오염률 0.000, 보존률 0.896
+[Step 4] SoftCLT-fs fold 6 seed 2: 학습 40 s, 전체 114 s, epoch 27 손실 103.4414 -> 90.0432, n_eff 중앙값 5.00, 군집별 e 평균 [-0.014  0.001] -> steady = 군집 1, steady 판정 비율 0.200, 오염률 0.000, 보존률 0.229
+[Step 4] SoftCLT-fs fold 6 seed 3: 학습 42 s, 전체 118 s, epoch 27 손실 100.6710 -> 84.5293, n_eff 중앙값 5.00, 군집별 e 평균 [-0.047 -0.002] -> steady = 군집 1, steady 판정 비율 0.785, 오염률 0.000, 보존률 0.896
+[Step 4] SoftCLT-fs fold 6 seed 4: 학습 39 s, 전체 117 s, epoch 27 손실 102.4447 -> 88.9621, n_eff 중앙값 5.00, 군집별 e 평균 [-0.048 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.896
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\utils_distance_matrix.py:152: RuntimeWarning: overflow encountered in exp
+  return ((2*alpha) / (1 + np.exp(-tau*x))) + (1-alpha)*np.eye(x.shape[0])
+[Step 4] SoftCLT-fs fold 7: 정규화 거리 중앙값 0.0267, tau_inst = 173.1, n_eff 중앙값 5.00 (학습 run 179개 중)
+[Step 4] SoftCLT-fs fold 7 seed 0: 학습 39 s, 전체 119 s, epoch 27 손실 97.5573 -> 87.5091, n_eff 중앙값 5.00, 군집별 e 평균 [-0.015  0.001] -> steady = 군집 1, steady 판정 비율 0.198, 오염률 0.000, 보존률 0.236
+[Step 4] SoftCLT-fs fold 7 seed 1: 학습 41 s, 전체 114 s, epoch 27 손실 104.2778 -> 88.9385, n_eff 중앙값 5.00, 군집별 e 평균 [-0.05  -0.001] -> steady = 군집 1, steady 판정 비율 0.795, 오염률 0.013, 보존률 0.932
+[Step 4] SoftCLT-fs fold 7 seed 2: 학습 36 s, 전체 112 s, epoch 27 손실 102.4925 -> 89.8143, n_eff 중앙값 5.00, 군집별 e 평균 [-0.015  0.001] -> steady = 군집 1, steady 판정 비율 0.197, 오염률 0.000, 보존률 0.235
+[Step 4] SoftCLT-fs fold 7 seed 3: 학습 42 s, 전체 116 s, epoch 27 손실 100.6909 -> 84.5684, n_eff 중앙값 5.00, 군집별 e 평균 [-0.049 -0.001] -> steady = 군집 1, steady 판정 비율 0.791, 오염률 0.008, 보존률 0.932
+[Step 4] SoftCLT-fs fold 7 seed 4: 학습 39 s, 전체 117 s, epoch 27 손실 102.4319 -> 88.7810, n_eff 중앙값 5.00, 군집별 e 평균 [-0.049 -0.001] -> steady = 군집 1, steady 판정 비율 0.792, 오염률 0.009, 보존률 0.932
+[save] loss curve -> outputs/08_speed_loo_B/05_softclt/SoftCLT-fs_loss.png / .pdf
+[save] run     -> outputs/08_speed_loo_B/05_softclt/SoftCLT-fs_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/05_softclt/SoftCLT-fs_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/05_softclt/SoftCLT-fs_summary.csv
+[save] config  -> outputs/08_speed_loo_B/05_softclt/SoftCLT-fs_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/05_softclt/SoftCLT-fs_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/05_softclt/SoftCLT-fs_heatmap_retention_rate.png / .pdf
+[done] SoftCLT-fs 평가 완료
+[Step 4] SoftCLT-ref fold 1: 정규화 거리 중앙값 0.0224, tau_inst = 5.0, n_eff 중앙값 82.06 (학습 run 179개 중)
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 1 seed 0: 학습 39 s, 전체 114 s, epoch 27 손실 14.6829 -> 13.4097, n_eff 중앙값 82.06, 군집별 e 평균 [ 0.001 -0.023] -> steady = 군집 0, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.741
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 1 seed 1: 학습 42 s, 전체 123 s, epoch 27 손실 14.4933 -> 13.4099, n_eff 중앙값 82.06, 군집별 e 평균 [ 0.001 -0.011] -> steady = 군집 0, steady 판정 비율 0.199, 오염률 0.000, 보존률 0.245
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 1 seed 2: 학습 41 s, 전체 118 s, epoch 27 손실 14.4814 -> 13.3815, n_eff 중앙값 82.06, 군집별 e 평균 [-0.011  0.001] -> steady = 군집 1, steady 판정 비율 0.200, 오염률 0.000, 보존률 0.246
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 1 seed 3: 학습 39 s, 전체 117 s, epoch 27 손실 14.3596 -> 13.2606, n_eff 중앙값 82.06, 군집별 e 평균 [-0.013 -0.001] -> steady = 군집 1, steady 판정 비율 0.385, 오염률 0.000, 보존률 0.475
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 1 seed 4: 학습 40 s, 전체 114 s, epoch 27 손실 14.1782 -> 13.4777, n_eff 중앙값 82.06, 군집별 e 평균 [-0.042  0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.931
+[Step 4] SoftCLT-ref fold 2: 정규화 거리 중앙값 0.0226, tau_inst = 5.0, n_eff 중앙값 82.04 (학습 run 179개 중)
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 2 seed 0: 학습 46 s, 전체 122 s, epoch 27 손실 14.7273 -> 13.4442, n_eff 중앙값 82.04, 군집별 e 평균 [-0.    -0.025] -> steady = 군집 0, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.701
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 2 seed 1: 학습 42 s, 전체 113 s, epoch 27 손실 14.5266 -> 13.4248, n_eff 중앙값 82.04, 군집별 e 평균 [-0.026  0.001] -> steady = 군집 1, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.701
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 2 seed 2: 학습 39 s, 전체 116 s, epoch 27 손실 14.5086 -> 13.4243, n_eff 중앙값 82.04, 군집별 e 평균 [-0.013  0.001] -> steady = 군집 1, steady 판정 비율 0.200, 오염률 0.000, 보존률 0.233
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 2 seed 3: 학습 40 s, 전체 117 s, epoch 27 손실 14.3854 -> 13.3021, n_eff 중앙값 82.04, 군집별 e 평균 [-0.043 -0.001] -> steady = 군집 1, steady 판정 비율 0.789, 오염률 0.004, 보존률 0.916
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 2 seed 4: 학습 41 s, 전체 117 s, epoch 27 손실 14.2142 -> 13.4860, n_eff 중앙값 82.04, 군집별 e 평균 [-0.046 -0.   ] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.916
+[Step 4] SoftCLT-ref fold 3: 정규화 거리 중앙값 0.0246, tau_inst = 5.0, n_eff 중앙값 81.45 (학습 run 179개 중)
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 3 seed 0: 학습 39 s, 전체 117 s, epoch 27 손실 14.6500 -> 13.3762, n_eff 중앙값 81.45, 군집별 e 평균 [ 0.001 -0.027] -> steady = 군집 0, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.678
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 3 seed 1: 학습 43 s, 전체 134 s, epoch 27 손실 14.4419 -> 13.3900, n_eff 중앙값 81.45, 군집별 e 평균 [ 0.001 -0.013] -> steady = 군집 0, steady 판정 비율 0.199, 오염률 0.000, 보존률 0.225
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 3 seed 2: 학습 39 s, 전체 112 s, epoch 27 손실 14.4253 -> 13.3378, n_eff 중앙값 81.45, 군집별 e 평균 [-0.001 -0.045] -> steady = 군집 0, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.887
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 3 seed 3: 학습 42 s, 전체 120 s, epoch 27 손실 14.3313 -> 13.2259, n_eff 중앙값 81.45, 군집별 e 평균 [-0.046 -0.001] -> steady = 군집 1, steady 판정 비율 0.788, 오염률 0.003, 보존률 0.887
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 3 seed 4: 학습 42 s, 전체 121 s, epoch 27 손실 14.1239 -> 13.4052, n_eff 중앙값 81.45, 군집별 e 평균 [-0.047 -0.   ] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.887
+[Step 4] SoftCLT-ref fold 4: 정규화 거리 중앙값 0.0243, tau_inst = 5.0, n_eff 중앙값 81.43 (학습 run 179개 중)
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 4 seed 0: 학습 40 s, 전체 117 s, epoch 27 손실 14.6435 -> 13.3682, n_eff 중앙값 81.43, 군집별 e 평균 [ 0.001 -0.028] -> steady = 군집 0, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.689
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 4 seed 1: 학습 41 s, 전체 119 s, epoch 27 손실 14.4430 -> 13.3571, n_eff 중앙값 81.43, 군집별 e 평균 [-0.017 -0.002] -> steady = 군집 1, steady 판정 비율 0.385, 오염률 0.000, 보존률 0.442
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 4 seed 2: 학습 46 s, 전체 116 s, epoch 27 손실 14.4213 -> 13.3358, n_eff 중앙값 81.43, 군집별 e 평균 [-0.001 -0.047] -> steady = 군집 0, steady 판정 비율 0.784, 오염률 0.004, 보존률 0.896
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 4 seed 3: 학습 41 s, 전체 124 s, epoch 27 손실 14.3237 -> 13.2202, n_eff 중앙값 81.43, 군집별 e 평균 [-0.017 -0.001] -> steady = 군집 1, steady 판정 비율 0.385, 오염률 0.000, 보존률 0.442
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 4 seed 4: 학습 41 s, 전체 115 s, epoch 27 손실 14.1326 -> 13.4058, n_eff 중앙값 81.43, 군집별 e 평균 [-0.049 -0.   ] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.004, 보존률 0.896
+[Step 4] SoftCLT-ref fold 5: 정규화 거리 중앙값 0.0206, tau_inst = 5.0, n_eff 중앙값 82.81 (학습 run 179개 중)
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 5 seed 0: 학습 39 s, 전체 123 s, epoch 27 손실 14.2101 -> 13.5539, n_eff 중앙값 82.81, 군집별 e 평균 [-0.    -0.027] -> steady = 군집 0, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.688
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 5 seed 1: 학습 41 s, 전체 118 s, epoch 27 손실 14.5368 -> 13.4803, n_eff 중앙값 82.81, 군집별 e 평균 [-0.028  0.001] -> steady = 군집 1, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.689
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 5 seed 2: 학습 39 s, 전체 114 s, epoch 27 손실 14.6312 -> 13.5274, n_eff 중앙값 82.81, 군집별 e 평균 [-0.001 -0.046] -> steady = 군집 0, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.896
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 5 seed 3: 학습 41 s, 전체 121 s, epoch 27 손실 14.4923 -> 13.3898, n_eff 중앙값 82.81, 군집별 e 평균 [-0.027 -0.   ] -> steady = 군집 1, steady 판정 비율 0.604, 오염률 0.005, 보존률 0.689
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 5 seed 4: 학습 44 s, 전체 122 s, epoch 27 손실 14.3130 -> 13.5613, n_eff 중앙값 82.81, 군집별 e 평균 [-0.046 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.896
+[Step 4] SoftCLT-ref fold 6: 정규화 거리 중앙값 0.0222, tau_inst = 5.0, n_eff 중앙값 82.04 (학습 run 179개 중)
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 6 seed 0: 학습 43 s, 전체 122 s, epoch 27 손실 14.0673 -> 13.4139, n_eff 중앙값 82.04, 군집별 e 평균 [-0.001 -0.049] -> steady = 군집 0, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.896
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 6 seed 1: 학습 42 s, 전체 118 s, epoch 27 손실 14.4157 -> 13.3467, n_eff 중앙값 82.04, 군집별 e 평균 [-0.029  0.001] -> steady = 군집 1, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.685
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 6 seed 2: 학습 40 s, 전체 123 s, epoch 27 손실 14.5721 -> 13.3909, n_eff 중앙값 82.04, 군집별 e 평균 [-0.014  0.001] -> steady = 군집 1, steady 판정 비율 0.200, 오염률 0.000, 보존률 0.228
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 6 seed 3: 학습 42 s, 전체 114 s, epoch 27 손실 15.3129 -> 13.2468, n_eff 중앙값 82.04, 군집별 e 평균 [-0.029  0.001] -> steady = 군집 1, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.685
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 6 seed 4: 학습 40 s, 전체 120 s, epoch 27 손실 14.1718 -> 13.5124, n_eff 중앙값 82.04, 군집별 e 평균 [-0.051 -0.   ] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.896
+[Step 4] SoftCLT-ref fold 7: 정규화 거리 중앙값 0.0267, tau_inst = 5.0, n_eff 중앙값 82.26 (학습 run 179개 중)
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 7 seed 0: 학습 39 s, 전체 112 s, epoch 27 손실 14.2750 -> 13.4923, n_eff 중앙값 82.26, 군집별 e 평균 [-0.001 -0.05 ] -> steady = 군집 0, steady 판정 비율 0.786, 오염률 0.002, 보존률 0.932
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 7 seed 1: 학습 40 s, 전체 120 s, epoch 27 손실 14.6315 -> 13.5116, n_eff 중앙값 82.26, 군집별 e 평균 [-0.05  -0.001] -> steady = 군집 1, steady 판정 비율 0.785, 오염률 0.001, 보존률 0.931
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 7 seed 2: 학습 42 s, 전체 132 s, epoch 27 손실 14.4034 -> 13.5660, n_eff 중앙값 82.26, 군집별 e 평균 [-0.001 -0.05 ] -> steady = 군집 0, steady 판정 비율 0.787, 오염률 0.004, 보존률 0.932
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 7 seed 3: 학습 47 s, 전체 125 s, epoch 27 손실 15.4574 -> 13.4165, n_eff 중앙값 82.26, 군집별 e 평균 [-0.019 -0.   ] -> steady = 군집 1, steady 판정 비율 0.384, 오염률 0.000, 보존률 0.458
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\models\timelags.py:17: RuntimeWarning: overflow encountered in exp
+  matrix = 2 / (1 +np.exp(dist*sigma))
+[Step 4] SoftCLT-ref fold 7 seed 4: 학습 42 s, 전체 124 s, epoch 27 손실 14.3449 -> 13.5666, n_eff 중앙값 82.26, 군집별 e 평균 [-0.049 -0.001] -> steady = 군집 1, steady 판정 비율 0.791, 오염률 0.008, 보존률 0.932
+[save] loss curve -> outputs/08_speed_loo_B/05_softclt/SoftCLT-ref_loss.png / .pdf
+[save] run     -> outputs/08_speed_loo_B/05_softclt/SoftCLT-ref_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/05_softclt/SoftCLT-ref_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/05_softclt/SoftCLT-ref_summary.csv
+[save] config  -> outputs/08_speed_loo_B/05_softclt/SoftCLT-ref_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/05_softclt/SoftCLT-ref_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/05_softclt/SoftCLT-ref_heatmap_retention_rate.png / .pdf
+[done] SoftCLT-ref 평가 완료
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\utils_distance_matrix.py:152: RuntimeWarning: overflow encountered in exp
+  return ((2*alpha) / (1 + np.exp(-tau*x))) + (1-alpha)*np.eye(x.shape[0])
+[Step 4] SoftCLT-fs-rule1b fold 1: 정규화 거리 중앙값 0.0224, tau_inst = 211.0, n_eff 중앙값 5.00 (학습 run 179개 중)
+[Step 4] SoftCLT-fs-rule1b fold 1 seed 0: 학습 42 s, 전체 120 s, epoch 27 손실 194.7310 -> 177.9206, n_eff 중앙값 5.00, 군집별 e 평균 [ 0.    -0.022] -> steady = 군집 0, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.741
+[Step 4] SoftCLT-fs-rule1b fold 1 seed 1: 학습 41 s, 전체 126 s, epoch 27 손실 202.4710 -> 185.2172, n_eff 중앙값 5.00, 군집별 e 평균 [-0.038 -0.   ] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.931
+[Step 4] SoftCLT-fs-rule1b fold 1 seed 2: 학습 42 s, 전체 126 s, epoch 27 손실 209.9996 -> 185.3050, n_eff 중앙값 5.00, 군집별 e 평균 [-0.011  0.001] -> steady = 군집 1, steady 판정 비율 0.200, 오염률 0.000, 보존률 0.247
+[Step 4] SoftCLT-fs-rule1b fold 1 seed 3: 학습 44 s, 전체 129 s, epoch 27 손실 204.3655 -> 173.4480, n_eff 중앙값 5.00, 군집별 e 평균 [-0.039 -0.   ] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.931
+[Step 4] SoftCLT-fs-rule1b fold 1 seed 4: 학습 40 s, 전체 129 s, epoch 27 손실 204.1165 -> 184.6322, n_eff 중앙값 5.00, 군집별 e 평균 [-0.039 -0.   ] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.001, 보존률 0.931
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\utils_distance_matrix.py:152: RuntimeWarning: overflow encountered in exp
+  return ((2*alpha) / (1 + np.exp(-tau*x))) + (1-alpha)*np.eye(x.shape[0])
+[Step 4] SoftCLT-fs-rule1b fold 2: 정규화 거리 중앙값 0.0226, tau_inst = 225.0, n_eff 중앙값 5.00 (학습 run 179개 중)
+[Step 4] SoftCLT-fs-rule1b fold 2 seed 0: 학습 39 s, 전체 124 s, epoch 27 손실 194.7196 -> 177.9601, n_eff 중앙값 5.00, 군집별 e 평균 [-0.   -0.02] -> steady = 군집 0, steady 판정 비율 0.500, 오염률 0.000, 보존률 0.584
+[Step 4] SoftCLT-fs-rule1b fold 2 seed 1: 학습 42 s, 전체 128 s, epoch 27 손실 202.4419 -> 185.2471, n_eff 중앙값 5.00, 군집별 e 평균 [-0.02   0.001] -> steady = 군집 1, steady 판정 비율 0.486, 오염률 0.000, 보존률 0.567
+[Step 4] SoftCLT-fs-rule1b fold 2 seed 2: 학습 38 s, 전체 124 s, epoch 27 손실 209.9889 -> 185.3716, n_eff 중앙값 5.00, 군집별 e 평균 [-0.013  0.001] -> steady = 군집 1, steady 판정 비율 0.200, 오염률 0.000, 보존률 0.234
+[Step 4] SoftCLT-fs-rule1b fold 2 seed 3: 학습 45 s, 전체 111 s, epoch 27 손실 204.4182 -> 173.4588, n_eff 중앙값 5.00, 군집별 e 평균 [-0.042 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.916
+[Step 4] SoftCLT-fs-rule1b fold 2 seed 4: 학습 47 s, 전체 134 s, epoch 27 손실 204.1300 -> 184.6517, n_eff 중앙값 5.00, 군집별 e 평균 [-0.042 -0.001] -> steady = 군집 1, steady 판정 비율 0.785, 오염률 0.000, 보존률 0.916
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\utils_distance_matrix.py:152: RuntimeWarning: overflow encountered in exp
+  return ((2*alpha) / (1 + np.exp(-tau*x))) + (1-alpha)*np.eye(x.shape[0])
+[Step 4] SoftCLT-fs-rule1b fold 3: 정규화 거리 중앙값 0.0246, tau_inst = 195.3, n_eff 중앙값 5.01 (학습 run 179개 중)
+[Step 4] SoftCLT-fs-rule1b fold 3 seed 0: 학습 36 s, 전체 118 s, epoch 27 손실 194.6734 -> 177.9769, n_eff 중앙값 5.01, 군집별 e 평균 [-0.    -0.021] -> steady = 군집 0, steady 판정 비율 0.500, 오염률 0.000, 보존률 0.565
+[Step 4] SoftCLT-fs-rule1b fold 3 seed 1: 학습 37 s, 전체 121 s, epoch 27 손실 202.4072 -> 185.2466, n_eff 중앙값 5.01, 군집별 e 평균 [-0.043 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.887
+[Step 4] SoftCLT-fs-rule1b fold 3 seed 2: 학습 37 s, 전체 121 s, epoch 27 손실 209.9700 -> 185.3400, n_eff 중앙값 5.01, 군집별 e 평균 [-0.013  0.001] -> steady = 군집 1, steady 판정 비율 0.200, 오염률 0.000, 보존률 0.226
+[Step 4] SoftCLT-fs-rule1b fold 3 seed 3: 학습 37 s, 전체 125 s, epoch 27 손실 204.4382 -> 173.4591, n_eff 중앙값 5.01, 군집별 e 평균 [-0.026  0.   ] -> steady = 군집 1, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.678
+[Step 4] SoftCLT-fs-rule1b fold 3 seed 4: 학습 36 s, 전체 120 s, epoch 27 손실 204.1144 -> 184.6248, n_eff 중앙값 5.01, 군집별 e 평균 [-0.044 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.887
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\utils_distance_matrix.py:152: RuntimeWarning: overflow encountered in exp
+  return ((2*alpha) / (1 + np.exp(-tau*x))) + (1-alpha)*np.eye(x.shape[0])
+[Step 4] SoftCLT-fs-rule1b fold 4: 정규화 거리 중앙값 0.0243, tau_inst = 194.4, n_eff 중앙값 4.99 (학습 run 179개 중)
+[Step 4] SoftCLT-fs-rule1b fold 4 seed 0: 학습 36 s, 전체 119 s, epoch 27 손실 194.7043 -> 177.9806, n_eff 중앙값 4.99, 군집별 e 평균 [-0.    -0.022] -> steady = 군집 0, steady 판정 비율 0.500, 오염률 0.000, 보존률 0.574
+[Step 4] SoftCLT-fs-rule1b fold 4 seed 1: 학습 36 s, 전체 125 s, epoch 27 손실 202.4176 -> 185.2694, n_eff 중앙값 4.99, 군집별 e 평균 [-0.045 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.004, 보존률 0.896
+[Step 4] SoftCLT-fs-rule1b fold 4 seed 2: 학습 36 s, 전체 118 s, epoch 27 손실 209.9868 -> 185.3338, n_eff 중앙값 4.99, 군집별 e 평균 [-0.014  0.   ] -> steady = 군집 1, steady 판정 비율 0.200, 오염률 0.000, 보존률 0.230
+[Step 4] SoftCLT-fs-rule1b fold 4 seed 3: 학습 36 s, 전체 121 s, epoch 27 손실 204.4522 -> 173.4672, n_eff 중앙값 4.99, 군집별 e 평균 [-0.027 -0.   ] -> steady = 군집 1, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.689
+[Step 4] SoftCLT-fs-rule1b fold 4 seed 4: 학습 35 s, 전체 123 s, epoch 27 손실 204.1333 -> 184.6212, n_eff 중앙값 4.99, 군집별 e 평균 [-0.046 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.004, 보존률 0.896
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\utils_distance_matrix.py:152: RuntimeWarning: overflow encountered in exp
+  return ((2*alpha) / (1 + np.exp(-tau*x))) + (1-alpha)*np.eye(x.shape[0])
+[Step 4] SoftCLT-fs-rule1b fold 5: 정규화 거리 중앙값 0.0206, tau_inst = 218.6, n_eff 중앙값 5.00 (학습 run 179개 중)
+[Step 4] SoftCLT-fs-rule1b fold 5 seed 0: 학습 36 s, 전체 114 s, epoch 27 손실 193.5184 -> 177.8346, n_eff 중앙값 5.00, 군집별 e 평균 [-0.    -0.017] -> steady = 군집 0, steady 판정 비율 0.385, 오염률 0.000, 보존률 0.442
+[Step 4] SoftCLT-fs-rule1b fold 5 seed 1: 학습 37 s, 전체 117 s, epoch 27 손실 202.4300 -> 185.1443, n_eff 중앙값 5.00, 군집별 e 평균 [-0.021  0.001] -> steady = 군집 1, steady 판정 비율 0.492, 오염률 0.000, 보존률 0.565
+[Step 4] SoftCLT-fs-rule1b fold 5 seed 2: 학습 36 s, 전체 117 s, epoch 27 손실 210.0645 -> 185.2738, n_eff 중앙값 5.00, 군집별 e 평균 [-0.014  0.001] -> steady = 군집 1, steady 판정 비율 0.198, 오염률 0.000, 보존률 0.228
+[Step 4] SoftCLT-fs-rule1b fold 5 seed 3: 학습 49 s, 전체 121 s, epoch 27 손실 204.4403 -> 173.5316, n_eff 중앙값 5.00, 군집별 e 평균 [-0.047 -0.001] -> steady = 군집 1, steady 판정 비율 0.787, 오염률 0.004, 보존률 0.896
+[Step 4] SoftCLT-fs-rule1b fold 5 seed 4: 학습 47 s, 전체 122 s, epoch 27 손실 204.1502 -> 184.6202, n_eff 중앙값 5.00, 군집별 e 평균 [-0.049 -0.   ] -> steady = 군집 1, steady 판정 비율 0.785, 오염률 0.003, 보존률 0.896
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\utils_distance_matrix.py:152: RuntimeWarning: overflow encountered in exp
+  return ((2*alpha) / (1 + np.exp(-tau*x))) + (1-alpha)*np.eye(x.shape[0])
+[Step 4] SoftCLT-fs-rule1b fold 6: 정규화 거리 중앙값 0.0222, tau_inst = 212.8, n_eff 중앙값 5.00 (학습 run 179개 중)
+[Step 4] SoftCLT-fs-rule1b fold 6 seed 0: 학습 44 s, 전체 117 s, epoch 27 손실 193.5018 -> 177.8783, n_eff 중앙값 5.00, 군집별 e 평균 [-0.    -0.022] -> steady = 군집 0, steady 판정 비율 0.500, 오염률 0.000, 보존률 0.571
+[Step 4] SoftCLT-fs-rule1b fold 6 seed 1: 학습 52 s, 전체 124 s, epoch 27 손실 202.4290 -> 185.3800, n_eff 중앙값 5.00, 군집별 e 평균 [-0.022  0.   ] -> steady = 군집 1, steady 판정 비율 0.486, 오염률 0.000, 보존률 0.555
+[Step 4] SoftCLT-fs-rule1b fold 6 seed 2: 학습 47 s, 전체 122 s, epoch 27 손실 210.7962 -> 185.2553, n_eff 중앙값 5.00, 군집별 e 평균 [-0.014  0.001] -> steady = 군집 1, steady 판정 비율 0.200, 오염률 0.000, 보존률 0.229
+[Step 4] SoftCLT-fs-rule1b fold 6 seed 3: 학습 49 s, 전체 127 s, epoch 27 손실 205.5517 -> 173.5227, n_eff 중앙값 5.00, 군집별 e 평균 [-0.028  0.   ] -> steady = 군집 1, steady 판정 비율 0.600, 오염률 0.000, 보존률 0.685
+[Step 4] SoftCLT-fs-rule1b fold 6 seed 4: 학습 45 s, 전체 117 s, epoch 27 손실 204.1467 -> 184.6103, n_eff 중앙값 5.00, 군집별 e 평균 [-0.048 -0.001] -> steady = 군집 1, steady 판정 비율 0.784, 오염률 0.000, 보존률 0.896
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\softclt\softclt_ts2vec\utils_distance_matrix.py:152: RuntimeWarning: overflow encountered in exp
+  return ((2*alpha) / (1 + np.exp(-tau*x))) + (1-alpha)*np.eye(x.shape[0])
+[Step 4] SoftCLT-fs-rule1b fold 7: 정규화 거리 중앙값 0.0267, tau_inst = 173.1, n_eff 중앙값 5.00 (학습 run 179개 중)
+[Step 4] SoftCLT-fs-rule1b fold 7 seed 0: 학습 49 s, 전체 124 s, epoch 27 손실 193.5197 -> 177.8874, n_eff 중앙값 5.00, 군집별 e 평균 [-0.002 -0.025] -> steady = 군집 0, steady 판정 비율 0.582, 오염률 0.000, 보존률 0.690
+[Step 4] SoftCLT-fs-rule1b fold 7 seed 1: 학습 38 s, 전체 120 s, epoch 27 손실 202.4361 -> 185.9221, n_eff 중앙값 5.00, 군집별 e 평균 [-0.022 -0.   ] -> steady = 군집 1, steady 판정 비율 0.484, 오염률 0.000, 보존률 0.578
+[Step 4] SoftCLT-fs-rule1b fold 7 seed 2: 학습 39 s, 전체 120 s, epoch 27 손실 208.9315 -> 185.0326, n_eff 중앙값 5.00, 군집별 e 평균 [-0.015  0.001] -> steady = 군집 1, steady 판정 비율 0.197, 오염률 0.000, 보존률 0.235
+[Step 4] SoftCLT-fs-rule1b fold 7 seed 3: 학습 43 s, 전체 121 s, epoch 27 손실 205.5697 -> 173.5328, n_eff 중앙값 5.00, 군집별 e 평균 [-0.049 -0.001] -> steady = 군집 1, steady 판정 비율 0.792, 오염률 0.008, 보존률 0.932
+[Step 4] SoftCLT-fs-rule1b fold 7 seed 4: 학습 41 s, 전체 128 s, epoch 27 손실 204.1215 -> 184.5241, n_eff 중앙값 5.00, 군집별 e 평균 [-0.049 -0.001] -> steady = 군집 1, steady 판정 비율 0.792, 오염률 0.009, 보존률 0.932
+[save] loss curve -> outputs/08_speed_loo_B/05_softclt/SoftCLT-fs-rule1b_loss.png / .pdf
+[save] run     -> outputs/08_speed_loo_B/05_softclt/SoftCLT-fs-rule1b_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/05_softclt/SoftCLT-fs-rule1b_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/05_softclt/SoftCLT-fs-rule1b_summary.csv
+[save] config  -> outputs/08_speed_loo_B/05_softclt/SoftCLT-fs-rule1b_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/05_softclt/SoftCLT-fs-rule1b_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/05_softclt/SoftCLT-fs-rule1b_heatmap_retention_rate.png / .pdf
+[done] SoftCLT-fs-rule1b 평가 완료
+[done] SoftCLT 전체 완료
