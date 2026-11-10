@@ -1,0 +1,104 @@
+[Step 1] runs = 210, 입력 (210, 1300, 1) (0.2 s)
+[Step 3] fold 1 seed 0: encode 20 s, trend 보존률 0.980, season 보존률 0.978
+[Step 3] fold 1 seed 1: encode 14 s, trend 보존률 0.980, season 보존률 0.978
+[Step 3] fold 1 seed 2: encode 14 s, trend 보존률 0.980, season 보존률 0.978
+[Step 3] fold 1 seed 3: encode 14 s, trend 보존률 0.980, season 보존률 0.978
+[Step 3] fold 1 seed 4: encode 14 s, trend 보존률 0.980, season 보존률 0.978
+[Step 3] fold 2 seed 0: encode 15 s, trend 보존률 0.996, season 보존률 0.995
+[Step 3] fold 2 seed 1: encode 14 s, trend 보존률 0.996, season 보존률 0.995
+[Step 3] fold 2 seed 2: encode 14 s, trend 보존률 0.996, season 보존률 0.995
+[Step 3] fold 2 seed 3: encode 14 s, trend 보존률 0.996, season 보존률 0.995
+[Step 3] fold 2 seed 4: encode 14 s, trend 보존률 0.996, season 보존률 0.995
+[Step 3] fold 3 seed 0: encode 15 s, trend 보존률 0.997, season 보존률 0.994
+[Step 3] fold 3 seed 1: encode 14 s, trend 보존률 0.998, season 보존률 0.994
+[Step 3] fold 3 seed 2: encode 14 s, trend 보존률 0.998, season 보존률 0.994
+[Step 3] fold 3 seed 3: encode 14 s, trend 보존률 0.998, season 보존률 0.994
+[Step 3] fold 3 seed 4: encode 14 s, trend 보존률 0.998, season 보존률 0.994
+[Step 3] fold 4 seed 0: encode 15 s, trend 보존률 0.992, season 보존률 0.989
+[Step 3] fold 4 seed 1: encode 14 s, trend 보존률 0.995, season 보존률 0.989
+[Step 3] fold 4 seed 2: encode 14 s, trend 보존률 0.994, season 보존률 0.989
+[Step 3] fold 4 seed 3: encode 14 s, trend 보존률 0.995, season 보존률 0.989
+[Step 3] fold 4 seed 4: encode 14 s, trend 보존률 0.994, season 보존률 0.989
+[Step 3] fold 5 seed 0: encode 14 s, trend 보존률 0.991, season 보존률 0.987
+[Step 3] fold 5 seed 1: encode 14 s, trend 보존률 0.991, season 보존률 0.985
+[Step 3] fold 5 seed 2: encode 14 s, trend 보존률 0.991, season 보존률 0.986
+[Step 3] fold 5 seed 3: encode 14 s, trend 보존률 0.991, season 보존률 0.984
+[Step 3] fold 5 seed 4: encode 14 s, trend 보존률 0.991, season 보존률 0.986
+[Step 3] fold 6 seed 0: encode 14 s, trend 보존률 0.994, season 보존률 0.990
+[Step 3] fold 6 seed 1: encode 14 s, trend 보존률 0.995, season 보존률 0.989
+[Step 3] fold 6 seed 2: encode 14 s, trend 보존률 0.995, season 보존률 0.989
+[Step 3] fold 6 seed 3: encode 14 s, trend 보존률 0.995, season 보존률 0.988
+[Step 3] fold 6 seed 4: encode 14 s, trend 보존률 0.995, season 보존률 0.989
+[Step 3] fold 7 seed 0: encode 14 s, trend 보존률 0.997, season 보존률 0.995
+[Step 3] fold 7 seed 1: encode 14 s, trend 보존률 1.000, season 보존률 0.994
+[Step 3] fold 7 seed 2: encode 14 s, trend 보존률 0.999, season 보존률 0.995
+[Step 3] fold 7 seed 3: encode 14 s, trend 보존률 0.999, season 보존률 0.993
+[Step 3] fold 7 seed 4: encode 14 s, trend 보존률 1.000, season 보존률 0.995
+[save] run     -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-trend_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-trend_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-trend_summary.csv
+[save] config  -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-trend_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-trend_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-trend_heatmap_retention_rate.png / .pdf
+[done] CoST-W144-trend
+[save] run     -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-season_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-season_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-season_summary.csv
+[save] config  -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-season_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-season_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-season_heatmap_retention_rate.png / .pdf
+[done] CoST-W144-season
+[Step 4] shim 적용: PretrainDataset.transform = jitter only (scale·shift 제거)
+[Step 4] fold 1 seed 0: 학습 17 s, 손실 0.036 -> 3.223, 오염률 0.002, 보존률 0.978
+[Step 4] fold 1 seed 1: 학습 14 s, 손실 0.048 -> 3.521, 오염률 0.007, 보존률 0.978
+[Step 4] fold 1 seed 2: 학습 14 s, 손실 0.038 -> 3.186, 오염률 0.002, 보존률 0.978
+[Step 4] fold 1 seed 3: 학습 14 s, 손실 0.052 -> 3.041, 오염률 0.001, 보존률 0.977
+[Step 4] fold 1 seed 4: 학습 14 s, 손실 0.055 -> 3.152, 오염률 0.018, 보존률 0.978
+[Step 4] fold 2 seed 0: 학습 14 s, 손실 0.035 -> 3.214, 오염률 0.001, 보존률 0.994
+[Step 4] fold 2 seed 1: 학습 14 s, 손실 0.048 -> 3.521, 오염률 0.003, 보존률 0.995
+[Step 4] fold 2 seed 2: 학습 14 s, 손실 0.038 -> 3.194, 오염률 0.001, 보존률 0.995
+[Step 4] fold 2 seed 3: 학습 14 s, 손실 0.052 -> 3.041, 오염률 0.000, 보존률 0.994
+[Step 4] fold 2 seed 4: 학습 14 s, 손실 0.055 -> 3.164, 오염률 0.005, 보존률 0.995
+[Step 4] fold 3 seed 0: 학습 14 s, 손실 0.036 -> 3.207, 오염률 0.000, 보존률 0.992
+[Step 4] fold 3 seed 1: 학습 14 s, 손실 0.048 -> 3.519, 오염률 0.000, 보존률 0.994
+[Step 4] fold 3 seed 2: 학습 14 s, 손실 0.038 -> 3.189, 오염률 0.000, 보존률 0.994
+[Step 4] fold 3 seed 3: 학습 14 s, 손실 0.052 -> 3.039, 오염률 0.000, 보존률 0.994
+[Step 4] fold 3 seed 4: 학습 14 s, 손실 0.055 -> 3.155, 오염률 0.000, 보존률 0.994
+[Step 4] fold 4 seed 0: 학습 15 s, 손실 0.036 -> 3.208, 오염률 0.005, 보존률 0.986
+[Step 4] fold 4 seed 1: 학습 14 s, 손실 0.048 -> 3.528, 오염률 0.005, 보존률 0.989
+[Step 4] fold 4 seed 2: 학습 14 s, 손실 0.038 -> 3.192, 오염률 0.004, 보존률 0.989
+[Step 4] fold 4 seed 3: 학습 15 s, 손실 0.052 -> 3.040, 오염률 0.004, 보존률 0.989
+[Step 4] fold 4 seed 4: 학습 16 s, 손실 0.055 -> 3.153, 오염률 0.005, 보존률 0.989
+[Step 4] fold 5 seed 0: 학습 16 s, 손실 0.036 -> 3.217, 오염률 0.000, 보존률 0.986
+[Step 4] fold 5 seed 1: 학습 14 s, 손실 0.048 -> 3.536, 오염률 0.000, 보존률 0.988
+[Step 4] fold 5 seed 2: 학습 14 s, 손실 0.038 -> 3.200, 오염률 0.000, 보존률 0.987
+[Step 4] fold 5 seed 3: 학습 14 s, 손실 0.052 -> 3.046, 오염률 0.000, 보존률 0.987
+[Step 4] fold 5 seed 4: 학습 14 s, 손실 0.055 -> 3.151, 오염률 0.000, 보존률 0.988
+[Step 4] fold 6 seed 0: 학습 14 s, 손실 0.036 -> 3.220, 오염률 0.000, 보존률 0.991
+[Step 4] fold 6 seed 1: 학습 14 s, 손실 0.048 -> 3.531, 오염률 0.000, 보존률 0.993
+[Step 4] fold 6 seed 2: 학습 14 s, 손실 0.039 -> 3.197, 오염률 0.000, 보존률 0.992
+[Step 4] fold 6 seed 3: 학습 14 s, 손실 0.052 -> 3.041, 오염률 0.000, 보존률 0.992
+[Step 4] fold 6 seed 4: 학습 14 s, 손실 0.054 -> 3.142, 오염률 0.000, 보존률 0.993
+[Step 4] fold 7 seed 0: 학습 14 s, 손실 0.035 -> 3.218, 오염률 0.003, 보존률 0.995
+[Step 4] fold 7 seed 1: 학습 14 s, 손실 0.047 -> 3.539, 오염률 0.005, 보존률 0.997
+[Step 4] fold 7 seed 2: 학습 15 s, 손실 0.039 -> 3.188, 오염률 0.004, 보존률 0.996
+[Step 4] fold 7 seed 3: 학습 15 s, 손실 0.053 -> 3.046, 오염률 0.003, 보존률 0.995
+[Step 4] fold 7 seed 4: 학습 15 s, 손실 0.054 -> 3.153, 오염률 0.005, 보존률 0.997
+[save] loss curve -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-noscaleshift_loss.png / .pdf
+[save] run     -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-noscaleshift_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-noscaleshift_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-noscaleshift_summary.csv
+[save] config  -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-noscaleshift_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-noscaleshift_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/06_cost_ablation (ablation)/CoST-W144-noscaleshift_heatmap_retention_rate.png / .pdf
+[done] CoST-W144-noscaleshift
+[save] outputs/08_speed_loo_B/06_cost_ablation (ablation)/ablation_metrics.png / .pdf
+[save] outputs/08_speed_loo_B/06_cost_ablation (ablation)/ablation_entry_error.png / .pdf
+
+                                    method  Precision (st)  Recall (st)  F1 (st)  Precision (ns)  Recall (ns)  F1 (ns)  AUROC  AUPRC (ns)  contamination  entry_bias  entry_mae
+label                                                                                                                                                                          
+Full (baseline)                  CoST-W144           0.994        0.991    0.992           0.897        0.942    0.918  0.966       0.853          0.006      -3.215      5.754
+Trend only                 CoST-W144-trend           0.993        0.993    0.993           0.925        0.932    0.927  0.963       0.872          0.007      -4.435      6.293
+Season only               CoST-W144-season           0.994        0.989    0.992           0.885        0.941    0.911  0.965       0.842          0.006      -2.768      5.619
+No scale/shift aug  CoST-W144-noscaleshift           0.998        0.990    0.994           0.897        0.976    0.934  0.983       0.878          0.002      -2.315      5.015
+[done] CoST ablation 완료
