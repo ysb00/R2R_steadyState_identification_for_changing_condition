@@ -98,6 +98,11 @@ METHODS = [
     ('SoftCLT-fs-rule1b',   '05_softclt',  'softclt'),     # 320
     ('TS-TCC',              '07_tstcc',    'tstcc'),       # 2,560
     ('SimMTM',              '08_simmtm',   'simmtm'),      # 1,024
+    # ★ Proposed (final v1) — 2026-11-11 추가 (연구자 결정: 비교군 8종 + final v1 1종).
+    #   체크포인트가 있는 분할에서만 그려진다 — 없으면 Step 2 의 try/except 가 FAILED 로 넘긴다.
+    #   현재 있는 곳: B (`outputs/08_speed_loo_B/…`). A 는 2026-10-29 에 체크포인트를 지워
+    #   재학습이 필요하고(hyperparameters.md §13.10 "추후 할일 (1)"), C 에는 제안방법이 없다.
+    ('CoST-dual-T144-S144-frz', '12_proposed_cost_dual_trunk (final v1)', 'dual'),   # 320
 ]
 
 # =============================================================================
@@ -247,6 +252,106 @@ def build(kind, method, stage):
             X = causal_windows(e, pos, WINDOW)[:, :, None]
             zs.append(m.encode(X, mode='forecasting', casual=True,
                                sliding_length=1, sliding_padding=WINDOW - 1,
+                               batch_size=ENCODE_BATCH)[:, -1, :])
+        return np.concatenate(zs).astype(np.float32)
+
+    if kind == 'dual':                                      # 이원 trunk, 이동창, 창 마지막 시점만 출력
+        # 역할 : `code/04_proposed/04_cost_dual_trunk.py` 의 **추론 경로만** 옮겨 온 것이다.
+        #        위 'cost' 분기로 열리지 않는 이유 2가지 —
+        #          ① 체크포인트가 `{'net':…, 'net_s':…}` 딕셔너리다 (원본 CoST.load 는 state_dict 를 받는다)
+        #          ② 입력이 (B, T, 2) 다. 2번째 채널의 **속도 설정값**이 차수 sfd 가 잘라 쓸 창
+        #             길이를 정한다 (OrderBandedFourierLayer). 속도는 라벨이 아니라 설정값이다.
+        #        학습 쪽 shim(DualCoSTModel · JitterCh0Dataset)은 추론에 관여하지 않아 옮기지 않았다.
+        # 설정값은 final v1 실행(`04_cost_dual_trunk.py … nrot=1 freeze`)과 **같은 값이어야 한다** —
+        #        여기서 고르는 값이 아니다. 어긋나면 구조가 달라져 load_state_dict 가 실패한다.
+        isolate('CoST')
+        from cost import CoST
+        from models.encoder import BandedFourierLayer, CoSTEncoder
+        from einops import rearrange
+        from torch import nn
+        import torch.nn.functional as Fnn
+
+        N_ROT, CIRC_MM, V_MIN, V_MAX = 1, 783.5, 50, 200    # final v1 = N_rot 1 회전, 둘레 783.5 mm
+        W_T = 144                                           # trend 창 (= 위 WINDOW, baseline 과 같다)
+        W_S = int(np.ceil(N_ROT * (1.0 / ev.DT) * CIRC_MM / V_MIN))    # seasonal 창 144 (V50 의 1회전)
+        L_ORD = int(N_ROT * round((1.0 / ev.DT) * CIRC_MM / V_MAX))    # 차수영역 길이 36 (V200 의 1회전)
+        KER, ALPHA, REPR, HID = [1, 2, 4, 8, 16, 32, 64, 128], 0.0005, 320, 64
+
+        def order_window(v):
+            # 역할 : 속도 v 에서 N_ROT 회전을 담는 창 길이 (샘플). V=50 -> 144, V=200 -> 36
+            return int(np.ceil(N_ROT * (1.0 / ev.DT) * CIRC_MM / v))
+
+        class _OrderBFL(BandedFourierLayer):
+            # 역할 : trunk 출력의 뒤쪽 N_ROT 회전분을 고정 길이 L_ORD 로 재표본화한 뒤 원본 연산을 한다.
+            #        bin k 가 '차수 k/N_ROT' 라는 속도 무관 물리량에 묶인다. 창의 뒤쪽만 쓰므로 인과적이다.
+            def forward(self, input):                       # input: B x T x in_channels
+                v = self.speeds                             # (B,) — _OrderEnc 가 넣어 준다
+                b, t, _ = input.shape
+                out = input.new_zeros(b, self.length, self.out_channels)
+                for s in torch.unique(v):
+                    msk = v == s
+                    w = min(order_window(float(s)), t)
+                    seg = input[msk, t - w:]
+                    seg = Fnn.interpolate(seg.transpose(1, 2), size=self.length,
+                                          mode='linear', align_corners=True).transpose(1, 2)
+                    out[msk] = super().forward(seg)
+                return out
+
+        class _OrderEnc(CoSTEncoder):
+            # 역할 : seasonal trunk. 속도 채널을 떼어 sfd 에 넘기고 채널 0(e)만 원본 forward 에 준다.
+            def __init__(self, *a, l_ord, **kw):
+                super().__init__(*a, **kw)
+                self.sfd = nn.ModuleList([_OrderBFL(self.output_dims, self.component_dims,
+                                                    0, 1, length=l_ord)])
+
+            def forward(self, x, **kw):
+                self.sfd[0].speeds = torch.nan_to_num(x[:, :, 1], nan=0.0).amax(dim=1)
+                return super().forward(x[:, :, :1].contiguous(), **kw)
+
+        class _Ch0Enc(CoSTEncoder):
+            # 역할 : trend trunk. 속도 채널만 떼어 내므로 baseline 과 같은 입력을 본다.
+            def forward(self, x, tcn_output=False, mask='all_true'):
+                return super().forward(x[..., :1].contiguous(), tcn_output, mask)
+
+        class _DualCoST(CoST):
+            # 역할 : trend 는 창의 뒤쪽 W_T, seasonal 은 창 전체(W_S)를 보고 두 표현을 잇는다.
+            def _eval_with_pooling(self, x, mask=None, slicing=None, encoding_window=None):
+                x = x.to(self.device, non_blocking=True)
+                out_t, _ = self.net(x[:, -W_T:])
+                _, out_s = self.net_s(x)
+                out = torch.cat([out_t[:, -1], out_s[:, -1]], dim=-1)
+                return rearrange(out.cpu(), 'b d -> b () d')
+
+            def encode(self, *a, **kw):
+                # 원본 encode 는 self.net 만 eval 로 돌린다. CoSTEncoder 가 season 출력에
+                # Dropout(0.1) 을 걸기 때문에 seasonal trunk 도 eval 이어야 결과가 결정론적이다.
+                org = self.net_s.training
+                self.net_s.eval()
+                try:
+                    return super().encode(*a, **kw)
+                finally:
+                    self.net_s.train(org)
+
+            def load(self, fn):
+                sd = torch.load(fn, map_location=self.device)
+                self.net.load_state_dict(sd['net'])
+                self.net_s.load_state_dict(sd['net_s'])
+
+        m = _DualCoST(input_dims=1, kernels=KER, alpha=ALPHA, max_train_length=W_S,
+                      output_dims=REPR, device=DEVICE)
+        m.net = _Ch0Enc(input_dims=1, output_dims=REPR, kernels=KER,
+                        length=W_T, hidden_dims=HID, depth=10).to(DEVICE)
+        m.net_s = _OrderEnc(input_dims=1, output_dims=REPR, kernels=KER,
+                            length=W_S, hidden_dims=HID, depth=10, l_ord=L_ORD).to(DEVICE)
+        m.load(ck)
+        zs = []
+        for r in run_ids:
+            e = e_by_run[r]; pos = np.arange(0, len(e), STRIDE)
+            v = float(by_run[r][VS].iloc[0])                 # run 안에서 속도 설정값은 상수다
+            X = causal_windows(e, pos, W_S)[:, :, None]
+            X = np.concatenate([X, np.full_like(X, v)], axis=2)         # 채널 1 = 속도 설정값
+            zs.append(m.encode(X, mode='forecasting', casual=True,
+                               sliding_length=1, sliding_padding=W_S - 1,
                                batch_size=ENCODE_BATCH)[:, -1, :])
         return np.concatenate(zs).astype(np.float32)
 

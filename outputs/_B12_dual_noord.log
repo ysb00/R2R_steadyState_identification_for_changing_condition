@@ -1,0 +1,50 @@
+[Step 1] runs = 210, ÀÔ·Â (210, 1300, 2) (0.2 s)
+[Step 2] trend Ã¢ 144 (15.7 s, baseline °ú µ¿ÀÏ) | seasonal Ã¢ 144 (15.7 s) = V50 ÀÇ 1 È¸Àü | Â÷¼ö¿µ¿ª ±æÀÌ 36 | Â÷¼ö ÇØ»óµµ 1.00 Â÷¼ö/bin
+[Step 2] ¼Óµµº° seasonal Ã¢: V50:144, V75:96, V100:72, V125:58, V150:48, V175:42, V200:36
+[Step 2] seasonal trunk: ¿øº» BandedFourierLayer (Â÷¼ö Àç»öÀÎ ¾øÀ½), ÇÐ½ÀÇÔ
+[Step 2] ÇÐ½À·® ¸ÂÃã: Á¶°¢ 9(Ã¢ 144) vs 9(Ã¢ 144) -> n_iters 600 -> 600  [baseline Åë°ú È½¼ö¿¡ ¸ÂÃá À¯µµ°ª]
+[Step 2] µ¥ÀÌÅÍ Åë°ú ºñ·Ê·®: baseline 66.67 vs Á¦¾È 66.67 (¿ÀÂ÷ 0.00%)
+[Step 2] baseline º¯Çü °Ë»ç, trend ÀÔ·ÂÀÌ Ã¢ 144 ´Üµ¶°ú µ¿ÀÏ: True
+[Step 3] CoST-dual-T144-S144-noord fold 1 seed 0: 57 s, ¼Õ½Ç 0.043 -> 3.092, steady ÆÇÁ¤ ºñÀ² 0.848, ¿À¿°·ü 0.001, º¸Á¸·ü 0.978
+[Step 3] CoST-dual-T144-S144-noord fold 1 seed 1: 56 s, ¼Õ½Ç 0.044 -> 3.451, steady ÆÇÁ¤ ºñÀ² 0.857, ¿À¿°·ü 0.002, º¸Á¸·ü 0.978
+[Step 3] CoST-dual-T144-S144-noord fold 1 seed 2: 48 s, ¼Õ½Ç 0.035 -> 3.228, steady ÆÇÁ¤ ºñÀ² 0.861, ¿À¿°·ü 0.003, º¸Á¸·ü 0.978
+[Step 3] CoST-dual-T144-S144-noord fold 1 seed 3: 57 s, ¼Õ½Ç 0.046 -> 3.073, steady ÆÇÁ¤ ºñÀ² 0.865, ¿À¿°·ü 0.005, º¸Á¸·ü 0.978
+[Step 3] CoST-dual-T144-S144-noord fold 1 seed 4: 56 s, ¼Õ½Ç 0.052 -> 3.333, steady ÆÇÁ¤ ºñÀ² 0.864, ¿À¿°·ü 0.004, º¸Á¸·ü 0.978
+[Step 3] CoST-dual-T144-S144-noord fold 2 seed 0: 60 s, ¼Õ½Ç 0.043 -> 3.099, steady ÆÇÁ¤ ºñÀ² 0.869, ¿À¿°·ü 0.000, º¸Á¸·ü 0.994
+[Step 3] CoST-dual-T144-S144-noord fold 2 seed 1: 59 s, ¼Õ½Ç 0.044 -> 3.441, steady ÆÇÁ¤ ºñÀ² 0.874, ¿À¿°·ü 0.001, º¸Á¸·ü 0.995
+[Step 3] CoST-dual-T144-S144-noord fold 2 seed 2: 59 s, ¼Õ½Ç 0.035 -> 3.227, steady ÆÇÁ¤ ºñÀ² 0.875, ¿À¿°·ü 0.001, º¸Á¸·ü 0.995
+[Step 3] CoST-dual-T144-S144-noord fold 2 seed 3: 58 s, ¼Õ½Ç 0.046 -> 3.054, steady ÆÇÁ¤ ºñÀ² 0.881, ¿À¿°·ü 0.002, º¸Á¸·ü 0.996
+[Step 3] CoST-dual-T144-S144-noord fold 2 seed 4: 57 s, ¼Õ½Ç 0.052 -> 3.345, steady ÆÇÁ¤ ºñÀ² 0.879, ¿À¿°·ü 0.002, º¸Á¸·ü 0.995
+[Step 3] CoST-dual-T144-S144-noord fold 3 seed 0: 59 s, ¼Õ½Ç 0.043 -> 3.086, steady ÆÇÁ¤ ºñÀ² 0.884, ¿À¿°·ü 0.000, º¸Á¸·ü 0.992
+[Step 3] CoST-dual-T144-S144-noord fold 3 seed 1: 60 s, ¼Õ½Ç 0.044 -> 3.447, steady ÆÇÁ¤ ºñÀ² 0.886, ¿À¿°·ü 0.000, º¸Á¸·ü 0.994
+[Step 3] CoST-dual-T144-S144-noord fold 3 seed 2: 61 s, ¼Õ½Ç 0.035 -> 3.224, steady ÆÇÁ¤ ºñÀ² 0.885, ¿À¿°·ü 0.000, º¸Á¸·ü 0.993
+[Step 3] CoST-dual-T144-S144-noord fold 3 seed 3: 60 s, ¼Õ½Ç 0.046 -> 3.042, steady ÆÇÁ¤ ºñÀ² 0.889, ¿À¿°·ü 0.000, º¸Á¸·ü 0.994
+[Step 3] CoST-dual-T144-S144-noord fold 3 seed 4: 57 s, ¼Õ½Ç 0.052 -> 3.330, steady ÆÇÁ¤ ºñÀ² 0.886, ¿À¿°·ü 0.000, º¸Á¸·ü 0.993
+[Step 3] CoST-dual-T144-S144-noord fold 4 seed 0: 59 s, ¼Õ½Ç 0.043 -> 3.088, steady ÆÇÁ¤ ºñÀ² 0.887, ¿À¿°·ü 0.004, º¸Á¸·ü 0.989
+[Step 3] CoST-dual-T144-S144-noord fold 4 seed 1: 58 s, ¼Õ½Ç 0.044 -> 3.443, steady ÆÇÁ¤ ºñÀ² 0.885, ¿À¿°·ü 0.004, º¸Á¸·ü 0.989
+[Step 3] CoST-dual-T144-S144-noord fold 4 seed 2: 60 s, ¼Õ½Ç 0.035 -> 3.233, steady ÆÇÁ¤ ºñÀ² 0.884, ¿À¿°·ü 0.004, º¸Á¸·ü 0.988
+[Step 3] CoST-dual-T144-S144-noord fold 4 seed 3: 60 s, ¼Õ½Ç 0.046 -> 3.045, steady ÆÇÁ¤ ºñÀ² 0.887, ¿À¿°·ü 0.004, º¸Á¸·ü 0.990
+[Step 3] CoST-dual-T144-S144-noord fold 4 seed 4: 59 s, ¼Õ½Ç 0.052 -> 3.332, steady ÆÇÁ¤ ºñÀ² 0.884, ¿À¿°·ü 0.004, º¸Á¸·ü 0.989
+[Step 3] CoST-dual-T144-S144-noord fold 5 seed 0: 60 s, ¼Õ½Ç 0.043 -> 3.086, steady ÆÇÁ¤ ºñÀ² 0.880, ¿À¿°·ü 0.000, º¸Á¸·ü 0.988
+[Step 3] CoST-dual-T144-S144-noord fold 5 seed 1: 60 s, ¼Õ½Ç 0.044 -> 3.437, steady ÆÇÁ¤ ºñÀ² 0.878, ¿À¿°·ü 0.000, º¸Á¸·ü 0.987
+[Step 3] CoST-dual-T144-S144-noord fold 5 seed 2: 60 s, ¼Õ½Ç 0.035 -> 3.228, steady ÆÇÁ¤ ºñÀ² 0.880, ¿À¿°·ü 0.000, º¸Á¸·ü 0.988
+[Step 3] CoST-dual-T144-S144-noord fold 5 seed 3: 59 s, ¼Õ½Ç 0.046 -> 3.053, steady ÆÇÁ¤ ºñÀ² 0.879, ¿À¿°·ü 0.000, º¸Á¸·ü 0.987
+[Step 3] CoST-dual-T144-S144-noord fold 5 seed 4: 57 s, ¼Õ½Ç 0.052 -> 3.322, steady ÆÇÁ¤ ºñÀ² 0.876, ¿À¿°·ü 0.000, º¸Á¸·ü 0.987
+[Step 3] CoST-dual-T144-S144-noord fold 6 seed 0: 59 s, ¼Õ½Ç 0.043 -> 3.098, steady ÆÇÁ¤ ºñÀ² 0.884, ¿À¿°·ü 0.000, º¸Á¸·ü 0.992
+[Step 3] CoST-dual-T144-S144-noord fold 6 seed 1: 56 s, ¼Õ½Ç 0.044 -> 3.443, steady ÆÇÁ¤ ºñÀ² 0.882, ¿À¿°·ü 0.000, º¸Á¸·ü 0.992
+[Step 3] CoST-dual-T144-S144-noord fold 6 seed 2: 59 s, ¼Õ½Ç 0.035 -> 3.222, steady ÆÇÁ¤ ºñÀ² 0.884, ¿À¿°·ü 0.000, º¸Á¸·ü 0.993
+[Step 3] CoST-dual-T144-S144-noord fold 6 seed 3: 57 s, ¼Õ½Ç 0.046 -> 3.064, steady ÆÇÁ¤ ºñÀ² 0.883, ¿À¿°·ü 0.000, º¸Á¸·ü 0.992
+[Step 3] CoST-dual-T144-S144-noord fold 6 seed 4: 63 s, ¼Õ½Ç 0.052 -> 3.321, steady ÆÇÁ¤ ºñÀ² 0.881, ¿À¿°·ü 0.000, º¸Á¸·ü 0.992
+[Step 3] CoST-dual-T144-S144-noord fold 7 seed 0: 53 s, ¼Õ½Ç 0.043 -> 3.089, steady ÆÇÁ¤ ºñÀ² 0.874, ¿À¿°·ü 0.006, º¸Á¸·ü 0.998
+[Step 3] CoST-dual-T144-S144-noord fold 7 seed 1: 58 s, ¼Õ½Ç 0.044 -> 3.445, steady ÆÇÁ¤ ºñÀ² 0.865, ¿À¿°·ü 0.003, º¸Á¸·ü 0.995
+[Step 3] CoST-dual-T144-S144-noord fold 7 seed 2: 59 s, ¼Õ½Ç 0.035 -> 3.233, steady ÆÇÁ¤ ºñÀ² 0.869, ¿À¿°·ü 0.004, º¸Á¸·ü 0.996
+[Step 3] CoST-dual-T144-S144-noord fold 7 seed 3: 57 s, ¼Õ½Ç 0.046 -> 3.065, steady ÆÇÁ¤ ºñÀ² 0.872, ¿À¿°·ü 0.005, º¸Á¸·ü 0.997
+[Step 3] CoST-dual-T144-S144-noord fold 7 seed 4: 57 s, ¼Õ½Ç 0.052 -> 3.318, steady ÆÇÁ¤ ºñÀ² 0.866, ¿À¿°·ü 0.003, º¸Á¸·ü 0.995
+[save] loss curve -> outputs/08_speed_loo_B/12_proposed_cost_dual_trunk (ablation)/CoST-dual-T144-S144-noord_loss.png / .pdf
+[save] run     -> outputs/08_speed_loo_B/12_proposed_cost_dual_trunk (ablation)/CoST-dual-T144-S144-noord_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/12_proposed_cost_dual_trunk (ablation)/CoST-dual-T144-S144-noord_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/12_proposed_cost_dual_trunk (ablation)/CoST-dual-T144-S144-noord_summary.csv
+[save] config  -> outputs/08_speed_loo_B/12_proposed_cost_dual_trunk (ablation)/CoST-dual-T144-S144-noord_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/12_proposed_cost_dual_trunk (ablation)/CoST-dual-T144-S144-noord_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/12_proposed_cost_dual_trunk (ablation)/CoST-dual-T144-S144-noord_heatmap_retention_rate.png / .pdf
+[done] CoST-dual-T144-S144-noord -> outputs/08_speed_loo_B/12_proposed_cost_dual_trunk (ablation)

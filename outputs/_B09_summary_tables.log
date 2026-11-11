@@ -1,0 +1,7 @@
+[주의] CATEGORY 에 등록되지 않은 방법: ['CoST-W144-order', 'CoST-dual-T144-S144', 'CoST-dual-T144-S144-frz', 'CoST-dual-T144-S144-noord', 'CoST-dual-T144-S144-noord-frz']
+[save] outputs/08_speed_loo_B/_all_methods_full_table.csv  29 행 x 454 컬럼
+[save] outputs/08_speed_loo_B/_all_methods_by_fold.csv  203 행 x 88 컬럼
+[save] outputs/08_speed_loo_B/_all_methods_by_fold_seed.csv  959 행 x 92 컬럼
+[save] outputs/08_speed_loo_B/_paper_table.csv  29 행 x 20 컬럼 (평균±표준편차 문자열 + fold별 값)
+[검증] 비율 지표 범위 이탈: 없음
+[done] 방법 29종, 분류 {'contrastive': np.int64(10), 'statistical': np.int64(8), 'unregistered': np.int64(5), 'ablation': np.int64(4), 'foundation': np.int64(1), 'generative': np.int64(1)}

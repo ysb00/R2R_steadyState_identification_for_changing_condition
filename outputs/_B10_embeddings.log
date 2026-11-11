@@ -1,0 +1,27 @@
+[Step 1] 분할 b fold 7 seed 0 | 서브샘플 27002 시점 (stride 10) | 학습 23149 / 검증 3853 / 미사용 0 | 라벨 분포 {0: np.int64(2132), 1: np.int64(23033), 2: np.int64(1837)} (0.4s)
+[Step 2] R-test-calibrated      d=    1  PC1+2 분산 100.0%  PC1~3 100.0%  50/80/90%% 에 필요한 PC 1/1/1개  AUPRC(동일 서브샘플) 원차원 0.661 / 2D 0.661 / 3D 0.661  (6s)
+[Step 2] MovStd-Slope-fixed     d=    2  PC1+2 분산 100.0%  PC1~3 100.0%  50/80/90%% 에 필요한 PC 1/1/1개  AUPRC(동일 서브샘플) 원차원 0.979 / 2D 0.980 / 3D 0.980  (0s)
+[Step 2] TS2Vec                 d=  320  PC1+2 분산  62.0%  PC1~3 69.1%  50/80/90%% 에 필요한 PC 2/6/9개  AUPRC(동일 서브샘플) 원차원 0.308 / 2D 0.720 / 3D 0.777  (2s)
+W1111 17:01:52.856000 6668 site-packages\torch\distributed\elastic\multiprocessing\redirects.py:29] NOTE: Redirects are currently not supported in Windows or MacOs.
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+C:\Users\KIMM\research\informs-paper\code\03_baselines\external\moment\momentfm\models\moment.py:174: UserWarning: Only reconstruction head is pre-trained. Classification and forecasting heads must be fine-tuned.
+  warnings.warn("Only reconstruction head is pre-trained. Classification and forecasting heads must be fine-tuned.")
+[Step 2] MOMENT                 d=  512  PC1+2 분산  63.3%  PC1~3 71.6%  50/80/90%% 에 필요한 PC 2/6/16개  AUPRC(동일 서브샘플) 원차원 0.256 / 2D 0.321 / 3D 0.224  (21s)
+[Step 2] CoST-W144              d=  320  PC1+2 분산  46.3%  PC1~3 56.6%  50/80/90%% 에 필요한 PC 3/9/19개  AUPRC(동일 서브샘플) 원차원 0.840 / 2D 0.959 / 3D 0.959  (127s)
+[Step 2] SoftCLT-fs-rule1b      d=  320  PC1+2 분산  76.0%  PC1~3 89.1%  50/80/90%% 에 필요한 PC 2/3/4개  AUPRC(동일 서브샘플) 원차원 0.140 / 2D 0.333 / 3D 0.297  (2s)
+[Step 2] TS-TCC                 d= 2560  PC1+2 분산  38.7%  PC1~3 46.2%  50/80/90%% 에 필요한 PC 4/24/106개  AUPRC(동일 서브샘플) 원차원 0.845 / 2D 0.978 / 3D 0.977  (14s)
+[Step 2] SimMTM                 d= 1024  PC1+2 분산  33.3%  PC1~3 41.6%  50/80/90%% 에 필요한 PC 5/13/43개  AUPRC(동일 서브샘플) 원차원 0.739 / 2D 0.967 / 3D 0.959  (5s)
+[Step 2] CoST-dual-T144-S144-frz d=  320  PC1+2 분산  40.6%  PC1~3 51.6%  50/80/90%% 에 필요한 PC 3/11/21개  AUPRC(동일 서브샘플) 원차원 0.903 / 2D 0.930 / 3D 0.925  (588s)
+
+                 method  dim  ev_pc1   ev2  ev_pc1to3  n_pc_50pct  n_pc_80pct  n_pc_90pct  diag_auprc_fulldim  diag_auprc_2d  diag_auprc_3d  official_auprc_fold_mean
+      R-test-calibrated    1   1.000 1.000      1.000           1           1           1               0.661          0.661          0.661                     0.673
+     MovStd-Slope-fixed    2   0.931 1.000      1.000           1           1           1               0.979          0.980          0.980                     0.977
+                 TS2Vec  320   0.375 0.620      0.691           2           6           9               0.308          0.720          0.777                     0.422
+                 MOMENT  512   0.367 0.633      0.716           2           6          16               0.256          0.321          0.224                     0.118
+              CoST-W144  320   0.308 0.463      0.566           3           9          19               0.840          0.959          0.959                     0.937
+      SoftCLT-fs-rule1b  320   0.456 0.760      0.891           2           3           4               0.140          0.333          0.297                     0.361
+                 TS-TCC 2560   0.216 0.387      0.462           4          24         106               0.845          0.978          0.977                     0.666
+                 SimMTM 1024   0.231 0.333      0.416           5          13          43               0.739          0.967          0.959                     0.738
+CoST-dual-T144-S144-frz  320   0.278 0.406      0.516           3          11          21               0.903          0.930          0.925                     0.932
+
+[save] outputs/08_speed_loo_B/_embeddings_fold7_seed0.npz  (2.2 MB)

@@ -107,7 +107,9 @@ TRAJ_RUNS_PER_PANEL = 3         # 패널당 궤적 수. **[임의]** — 더 많
 
 STAGE_OF = {'MovStd-Slope-fixed': '01_stat_ssd', 'TS2Vec': '02_ts2vec', 'MOMENT': '03_moment',
             'CoST-W144': '04_cost (ablation)', 'SoftCLT-fs-rule1b': '05_softclt',
-            'TS-TCC': '07_tstcc', 'SimMTM': '08_simmtm'}
+            'TS-TCC': '07_tstcc', 'SimMTM': '08_simmtm',
+            # ★ Proposed (final v1) — 2026-11-11 추가. 좌표가 npz 에 없으면 아래 루프가 건너뛴다
+            'CoST-dual-T144-S144-frz': '12_proposed_cost_dual_trunk (final v1)'}
 
 d = np.load(NPZ, allow_pickle=True)
 info = pd.DataFrame(d['info'])
