@@ -1,0 +1,21 @@
+[skip] R-test-calibrated: 1차원이거나 좌표가 없다 (산점도·궤적이 성립하지 않는다)
+[save] outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-fixed_embedding_seen_unseen.png / .pdf
+[save] outputs/08_speed_loo_B/01_stat_ssd/MovStd-Slope-fixed_embedding_trajectory.png / .pdf
+[save] outputs/08_speed_loo_B/02_ts2vec/TS2Vec_embedding_seen_unseen.png / .pdf
+[save] outputs/08_speed_loo_B/02_ts2vec/TS2Vec_embedding_trajectory.png / .pdf
+[save] outputs/08_speed_loo_B/03_moment/MOMENT_embedding_seen_unseen.png / .pdf
+[save] outputs/08_speed_loo_B/03_moment/MOMENT_embedding_trajectory.png / .pdf
+[save] outputs/08_speed_loo_B/04_cost (ablation)/CoST-W144_embedding_seen_unseen.png / .pdf
+[save] outputs/08_speed_loo_B/04_cost (ablation)/CoST-W144_embedding_trajectory.png / .pdf
+[save] outputs/08_speed_loo_B/05_softclt/SoftCLT-fs-rule1b_embedding_seen_unseen.png / .pdf
+[save] outputs/08_speed_loo_B/05_softclt/SoftCLT-fs-rule1b_embedding_trajectory.png / .pdf
+[save] outputs/08_speed_loo_B/07_tstcc/TS-TCC_embedding_seen_unseen.png / .pdf
+[save] outputs/08_speed_loo_B/07_tstcc/TS-TCC_embedding_trajectory.png / .pdf
+[save] outputs/08_speed_loo_B/08_simmtm/SimMTM_embedding_seen_unseen.png / .pdf
+[save] outputs/08_speed_loo_B/08_simmtm/SimMTM_embedding_trajectory.png / .pdf
+[save] outputs/08_speed_loo_B/12_proposed_cost_dual_trunk (final v1)/CoST-dual-T144-S144-frz_embedding_seen_unseen.png / .pdf
+[save] outputs/08_speed_loo_B/12_proposed_cost_dual_trunk (final v1)/CoST-dual-T144-S144-frz_embedding_trajectory.png / .pdf
+
+[done] 8 방법 x 2 그림 = 16 장 (+ PDF). 방법: ['MovStd-Slope-fixed', 'TS2Vec', 'MOMENT', 'CoST-W144', 'SoftCLT-fs-rule1b', 'TS-TCC', 'SimMTM', 'CoST-dual-T144-S144-frz']
+주의: PC1+2 분산이 낮은 방법은 **그림에 안 보여도 고차원에서 분리돼 있을 수 있다.**
+      2D 진단값은 _embedding_diagnostics_*.csv 에 따로 있고 정식 점수가 아니다.

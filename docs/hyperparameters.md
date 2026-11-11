@@ -1091,7 +1091,7 @@ A 쪽도 이름이 내용보다 좁다:
 
 | # | 할 일 | 비용 |
 |---|---|---|
-| 1 | `10_embeddings.py` 의 `METHODS` 에 제안방법이 **등록된 적이 없다** (비교군 8종만). 등록 + **`dual` 로더 분기 추가** — `DualCoST` 체크포인트는 `{'net':…, 'net_s':…}` 딕셔너리라 기존 `cost` 분기(`m.load(ck)`)로 열리지 않는다 | 구현 약 30분 |
+| ~~1~~ | ~~`10_embeddings.py` 의 `METHODS` 에 제안방법 등록 + `dual` 로더 분기~~ | **완료 (2026-11-11)** — B3 에서 필요해 먼저 했다. `CoST-dual-T144-S144-frz` 1종을 `METHODS` 에 등록하고 `build()` 에 `dual` 분기를 넣었다 (`11_embedding_plots.py` 의 `STAGE_OF` 도 함께). 체크포인트가 없는 분할에서는 기존 try/except 가 `FAILED` 로 넘기므로 **A·C 는 동작 불변**이다. 정본과 일치함을 CPU 에서 검증했다 — 텐서 구조 66개씩 일치, strict load 성공, 속도 3수준에서 encode 출력이 **비트 단위로 동일** (`worklog.md` 2026-11-11 §6) |
 | 2 | 체크포인트 재생성 — 결과 CSV 를 임시로 비켜두고(스킵 가드) `python code/04_proposed/04_cost_dual_trunk.py tension nrot=1 freeze` 재실행. **시드 고정이라 같은 결과가 재현**되므로 기존 CSV 와 소수점 일치 여부를 재현성 증거로 함께 확인한다 | 약 16분 |
 | 3 | `python code/03_baselines/10_embeddings.py tension` → `11_embedding_plots.py tension` | 약 5분 |
 
@@ -1165,8 +1165,10 @@ ablation 변형(`order`, `dual-noord` 등)도 그림에 넣으려면 각각 같�
 
 #### 공통 주의
 
-- **제안 방법의 실험 범위는 A 까지다** (연구자 결정 2026-10-29). C 실험·ambiguous 포함 재채점은
-  하지 않는다. 비교군 23종의 C 결과(`04_speed_extrap/`)와 ambiguous 포함 결과는 그대로 남는다
+- **제안 방법의 실험 범위는 A + B 다.** 처음에는 A 까지였고(연구자 결정 2026-10-29) **B 가
+  2026-11-09 결정으로 더해졌다** (속도 축 leave-one-level-out, 5종 x 7 fold x 5 seed,
+  2026-11-11 완료 — `worklog.md` 2026-11-11 §1). **C 실험·ambiguous 포함 재채점은 여전히
+  하지 않는다.** 비교군 23종의 C 결과(`04_speed_extrap/`)와 ambiguous 포함 결과는 그대로 남는다
 - **학습량은 언제나 baseline 과 동등해야 한다** (연구자 결정 2026-10-29). 창을 바꾸는 변형은
   `max_train_length` 가 run 을 쪼개는 조각 수를 바꿔 1 epoch 의 iteration 수가 달라진다
   (§11 문제 9). 같은 iteration 수를 쓰면 **데이터 통과 횟수가 달라져 비교가 깨진다** —

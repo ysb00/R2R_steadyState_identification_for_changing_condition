@@ -1,0 +1,90 @@
+[Step 1] runs = 210, ÀÔ·Â (210, 1300, 1) / (210, 1300, 2) (0.2 s)
+[Step 2] Ã¢ 144 samples (15.7 s) = V50 ÀÇ 1 È¸Àü | Â÷¼ö¿µ¿ª ±æÀÌ 36 = V200 ÀÇ 1 È¸Àü | Â÷¼ö ÇØ»óµµ 1.00 Â÷¼ö/bin
+[Step 2] ¼Óµµº° seasonal Ã¢: V50:144, V75:96, V100:72, V125:58, V150:48, V175:42, V200:36
+[Step 3] CoST-W144-noscaleshift fold 1 seed 0: 38 s, ¼Õ½Ç 0.036 -> 3.224, steady ÆÇÁ¤ ºñÀ² 0.858, ¿À¿°·ü 0.002, º¸Á¸·ü 0.978
+[Step 3] CoST-W144-noscaleshift fold 1 seed 1: 28 s, ¼Õ½Ç 0.048 -> 3.515, steady ÆÇÁ¤ ºñÀ² 0.869, ¿À¿°·ü 0.007, º¸Á¸·ü 0.978
+[Step 3] CoST-W144-noscaleshift fold 1 seed 2: 28 s, ¼Õ½Ç 0.038 -> 3.188, steady ÆÇÁ¤ ºñÀ² 0.855, ¿À¿°·ü 0.002, º¸Á¸·ü 0.978
+[Step 3] CoST-W144-noscaleshift fold 1 seed 3: 28 s, ¼Õ½Ç 0.052 -> 3.039, steady ÆÇÁ¤ ºñÀ² 0.848, ¿À¿°·ü 0.001, º¸Á¸·ü 0.978
+[Step 3] CoST-W144-noscaleshift fold 1 seed 4: 28 s, ¼Õ½Ç 0.055 -> 3.156, steady ÆÇÁ¤ ºñÀ² 0.881, ¿À¿°·ü 0.019, º¸Á¸·ü 0.978
+[Step 3] CoST-W144-noscaleshift fold 2 seed 0: 29 s, ¼Õ½Ç 0.035 -> 3.214, steady ÆÇÁ¤ ºñÀ² 0.872, ¿À¿°·ü 0.001, º¸Á¸·ü 0.994
+[Step 3] CoST-W144-noscaleshift fold 2 seed 1: 31 s, ¼Õ½Ç 0.048 -> 3.518, steady ÆÇÁ¤ ºñÀ² 0.881, ¿À¿°·ü 0.003, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-noscaleshift fold 2 seed 2: 30 s, ¼Õ½Ç 0.038 -> 3.193, steady ÆÇÁ¤ ºñÀ² 0.873, ¿À¿°·ü 0.001, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-noscaleshift fold 2 seed 3: 34 s, ¼Õ½Ç 0.052 -> 3.042, steady ÆÇÁ¤ ºñÀ² 0.871, ¿À¿°·ü 0.000, º¸Á¸·ü 0.994
+[Step 3] CoST-W144-noscaleshift fold 2 seed 4: 29 s, ¼Õ½Ç 0.055 -> 3.161, steady ÆÇÁ¤ ºñÀ² 0.886, ¿À¿°·ü 0.005, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-noscaleshift fold 3 seed 0: 32 s, ¼Õ½Ç 0.036 -> 3.208, steady ÆÇÁ¤ ºñÀ² 0.882, ¿À¿°·ü 0.000, º¸Á¸·ü 0.991
+[Step 3] CoST-W144-noscaleshift fold 3 seed 1: 30 s, ¼Õ½Ç 0.048 -> 3.521, steady ÆÇÁ¤ ºñÀ² 0.888, ¿À¿°·ü 0.000, º¸Á¸·ü 0.994
+[Step 3] CoST-W144-noscaleshift fold 3 seed 2: 32 s, ¼Õ½Ç 0.038 -> 3.191, steady ÆÇÁ¤ ºñÀ² 0.886, ¿À¿°·ü 0.000, º¸Á¸·ü 0.994
+[Step 3] CoST-W144-noscaleshift fold 3 seed 3: 32 s, ¼Õ½Ç 0.052 -> 3.039, steady ÆÇÁ¤ ºñÀ² 0.885, ¿À¿°·ü 0.000, º¸Á¸·ü 0.994
+[Step 3] CoST-W144-noscaleshift fold 3 seed 4: 28 s, ¼Õ½Ç 0.055 -> 3.159, steady ÆÇÁ¤ ºñÀ² 0.889, ¿À¿°·ü 0.000, º¸Á¸·ü 0.994
+[Step 3] CoST-W144-noscaleshift fold 4 seed 0: 29 s, ¼Õ½Ç 0.036 -> 3.212, steady ÆÇÁ¤ ºñÀ² 0.879, ¿À¿°·ü 0.005, º¸Á¸·ü 0.986
+[Step 3] CoST-W144-noscaleshift fold 4 seed 1: 28 s, ¼Õ½Ç 0.048 -> 3.531, steady ÆÇÁ¤ ºñÀ² 0.888, ¿À¿°·ü 0.005, º¸Á¸·ü 0.989
+[Step 3] CoST-W144-noscaleshift fold 4 seed 2: 30 s, ¼Õ½Ç 0.038 -> 3.190, steady ÆÇÁ¤ ºñÀ² 0.886, ¿À¿°·ü 0.004, º¸Á¸·ü 0.989
+[Step 3] CoST-W144-noscaleshift fold 4 seed 3: 32 s, ¼Õ½Ç 0.052 -> 3.037, steady ÆÇÁ¤ ºñÀ² 0.886, ¿À¿°·ü 0.004, º¸Á¸·ü 0.989
+[Step 3] CoST-W144-noscaleshift fold 4 seed 4: 115 s, ¼Õ½Ç 0.055 -> 3.151, steady ÆÇÁ¤ ºñÀ² 0.888, ¿À¿°·ü 0.005, º¸Á¸·ü 0.989
+[Step 3] CoST-W144-noscaleshift fold 5 seed 0: 110 s, ¼Õ½Ç 0.036 -> 3.216, steady ÆÇÁ¤ ºñÀ² 0.875, ¿À¿°·ü 0.000, º¸Á¸·ü 0.986
+[Step 3] CoST-W144-noscaleshift fold 5 seed 1: 37 s, ¼Õ½Ç 0.048 -> 3.527, steady ÆÇÁ¤ ºñÀ² 0.881, ¿À¿°·ü 0.000, º¸Á¸·ü 0.988
+[Step 3] CoST-W144-noscaleshift fold 5 seed 2: 29 s, ¼Õ½Ç 0.038 -> 3.199, steady ÆÇÁ¤ ºñÀ² 0.878, ¿À¿°·ü 0.000, º¸Á¸·ü 0.987
+[Step 3] CoST-W144-noscaleshift fold 5 seed 3: 30 s, ¼Õ½Ç 0.052 -> 3.045, steady ÆÇÁ¤ ºñÀ² 0.878, ¿À¿°·ü 0.000, º¸Á¸·ü 0.987
+[Step 3] CoST-W144-noscaleshift fold 5 seed 4: 29 s, ¼Õ½Ç 0.055 -> 3.145, steady ÆÇÁ¤ ºñÀ² 0.881, ¿À¿°·ü 0.000, º¸Á¸·ü 0.988
+[Step 3] CoST-W144-noscaleshift fold 6 seed 0: 29 s, ¼Õ½Ç 0.036 -> 3.221, steady ÆÇÁ¤ ºñÀ² 0.880, ¿À¿°·ü 0.000, º¸Á¸·ü 0.991
+[Step 3] CoST-W144-noscaleshift fold 6 seed 1: 30 s, ¼Õ½Ç 0.048 -> 3.534, steady ÆÇÁ¤ ºñÀ² 0.886, ¿À¿°·ü 0.000, º¸Á¸·ü 0.993
+[Step 3] CoST-W144-noscaleshift fold 6 seed 2: 29 s, ¼Õ½Ç 0.039 -> 3.195, steady ÆÇÁ¤ ºñÀ² 0.882, ¿À¿°·ü 0.000, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-noscaleshift fold 6 seed 3: 28 s, ¼Õ½Ç 0.052 -> 3.042, steady ÆÇÁ¤ ºñÀ² 0.881, ¿À¿°·ü 0.000, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-noscaleshift fold 6 seed 4: 29 s, ¼Õ½Ç 0.054 -> 3.143, steady ÆÇÁ¤ ºñÀ² 0.885, ¿À¿°·ü 0.000, º¸Á¸·ü 0.993
+[Step 3] CoST-W144-noscaleshift fold 7 seed 0: 29 s, ¼Õ½Ç 0.035 -> 3.215, steady ÆÇÁ¤ ºñÀ² 0.865, ¿À¿°·ü 0.003, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-noscaleshift fold 7 seed 1: 29 s, ¼Õ½Ç 0.047 -> 3.537, steady ÆÇÁ¤ ºñÀ² 0.872, ¿À¿°·ü 0.006, º¸Á¸·ü 0.997
+[Step 3] CoST-W144-noscaleshift fold 7 seed 2: 29 s, ¼Õ½Ç 0.039 -> 3.184, steady ÆÇÁ¤ ºñÀ² 0.868, ¿À¿°·ü 0.004, º¸Á¸·ü 0.996
+[Step 3] CoST-W144-noscaleshift fold 7 seed 3: 29 s, ¼Õ½Ç 0.053 -> 3.039, steady ÆÇÁ¤ ºñÀ² 0.865, ¿À¿°·ü 0.003, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-noscaleshift fold 7 seed 4: 29 s, ¼Õ½Ç 0.054 -> 3.152, steady ÆÇÁ¤ ºñÀ² 0.872, ¿À¿°·ü 0.006, º¸Á¸·ü 0.997
+[save] loss curve -> outputs/08_speed_loo_B/09_proposed_cost_order_normalized_seasonal (ablation)/CoST-W144-noscaleshift_loss.png / .pdf
+[save] run     -> outputs/08_speed_loo_B/09_proposed_cost_order_normalized_seasonal (ablation)/CoST-W144-noscaleshift_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/09_proposed_cost_order_normalized_seasonal (ablation)/CoST-W144-noscaleshift_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/09_proposed_cost_order_normalized_seasonal (ablation)/CoST-W144-noscaleshift_summary.csv
+[save] config  -> outputs/08_speed_loo_B/09_proposed_cost_order_normalized_seasonal (ablation)/CoST-W144-noscaleshift_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/09_proposed_cost_order_normalized_seasonal (ablation)/CoST-W144-noscaleshift_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/09_proposed_cost_order_normalized_seasonal (ablation)/CoST-W144-noscaleshift_heatmap_retention_rate.png / .pdf
+[done] CoST-W144-noscaleshift
+[Step 3] CoST-W144-order fold 1 seed 0: 54 s, ¼Õ½Ç 0.025 -> 3.018, steady ÆÇÁ¤ ºñÀ² 0.843, ¿À¿°·ü 0.001, º¸Á¸·ü 0.976
+[Step 3] CoST-W144-order fold 1 seed 1: 53 s, ¼Õ½Ç 0.037 -> 3.629, steady ÆÇÁ¤ ºñÀ² 0.834, ¿À¿°·ü 0.001, º¸Á¸·ü 0.975
+[Step 3] CoST-W144-order fold 1 seed 2: 55 s, ¼Õ½Ç 0.022 -> 3.135, steady ÆÇÁ¤ ºñÀ² 0.850, ¿À¿°·ü 0.001, º¸Á¸·ü 0.978
+[Step 3] CoST-W144-order fold 1 seed 3: 54 s, ¼Õ½Ç 0.030 -> 2.912, steady ÆÇÁ¤ ºñÀ² 0.848, ¿À¿°·ü 0.001, º¸Á¸·ü 0.976
+[Step 3] CoST-W144-order fold 1 seed 4: 55 s, ¼Õ½Ç 0.036 -> 3.221, steady ÆÇÁ¤ ºñÀ² 0.819, ¿À¿°·ü 0.000, º¸Á¸·ü 0.970
+[Step 3] CoST-W144-order fold 2 seed 0: 54 s, ¼Õ½Ç 0.025 -> 2.998, steady ÆÇÁ¤ ºñÀ² 0.880, ¿À¿°·ü 0.001, º¸Á¸·ü 0.996
+[Step 3] CoST-W144-order fold 2 seed 1: 56 s, ¼Õ½Ç 0.034 -> 3.634, steady ÆÇÁ¤ ºñÀ² 0.877, ¿À¿°·ü 0.001, º¸Á¸·ü 0.996
+[Step 3] CoST-W144-order fold 2 seed 2: 54 s, ¼Õ½Ç 0.022 -> 3.127, steady ÆÇÁ¤ ºñÀ² 0.883, ¿À¿°·ü 0.002, º¸Á¸·ü 0.996
+[Step 3] CoST-W144-order fold 2 seed 3: 54 s, ¼Õ½Ç 0.029 -> 2.911, steady ÆÇÁ¤ ºñÀ² 0.885, ¿À¿°·ü 0.003, º¸Á¸·ü 0.996
+[Step 3] CoST-W144-order fold 2 seed 4: 55 s, ¼Õ½Ç 0.036 -> 3.221, steady ÆÇÁ¤ ºñÀ² 0.876, ¿À¿°·ü 0.001, º¸Á¸·ü 0.996
+[Step 3] CoST-W144-order fold 3 seed 0: 55 s, ¼Õ½Ç 0.025 -> 2.985, steady ÆÇÁ¤ ºñÀ² 0.898, ¿À¿°·ü 0.000, º¸Á¸·ü 0.998
+[Step 3] CoST-W144-order fold 3 seed 1: 56 s, ¼Õ½Ç 0.034 -> 3.643, steady ÆÇÁ¤ ºñÀ² 0.897, ¿À¿°·ü 0.000, º¸Á¸·ü 0.998
+[Step 3] CoST-W144-order fold 3 seed 2: 55 s, ¼Õ½Ç 0.022 -> 3.134, steady ÆÇÁ¤ ºñÀ² 0.899, ¿À¿°·ü 0.000, º¸Á¸·ü 0.998
+[Step 3] CoST-W144-order fold 3 seed 3: 54 s, ¼Õ½Ç 0.029 -> 2.916, steady ÆÇÁ¤ ºñÀ² 0.899, ¿À¿°·ü 0.000, º¸Á¸·ü 0.998
+[Step 3] CoST-W144-order fold 3 seed 4: 55 s, ¼Õ½Ç 0.034 -> 3.222, steady ÆÇÁ¤ ºñÀ² 0.895, ¿À¿°·ü 0.000, º¸Á¸·ü 0.997
+[Step 3] CoST-W144-order fold 4 seed 0: 56 s, ¼Õ½Ç 0.025 -> 2.984, steady ÆÇÁ¤ ºñÀ² 0.900, ¿À¿°·ü 0.004, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-order fold 4 seed 1: 55 s, ¼Õ½Ç 0.034 -> 3.642, steady ÆÇÁ¤ ºñÀ² 0.900, ¿À¿°·ü 0.004, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-order fold 4 seed 2: 56 s, ¼Õ½Ç 0.021 -> 3.150, steady ÆÇÁ¤ ºñÀ² 0.901, ¿À¿°·ü 0.005, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-order fold 4 seed 3: 55 s, ¼Õ½Ç 0.031 -> 2.910, steady ÆÇÁ¤ ºñÀ² 0.901, ¿À¿°·ü 0.004, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-order fold 4 seed 4: 56 s, ¼Õ½Ç 0.034 -> 3.236, steady ÆÇÁ¤ ºñÀ² 0.898, ¿À¿°·ü 0.004, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-order fold 5 seed 0: 56 s, ¼Õ½Ç 0.024 -> 2.969, steady ÆÇÁ¤ ºñÀ² 0.896, ¿À¿°·ü 0.001, º¸Á¸·ü 0.991
+[Step 3] CoST-W144-order fold 5 seed 1: 59 s, ¼Õ½Ç 0.034 -> 3.657, steady ÆÇÁ¤ ºñÀ² 0.894, ¿À¿°·ü 0.000, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-order fold 5 seed 2: 59 s, ¼Õ½Ç 0.022 -> 3.149, steady ÆÇÁ¤ ºñÀ² 0.896, ¿À¿°·ü 0.000, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-order fold 5 seed 3: 55 s, ¼Õ½Ç 0.031 -> 2.912, steady ÆÇÁ¤ ºñÀ² 0.897, ¿À¿°·ü 0.000, º¸Á¸·ü 0.991
+[Step 3] CoST-W144-order fold 5 seed 4: 57 s, ¼Õ½Ç 0.036 -> 3.236, steady ÆÇÁ¤ ºñÀ² 0.889, ¿À¿°·ü 0.000, º¸Á¸·ü 0.992
+[Step 3] CoST-W144-order fold 6 seed 0: 55 s, ¼Õ½Ç 0.025 -> 2.975, steady ÆÇÁ¤ ºñÀ² 0.897, ¿À¿°·ü 0.002, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-order fold 6 seed 1: 54 s, ¼Õ½Ç 0.035 -> 3.654, steady ÆÇÁ¤ ºñÀ² 0.895, ¿À¿°·ü 0.001, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-order fold 6 seed 2: 55 s, ¼Õ½Ç 0.023 -> 3.156, steady ÆÇÁ¤ ºñÀ² 0.896, ¿À¿°·ü 0.002, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-order fold 6 seed 3: 55 s, ¼Õ½Ç 0.030 -> 2.912, steady ÆÇÁ¤ ºñÀ² 0.898, ¿À¿°·ü 0.002, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-order fold 6 seed 4: 57 s, ¼Õ½Ç 0.037 -> 3.240, steady ÆÇÁ¤ ºñÀ² 0.893, ¿À¿°·ü 0.001, º¸Á¸·ü 0.995
+[Step 3] CoST-W144-order fold 7 seed 0: 68 s, ¼Õ½Ç 0.025 -> 2.993, steady ÆÇÁ¤ ºñÀ² 0.889, ¿À¿°·ü 0.012, º¸Á¸·ü 1.000
+[Step 3] CoST-W144-order fold 7 seed 1: 68 s, ¼Õ½Ç 0.036 -> 3.644, steady ÆÇÁ¤ ºñÀ² 0.883, ¿À¿°·ü 0.008, º¸Á¸·ü 0.999
+[Step 3] CoST-W144-order fold 7 seed 2: 69 s, ¼Õ½Ç 0.024 -> 3.151, steady ÆÇÁ¤ ºñÀ² 0.886, ¿À¿°·ü 0.010, º¸Á¸·ü 1.000
+[Step 3] CoST-W144-order fold 7 seed 3: 66 s, ¼Õ½Ç 0.030 -> 2.922, steady ÆÇÁ¤ ºñÀ² 0.891, ¿À¿°·ü 0.013, º¸Á¸·ü 1.000
+[Step 3] CoST-W144-order fold 7 seed 4: 67 s, ¼Õ½Ç 0.037 -> 3.248, steady ÆÇÁ¤ ºñÀ² 0.884, ¿À¿°·ü 0.008, º¸Á¸·ü 0.999
+[save] loss curve -> outputs/08_speed_loo_B/09_proposed_cost_order_normalized_seasonal (ablation)/CoST-W144-order_loss.png / .pdf
+[save] run     -> outputs/08_speed_loo_B/09_proposed_cost_order_normalized_seasonal (ablation)/CoST-W144-order_run_metrics.csv
+[save] fold    -> outputs/08_speed_loo_B/09_proposed_cost_order_normalized_seasonal (ablation)/CoST-W144-order_fold_metrics.csv
+[save] summary -> outputs/08_speed_loo_B/09_proposed_cost_order_normalized_seasonal (ablation)/CoST-W144-order_summary.csv
+[save] config  -> outputs/08_speed_loo_B/09_proposed_cost_order_normalized_seasonal (ablation)/CoST-W144-order_config.csv
+[save] heatmap -> outputs/08_speed_loo_B/09_proposed_cost_order_normalized_seasonal (ablation)/CoST-W144-order_heatmap_contamination_rate.png / .pdf
+[save] heatmap -> outputs/08_speed_loo_B/09_proposed_cost_order_normalized_seasonal (ablation)/CoST-W144-order_heatmap_retention_rate.png / .pdf
+[done] CoST-W144-order
+[done] Á¦¾È ¾ÆÀÌµð¾î 01 ¿Ï·á -> outputs/08_speed_loo_B/09_proposed_cost_order_normalized_seasonal (ablation)
